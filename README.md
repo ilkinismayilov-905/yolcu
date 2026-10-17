@@ -1,12 +1,13 @@
-# HALQA — AYNA üçün vahid nəqliyyat platforması
+# Yolcu — AYNA üçün vahid nəqliyyat platforması
 
 Web dashboard (Next.js) + mobil tətbiq (React Native, Expo) + backend (Java Spring Boot). 1 günlük hakaton üçün Claude Code ilə qurulur.
 
 ## Paketdə nə var
 
 ```
-halqa-v2/
+Yolcu/
 ├── CLAUDE.md                        Claude Code üçün əsas qaydalar (repo kökünə qoyun)
+├── .claude/agents/                  backend-dev və web-dev köməkçi agentləri
 ├── README.md
 ├── docs/
 │   ├── 00_PRODUCT.md                Problem, həll, rollar, modullar, coin, səfər izləmə
@@ -18,7 +19,8 @@ halqa-v2/
 │   ├── 06_WEB_ROADMAP.md            WEB-0 … WEB-11
 │   ├── 07_MOBILE_ROADMAP.md         MOB-0 … MOB-10
 │   ├── 08_DESIGN_SYSTEM.md          Rənglər, şrift, komponentlər, mətn qaydaları
-│   └── 09_24H_PLAN_AND_DEMO.md      Saat-saat plan, komanda, demo ssenarisi, risklər
+│   ├── 09_24H_PLAN_AND_DEMO.md      Saat-saat plan, komanda, demo ssenarisi, risklər
+│   └── 10_WEB_FULLSTACK_SLICES.md   Web: backend + frontend birlikdə, dilim-dilim
 ├── design/
 │   ├── web_dashboard.html           Web üçün kliklə işləyən vizual mənbə
 │   └── mobile_app.html              Mobil üçün kliklə işləyən vizual mənbə

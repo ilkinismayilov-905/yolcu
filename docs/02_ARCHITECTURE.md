@@ -30,9 +30,9 @@ Bir monolit, bir DB, bir SSE kanalı. Sadəlik sürətdir.
 ## 2. Backend paket strukturu
 
 ```
-backend/src/main/java/az/halqa/
-├── HalqaApplication.java
-├── config/         # CorsConfig, JacksonConfig, SchedulingConfig, OpenApiConfig, HalqaProperties
+backend/src/main/java/az/yolcu/
+├── YolcuApplication.java
+├── config/         # CorsConfig, JacksonConfig, SchedulingConfig, OpenApiConfig, YolcuProperties
 ├── security/       # SecurityConfig, JwtService, JwtFilter, CurrentUser
 ├── common/         # ApiError, GlobalExceptionHandler, PageResponse<T>, GeoUtil, Clock
 ├── auth/           # AuthController (login, demo-login, me)
@@ -278,7 +278,7 @@ Domen servisləri SSE-ni birbaşa çağırmır: Spring `ApplicationEventPublishe
 
 - `POST /api/v1/auth/login` (email+şifrə, BCrypt) və `POST /api/v1/auth/demo-login` (passenger) → JWT (HS256, 12 saat, claim: `sub`, `role`).
 - `/api/v1/admin/**` → `DISPATCHER` və ya `ADMIN`. `/api/v1/me/**` → hər giriş etmiş istifadəçi. `/api/v1/geo/**`, `/api/v1/stops/**` → açıq.
-- CORS: `http://localhost:3000`, `exp://*`, LAN IP-lər (`halqa.cors.origins` property-si ilə).
+- CORS: `http://localhost:3000`, `exp://*`, LAN IP-lər (`yolcu.cors-origins` property-si ilə).
 - Rate limit (sadə, yaddaşda): şikayət — istifadəçi başına 10 dəqiqədə 3.
 
 ## 6. Simulyator (`sim/SimulationService`)
@@ -377,7 +377,7 @@ Girdi: `from {lat,lon}`, `to` (demo yer adı və ya koordinat), `filter`, `acces
 ## 10. Konfiqurasiya (`application.yml`)
 
 ```yaml
-halqa:
+yolcu:
   jwt-secret: ${JWT_SECRET:change-me-32-bytes-minimum-secret-key!!}
   cors-origins: http://localhost:3000,http://192.168.1.10:3000
   data-dir: ../data/processed
@@ -388,9 +388,9 @@ halqa:
     bank-delay-seconds: 60
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/halqa
-    username: halqa
-    password: halqa
+    url: jdbc:postgresql://localhost:5432/yolcu
+    username: yolcu
+    password: yolcu
   jpa.hibernate.ddl-auto: validate
   jpa.open-in-view: false
 ```
@@ -401,7 +401,7 @@ spring:
 services:
   db:
     image: postgres:16
-    environment: { POSTGRES_DB: halqa, POSTGRES_USER: halqa, POSTGRES_PASSWORD: halqa }
+    environment: { POSTGRES_DB: yolcu, POSTGRES_USER: yolcu, POSTGRES_PASSWORD: yolcu }
     ports: ["5432:5432"]
 ```
 

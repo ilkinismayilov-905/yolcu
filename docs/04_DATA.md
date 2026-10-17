@@ -76,7 +76,7 @@ Metro çıxışları CSV-si: lat/lon sütunlarını yoxla (Bakı: lat 40.3–40.
 | H1 | Elektrik | 26 | 60% | Avtovağzal → Koroğlu |
 
 - Doluluq: `base × (newInterval/oldInterval)` + random walk ±4, [8..100] aralığında.
-- Hub sayı: `mocks/hubs.json` → `base × (1 + 0.35·exp(−(t−8.4)²/1.4) + 0.25·exp(−(t−18.2)²/2))` + səs-küy ±5%. `t` = günün saatı (onluq). Demo zamanı saat sabit 08:12-dən başlayır (`halqa.demo.clock-start=08:12`), real vaxtla irəliləyir.
+- Hub sayı: `mocks/hubs.json` → `base × (1 + 0.35·exp(−(t−8.4)²/1.4) + 0.25·exp(−(t−18.2)²/2))` + səs-küy ±5%. `t` = günün saatı (onluq). Demo zamanı saat sabit 08:12-dən başlayır (`yolcu.demo.clock-start=08:12`), real vaxtla irəliləyir.
 - Tıxac: `mocks/traffic_segments.json` `baseLevel`. `artificial-jam` → `babek` seqmenti.
 - Skuterlər: hər dayanacağın 150 m ətrafında 0–5 skuter, hər 60 saniyədə ±1. Batareya 30–95%.
 - Biletim gəlişləri: `minutesFromNow` + indiki vaxt. Gəliş keçdikdən sonra siyahının sonuna +180 dəq ilə qayıdır.

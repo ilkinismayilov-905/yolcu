@@ -22,8 +22,8 @@ Bir məlumat qatı, iki interfeys, bir-birini qidalandıran dövrə:
 | Rol | Interfeys | Demo hesabı |
 |---|---|---|
 | `PASSENGER` | Mobil | "Demo ilə daxil ol" düyməsi (Nigar Əliyeva) |
-| `DISPATCHER` | Web | `dispatcher@halqa.az` / `demo123` |
-| `ADMIN` | Web | `admin@halqa.az` / `demo123` |
+| `DISPATCHER` | Web | `dispatcher@yolcu.az` / `demo123` |
+| `ADMIN` | Web | `admin@yolcu.az` / `demo123` |
 
 ## Modullar
 

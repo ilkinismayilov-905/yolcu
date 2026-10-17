@@ -30,7 +30,7 @@ Baza URL: `/api/v1`. Bütün cavablar JSON, sahə adları `camelCase`, vaxt ISO-
 
 ## 1. Auth
 
-**POST** `/auth/login` — `{ "email": "dispatcher@halqa.az", "password": "demo123" }`
+**POST** `/auth/login` — `{ "email": "dispatcher@yolcu.az", "password": "demo123" }`
 **POST** `/auth/demo-login` — body yoxdur, passenger tokeni qaytarır
 
 ```json

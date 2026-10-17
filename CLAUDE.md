@@ -1,10 +1,13 @@
-# CLAUDE.md — HALQA (Claude Code üçün əsas təlimat)
+> **Ad:** məhsul Yolcu, Java paketi `az.yolcu`, DB `yolcu`, property prefiksi `yolcu.*`,
+> demo hesablar `dispatcher@yolcu.az` / `admin@yolcu.az` (şifrə `demo123`).
+
+# CLAUDE.md — Yolcu (Claude Code üçün əsas təlimat)
 
 Bu faylı hər sessiyanın əvvəlində oxu. Sonra yalnız tapşırığa aid sənədi aç (aşağıdakı xəritə).
 
 ## 1. Layihə bir abzasda
 
-HALQA — AYNA üçün vahid nəqliyyat platformasıdır. **Web dashboard** (AYNA dispetçeri): canlı xəritə, hub kameraları, avtobus doluluğu və AI interval tövsiyəsi, avtobus bölgüsü, Avtovağzal + Biletim.az, data analitika (OD matrisi, proqnoz, ödənişli yollar, datanın tətbiqi), süni tıxac → yeni hub təklifi, şikayətlər, sorğular, coin proqramı, operatorlar və avtopark. **Mobil tətbiq** (sərnişin): sadə xəritə (velo və skuter qatı ilə), "Sizin üçün" proaktiv təklif, marşrut variantları, dayanacağa piyada naviqasiya, ödəniş, səfər və düşmənin avtomatik aşkarlanması, rəy, şikayət, sorğu, coin cüzdanı, səfərlərim. Hər ikisi **bir Spring Boot backend**-ə qoşulur və canlı hadisələri **SSE** ilə alır.
+Yolcu — AYNA üçün vahid nəqliyyat platformasıdır. **Web dashboard** (AYNA dispetçeri): canlı xəritə, hub kameraları, avtobus doluluğu və AI interval tövsiyəsi, avtobus bölgüsü, Avtovağzal + Biletim.az, data analitika (OD matrisi, proqnoz, ödənişli yollar, datanın tətbiqi), süni tıxac → yeni hub təklifi, şikayətlər, sorğular, coin proqramı, operatorlar və avtopark. **Mobil tətbiq** (sərnişin): sadə xəritə (velo və skuter qatı ilə), "Sizin üçün" proaktiv təklif, marşrut variantları, dayanacağa piyada naviqasiya, ödəniş, səfər və düşmənin avtomatik aşkarlanması, rəy, şikayət, sorğu, coin cüzdanı, səfərlərim. Hər ikisi **bir Spring Boot backend**-ə qoşulur və canlı hadisələri **SSE** ilə alır.
 
 **Vaxt: 1 gün.** Məqsəd: tez, sabit, demo-da heç vaxt sınmayan məhsul. Mükəmməl arxitektura yox, işləyən axın.
 
@@ -22,6 +25,7 @@ HALQA — AYNA üçün vahid nəqliyyat platformasıdır. **Web dashboard** (AYN
 | `docs/07_MOBILE_ROADMAP.md` | React Native işləri |
 | `docs/08_DESIGN_SYSTEM.md` | Rənglər, şrift, komponentlər, mətn qaydaları |
 | `docs/09_24H_PLAN_AND_DEMO.md` | Saat-saat plan, komanda bölgüsü, demo ssenarisi, ehtiyat planlar |
+| `docs/10_WEB_FULLSTACK_SLICES.md` | **Web işi: backend və frontend birlikdə, dilim-dilim (S0–S11)** |
 | `design/web_dashboard.html` | **Web üçün vizual həqiqət mənbəyi.** Brauzerdə aç, ekranı təkrarla |
 | `design/mobile_app.html` | **Mobil üçün vizual həqiqət mənbəyi** |
 | `mocks/*.json` | Fake hissələr və mock rejim üçün hazır data |
@@ -39,11 +43,11 @@ HALQA — AYNA üçün vahid nəqliyyat platformasıdır. **Web dashboard** (AYN
 ## 4. Repo strukturu
 
 ```
-halqa/
+Yolcu/
 ├── CLAUDE.md
 ├── docs/  design/  mocks/
 ├── backend/                 # Spring Boot (Gradle, Kotlin DSL)
-│   └── src/main/java/az/halqa/...
+│   └── src/main/java/az/yolcu/...
 ├── web/                     # Next.js
 ├── mobile/                  # Expo
 ├── packages/shared/         # TS tipləri və formulalar (web + mobile)
@@ -87,7 +91,13 @@ cd mobile && npx expo start                   # telefonda Expo Go ilə
 
 Mobil telefon backend-ə laptopun LAN IP-si ilə qoşulur: `EXPO_PUBLIC_API_URL=http://192.168.x.x:8080`.
 
-## 8. İş qaydası (Claude Code)
+## 8. Web: backend və frontend birlikdə
+
+Web üçün iş **dilim-dilim** gedir (`docs/10_WEB_FULLSTACK_SLICES.md`). Hər dilim həm Java endpoint-ini, həm də Next.js səhifəsini əhatə edir və yalnız ikisi `API_MODE=live` rejimində birlikdə işləyəndə bitmiş sayılır. Yalnız backend və ya yalnız frontend yazıb dilimi bitmiş hesab etmə.
+
+Köməkçi agentlər (`.claude/agents/`): `backend-dev` (yalnız `backend/`), `web-dev` (yalnız `web/` və `packages/shared/`). Bir dilimdə ikisini paralel işlət: web-dev əvvəlcə mock rejimdə qurur, backend-dev endpoint-i yazır, sonra live rejimdə birlikdə yoxla.
+
+## 9. İş qaydası (Claude Code)
 
 1. Tapşırığı bənd nömrəsi ilə al (məs. `BE-3.2`, `WEB-4.1`, `MOB-2.3`).
 2. Roadmap-də həmin bəndin **Qəbul meyarını** oxu, `01_SCOPE`-da etiketini yoxla.
