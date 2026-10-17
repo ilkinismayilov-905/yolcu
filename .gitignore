@@ -22,3 +22,6 @@ next-env.d.ts
 # web static export, served by Spring Boot (-Pweb)
 web/out/
 backend/src/main/resources/static/
+
+# downloaded source data (re-download per docs/04_DATA.md); data/processed stays in git
+data/raw/

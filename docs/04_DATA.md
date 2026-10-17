@@ -15,29 +15,28 @@
 
 ## 2. Çevirmə (bir dəfə, H0–H1, nəticə git-ə)
 
-KMZ = zip + `doc.kml`. Java-da KML parse etməyə vaxt itirmə, əvvəlcədən GeoJSON-a çevir:
+`data/raw/` git-də deyil (yenidən yükləmək olar), `data/processed/` git-dədir.
 
-```bash
-mkdir -p data/processed
-for f in routes bike_parkings bike_lanes; do
-  unzip -o data/raw/$f.kmz -d /tmp/$f
-  ogr2ogr -f GeoJSON data/processed/$f.geojson /tmp/$f/doc.kml -t_srs EPSG:4326
-done
-cp data/raw/terminals.geojson data/processed/terminals.geojson
-```
+**Yükləmə** (opendata.az CKAN API, `https://admin.opendata.az/api/3/action/`):
+`package_search?fq=organization:azerbaycan-yerustu-neqliyyat-agentliyi&rows=50`, `package_show?id=metro-cixislari-uzre-koordinatlar`, `package_show?id=stansiyalar-uzre-gundelik-sernisin-gedislerinin-sayi` → `resources[].url`. Şəbəkə yavaşdırsa: `curl -L --retry 3 -C - -o data/raw/<ad> <url>`.
 
-`ogr2ogr` yoxdursa Python:
+| `data/raw/` | Mənbə resursu |
+|---|---|
+| `routes.kmz` | `buslines.kmz` (Avtobusların hərəkət trayektoriyası, 5,3 MB) |
+| `bike_parkings.kmz` | `mpv-v-mps.-son.kmz` |
+| `bike_lanes.kmz` | `movcud-zolaqlar-velo.kmz` |
+| `terminals.geojson` | `map.geojson` (Avtovağzal və avtostansiyalar) |
+| `metro_exits.csv` | `pathways.csv` |
+| `metro_ridership_2025.csv`, `metro_ridership_2026.csv` | `passenger_2025.csv`, `passenger-2026.csv` |
 
-```python
-import zipfile, geopandas as gpd
-for f in ["routes","bike_parkings","bike_lanes"]:
-    zipfile.ZipFile(f"data/raw/{f}.kmz").extractall(f"/tmp/{f}")
-    gpd.read_file(f"/tmp/{f}/doc.kml", driver="KML").to_file(f"data/processed/{f}.geojson", driver="GeoJSON")
-```
+**Çevirmə:** `python3 -I data/convert.py` (yalnız stdlib; `ogr2ogr`/`geopandas` lazım deyil). Özünü yoxlama: `python3 -I data/convert.py --test`. Nə edir:
 
-Metro çıxışları CSV-si: lat/lon sütunlarını yoxla (Bakı: lat 40.3–40.6, lon 49.7–50.1). `data/processed/metro_exits.geojson`-a çevir (Point feature, `properties.station`, `properties.exit`).
-
-**Yoxlama (MUST, 15 dəq):** hər faylda feature sayı, həndəsə tipi, atribut adları. Trayektoriyalarda marşrut nömrəsi hansı atributdadır (`Name`, `description`)? `<when>` vaxt damğaları varmı? Nəticəni bu faylın sonuna yaz.
+- KMZ → `doc.kml` → GeoJSON (Point, LineString, Polygon, MultiGeometry, gx:Track). ArcGIS-in `description`-dakı HTML cədvəli (`<td>açar</td><td>dəyər</td>`) atributlara açılır.
+- `routes.geojson`: hər feature-a `properties.route` (= Placemark `name`) əlavə olunur.
+- `bike_parkings.geojson`: yalnız Bakı daxilindəki Point-lər (mənbədə 10 Google Earth nümunə nöqtəsi və velo zolaqlarının 44 təkrar xətti var, atılır).
+- `terminals.geojson`: HTML `description` → atributlar, stil sahələri (`fill`, `stroke`, `label-*`) atılır.
+- `metro_exits.geojson`: CSV (`;`, dırnaqlı) → Point, `properties.station`, `properties.exit`. Koordinatlar mənbədə `dərəcə × 10⁶` tam ədəddir, bölünür. "28 May" Excel tərəfindən `28.05.2026 00:00:00`-a çevrilib, ingiliscə `Station` sütunundan bərpa olunur.
+- `metro_ridership.geojson`: hər stansiya üçün Point (çıxışların mərkəzi) + `avgDaily2025`, `avgDaily2026`, `monthlyAvgDaily` (`"2025-01"` → orta gündəlik gediş). 2026 faylında adlar latın transliterasiyasıdır, `STATION_ALIASES` + `Station` sütunu ilə uyğunlaşdırılır.
 
 ## 3. GeoStore (backend, yaddaşda)
 
@@ -96,9 +95,18 @@ Metro çıxışları CSV-si: lat/lon sütunlarını yoxla (Bakı: lat 40.3–40.
 | Analitika FAKE hissələri | `analytics_static.json` (mock rejimdən asılı olmayaraq həmişə) |
 | İnteqrasiyalar | `integrations.json` (həmişə) |
 
-## 7. Yoxlama nəticələri (doldurun)
+## 7. Yoxlama nəticələri (2026-10-17, `data/convert.py`)
 
-- Trayektoriyalarda marşrut atributu: …
-- Vaxt damğası var/yox: …
-- Metro CSV sütunları: …
-- Velo parkı sayı: … , velo zolağı feature sayı: …
+| `data/processed/` | Feature | Həndəsə | Atributlar | Qeyd |
+|---|---|---|---|---|
+| `routes.geojson` (8,9 MB) | 243 | LineString 236, MultiLineString 7 | `name`, `Name`, `FID`, `Shape_Leng` (m), `route`, `styleUrl` | 239 unikal marşrut; `1`, `83`, `174`, `197` iki dəfə. `88` və `4` var (bir feature). 405 861 nöqtə, lon 49,40–50,36, lat 39,95–40,64 |
+| `bike_parkings.geojson` | 834 | Point | `name` (`MPS-1` … ), `styleUrl` | lon 49,79–49,98, lat 40,34–40,59 |
+| `bike_lanes.geojson` | 60 | LineString | `name` (küçə adı, məs. "Filarmoniya bağı."), `styleUrl` | 575 nöqtə, mərkəz (lat 40,35–40,39) |
+| `terminals.geojson` | 69 | Point | `name`, `Name`, `FID`, `X`, `Y` (vergüllü mətn), `icon`, `styleUrl` | Bütün respublika (lat 38,47–41,71), Bakı yalnız bir hissədir |
+| `metro_exits.geojson` | 98 | Point | `Stansiya`, `Station`, `yerləşdiyi ünvan`, `Çıxış nörmələri`, `station`, `exit` | 27 stansiya (Memar Əcəmi 2 daxil); bəzi sətirlərdə `exit` boşdur |
+| `metro_ridership.geojson` | 27 | Point | `station`, `exits`, `avgDaily2025`, `avgDaily2026`, `monthlyAvgDaily` | 2025-01 … 2026-09. Ən yüklü 2025: Koroğlu 55 479, 28 May 50 755, 20 Yanvar 49 019 |
+
+- **Trayektoriyalarda marşrut atributu:** Placemark `name` (= HTML cədvəlində `Name`), çevrilmiş faylda `properties.route` (məs. `"88"`, `"7A"`, `"H1"`).
+- **Vaxt damğası var/yox:** trayektoriyalarda **yoxdur** (`<when>` yox, yalnız həndəsə). `bike_parkings.kmz`-də 230 `<when>` var, amma bunlar Google Earth kamerasının tarixi şəkil tarixləridir (`<Camera><gx:TimeStamp>`), data deyil.
+- **Metro CSV sütunları:** çıxışlar — `Stansiya;Station;coğrafi enliyi (latitude);coğrafi uzunluğu (longitude);yerləşdiyi ünvan;Çıxış nörmələri` (98 sətir); sərnişin — `Tarix (gün.ay.il);Stansiya;Gündəlik gediş sayı` (2025: 9 855 sətir, 2026: 7 356 sətir; tarix `2025-01-01 00:00:00,000` formatında).
+- **Velo parkı sayı:** 834, **velo zolağı feature sayı:** 60.

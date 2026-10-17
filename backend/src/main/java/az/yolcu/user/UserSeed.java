@@ -1,13 +1,11 @@
 package az.yolcu.user;
 
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
-/** Demo accounts. The full SeedRunner (BE-1.3) adds the rest of the data. */
+/** Demo accounts. Called by seed.SeedRunner before the rest of the data. */
 @Component
-public class UserSeed implements CommandLineRunner {
+public class UserSeed {
     private final UserRepository users;
     private final PasswordEncoder encoder;
 
@@ -16,9 +14,7 @@ public class UserSeed implements CommandLineRunner {
         this.encoder = encoder;
     }
 
-    @Override
-    @Transactional
-    public void run(String... args) {
+    public void seedAccounts() {
         if (users.count() > 0) return;
         var hash = encoder.encode("demo123");
         users.save(new User("dispatcher@yolcu.az", hash, "Leyla Məmmədova", Role.DISPATCHER, 0));

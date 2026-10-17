@@ -19,13 +19,15 @@
 
 ## BE-1 Data və seed — H1–H4 (BE-B) · MUST
 
-- [ ] **BE-1.1** `data/processed`-i hazırla (`04_DATA` §2), yoxlama nəticəsini yaz.
-- [ ] **BE-1.2** `GeoStore` + `GET /geo/layers/{name}`.
-- [ ] **BE-1.3** `SeedRunner`: users, operators, buses, route_config, surveys (+ cavablar), reports (+ events), coin tarixçəsi, demo passenger səfərləri (vərdiş üçün 12+5).
-- [ ] **BE-1.4** `GET /stops`, `GET /places` (mocks-dan).
-- [ ] **BE-1.5** (SHOULD) 5 000 sintetik səfər + 300 rəy generatoru.
+- [x] **BE-1.1** `data/processed`-i hazırla (`04_DATA` §2), yoxlama nəticəsini yaz.
+- [x] **BE-1.2** `GeoStore` + `GET /geo/layers/{name}`.
+- [x] **BE-1.3** `SeedRunner`: users, operators, buses, route_config, surveys (+ cavablar), reports (+ events), coin tarixçəsi, demo passenger səfərləri (vərdiş üçün 12+5).
+- [x] **BE-1.4** `GET /stops`, `GET /places` (mocks-dan).
+- [x] **BE-1.5** (SHOULD) 5 000 sintetik səfər + 300 rəy generatoru.
 
 **Qəbul:** təmiz DB-də başlatma → `select count(*) from buses` = 66; `/geo/layers/bike-lanes` GeoJSON qaytarır; `/stops?lat=40.3770&lon=49.8180&radius=600` ən azı Elmlər və Nizami-ni qaytarır.
+
+> **Qeyd (2026-10-17):** real `metro_exits` datasına görə Nizami metrosunun çıxışı (40.37919, 49.830063) bu nöqtədən **1050 m** uzaqdadır, `stops_seed.json`-dakı Nizami də (1062 m). 600 m radiusda yalnız Ş. Mehdiyev (222 m) və Elmlər (290 m) çıxır; Nizami `radius=1100`-də görünür. Koordinatlar düzgündür, meyarın radiusu düzəldilməlidir.
 
 ## BE-2 SSE və EventBus — H2–H4 (BE-B) · MUST
 
