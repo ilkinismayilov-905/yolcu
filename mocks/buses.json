@@ -1,0 +1,596 @@
+[
+  {
+    "bort": "10-BB-482",
+    "operator": "bb",
+    "route": "88",
+    "type": "ELECTRIC",
+    "model": "Iveco Crealis E",
+    "capacity": 90,
+    "status": "LINE"
+  },
+  {
+    "bort": "10-BB-511",
+    "operator": "bb",
+    "route": "88",
+    "type": "DIESEL",
+    "model": "BMC Procity 12m",
+    "capacity": 90,
+    "status": "LINE"
+  },
+  {
+    "bort": "10-BB-377",
+    "operator": "bb",
+    "route": "88",
+    "type": "ELECTRIC",
+    "model": "Iveco Crealis E",
+    "capacity": 90,
+    "status": "LINE"
+  },
+  {
+    "bort": "10-BB-290",
+    "operator": "bb",
+    "route": "88",
+    "type": "DIESEL",
+    "model": "BMC Procity 12m",
+    "capacity": 90,
+    "status": "LINE"
+  },
+  {
+    "bort": "10-BB-603",
+    "operator": "bb",
+    "route": "88",
+    "type": "ELECTRIC",
+    "model": "Iveco Crealis E",
+    "capacity": 90,
+    "status": "LINE"
+  },
+  {
+    "bort": "10-BB-145",
+    "operator": "bb",
+    "route": "88",
+    "type": "ELECTRIC",
+    "model": "Iveco Crealis E",
+    "capacity": 90,
+    "status": "LINE"
+  },
+  {
+    "bort": "10-BB-559",
+    "operator": "bb",
+    "route": "65",
+    "type": "DIESEL",
+    "model": "BMC Procity 12m",
+    "capacity": 90,
+    "status": "LINE"
+  },
+  {
+    "bort": "10-BB-117",
+    "operator": "bb",
+    "route": "4",
+    "type": "DIESEL",
+    "model": "BMC Procity 12m",
+    "capacity": 90,
+    "status": "LINE"
+  },
+  {
+    "bort": "10-BB-563",
+    "operator": "bb",
+    "route": "14",
+    "type": "DIESEL",
+    "model": "BMC Procity 12m",
+    "capacity": 90,
+    "status": "LINE"
+  },
+  {
+    "bort": "10-BB-289",
+    "operator": "bb",
+    "route": "3",
+    "type": "DIESEL",
+    "model": "BMC Procity 12m",
+    "capacity": 90,
+    "status": "LINE"
+  },
+  {
+    "bort": "10-BB-557",
+    "operator": "bb",
+    "route": "M1",
+    "type": "ELECTRIC",
+    "model": "BMC Procity 12m",
+    "capacity": 90,
+    "status": "LINE"
+  },
+  {
+    "bort": "10-BB-709",
+    "operator": "bb",
+    "route": "65",
+    "type": "DIESEL",
+    "model": "BMC Procity 12m",
+    "capacity": 90,
+    "status": "LINE"
+  },
+  {
+    "bort": "10-BB-738",
+    "operator": "bb",
+    "route": "1",
+    "type": "ELECTRIC",
+    "model": "BMC Procity 12m",
+    "capacity": 90,
+    "status": "LINE"
+  },
+  {
+    "bort": "10-BB-294",
+    "operator": "bb",
+    "route": "6",
+    "type": "DIESEL",
+    "model": "Iveco Crealis E",
+    "capacity": 90,
+    "status": "LINE"
+  },
+  {
+    "bort": "10-BB-705",
+    "operator": "bb",
+    "route": "14",
+    "type": "DIESEL",
+    "model": "BMC Procity 12m",
+    "capacity": 90,
+    "status": "LINE"
+  },
+  {
+    "bort": "10-BB-778",
+    "operator": "bb",
+    "route": "8",
+    "type": "ELECTRIC",
+    "model": "BMC Procity 12m",
+    "capacity": 90,
+    "status": "LINE"
+  },
+  {
+    "bort": "10-BB-824",
+    "operator": "bb",
+    "route": "33",
+    "type": "ELECTRIC",
+    "model": "Iveco Crealis E",
+    "capacity": 90,
+    "status": "LINE"
+  },
+  {
+    "bort": "10-BB-130",
+    "operator": "bb",
+    "route": "8",
+    "type": "ELECTRIC",
+    "model": "BMC Procity 12m",
+    "capacity": 90,
+    "status": "LINE"
+  },
+  {
+    "bort": "10-BB-966",
+    "operator": "bb",
+    "route": "1",
+    "type": "ELECTRIC",
+    "model": "BMC Procity 12m",
+    "capacity": 90,
+    "status": "LINE"
+  },
+  {
+    "bort": "10-BB-318",
+    "operator": "bb",
+    "route": "14",
+    "type": "ELECTRIC",
+    "model": "Iveco Crealis E",
+    "capacity": 90,
+    "status": "DEPOT"
+  },
+  {
+    "bort": "10-BB-825",
+    "operator": "bb",
+    "route": "88",
+    "type": "ELECTRIC",
+    "model": "BMC Procity 12m",
+    "capacity": 90,
+    "status": "LINE"
+  },
+  {
+    "bort": "10-BB-897",
+    "operator": "bb",
+    "route": "1",
+    "type": "DIESEL",
+    "model": "Iveco Crealis E",
+    "capacity": 90,
+    "status": "LINE"
+  },
+  {
+    "bort": "10-BB-876",
+    "operator": "bb",
+    "route": "1",
+    "type": "DIESEL",
+    "model": "BMC Procity 12m",
+    "capacity": 90,
+    "status": "LINE"
+  },
+  {
+    "bort": "10-BB-576",
+    "operator": "bb",
+    "route": "14",
+    "type": "DIESEL",
+    "model": "BMC Procity 12m",
+    "capacity": 90,
+    "status": "LINE"
+  },
+  {
+    "bort": "10-BB-849",
+    "operator": "bb",
+    "route": "8",
+    "type": "DIESEL",
+    "model": "Iveco Crealis E",
+    "capacity": 90,
+    "status": "LINE"
+  },
+  {
+    "bort": "10-BB-317",
+    "operator": "bb",
+    "route": "M1",
+    "type": "ELECTRIC",
+    "model": "Iveco Crealis E",
+    "capacity": 90,
+    "status": "DEPOT"
+  },
+  {
+    "bort": "10-BB-120",
+    "operator": "bb",
+    "route": "65",
+    "type": "ELECTRIC",
+    "model": "BMC Procity 12m",
+    "capacity": 90,
+    "status": "LINE"
+  },
+  {
+    "bort": "10-BB-143",
+    "operator": "bb",
+    "route": "M1",
+    "type": "DIESEL",
+    "model": "Iveco Crealis E",
+    "capacity": 90,
+    "status": "LINE"
+  },
+  {
+    "bort": "10-BB-950",
+    "operator": "bb",
+    "route": "2",
+    "type": "ELECTRIC",
+    "model": "BMC Procity 12m",
+    "capacity": 90,
+    "status": "LINE"
+  },
+  {
+    "bort": "10-BB-696",
+    "operator": "bb",
+    "route": "65",
+    "type": "ELECTRIC",
+    "model": "Iveco Crealis E",
+    "capacity": 90,
+    "status": "LINE"
+  },
+  {
+    "bort": "99-XF-230",
+    "operator": "xf",
+    "route": "139",
+    "type": "DIESEL",
+    "model": "Isuzu Citiport",
+    "capacity": 69,
+    "status": "LINE"
+  },
+  {
+    "bort": "99-XF-987",
+    "operator": "xf",
+    "route": "61",
+    "type": "DIESEL",
+    "model": "Isuzu Citiport",
+    "capacity": 69,
+    "status": "LINE"
+  },
+  {
+    "bort": "99-XF-937",
+    "operator": "xf",
+    "route": "18",
+    "type": "DIESEL",
+    "model": "Isuzu Citiport",
+    "capacity": 69,
+    "status": "LINE"
+  },
+  {
+    "bort": "99-XF-803",
+    "operator": "xf",
+    "route": "139",
+    "type": "DIESEL",
+    "model": "Isuzu Citiport",
+    "capacity": 69,
+    "status": "DEPOT"
+  },
+  {
+    "bort": "99-XF-531",
+    "operator": "xf",
+    "route": "139",
+    "type": "ELECTRIC",
+    "model": "BMC Procity 10m",
+    "capacity": 69,
+    "status": "LINE"
+  },
+  {
+    "bort": "99-XF-344",
+    "operator": "xf",
+    "route": "125",
+    "type": "DIESEL",
+    "model": "BMC Procity 10m",
+    "capacity": 69,
+    "status": "LINE"
+  },
+  {
+    "bort": "99-XF-400",
+    "operator": "xf",
+    "route": "7",
+    "type": "DIESEL",
+    "model": "Isuzu Citiport",
+    "capacity": 69,
+    "status": "DEPOT"
+  },
+  {
+    "bort": "99-XF-333",
+    "operator": "xf",
+    "route": "139",
+    "type": "DIESEL",
+    "model": "Isuzu Citiport",
+    "capacity": 69,
+    "status": "LINE"
+  },
+  {
+    "bort": "99-XF-386",
+    "operator": "xf",
+    "route": "7",
+    "type": "DIESEL",
+    "model": "Isuzu Citiport",
+    "capacity": 69,
+    "status": "DEPOT"
+  },
+  {
+    "bort": "99-XF-375",
+    "operator": "xf",
+    "route": "7",
+    "type": "DIESEL",
+    "model": "Isuzu Citiport",
+    "capacity": 69,
+    "status": "LINE"
+  },
+  {
+    "bort": "99-XF-388",
+    "operator": "xf",
+    "route": "18",
+    "type": "DIESEL",
+    "model": "Isuzu Citiport",
+    "capacity": 69,
+    "status": "LINE"
+  },
+  {
+    "bort": "99-XF-470",
+    "operator": "xf",
+    "route": "61",
+    "type": "DIESEL",
+    "model": "Isuzu Citiport",
+    "capacity": 69,
+    "status": "LINE"
+  },
+  {
+    "bort": "99-XF-704",
+    "operator": "xf",
+    "route": "61",
+    "type": "ELECTRIC",
+    "model": "BMC Procity 10m",
+    "capacity": 69,
+    "status": "LINE"
+  },
+  {
+    "bort": "99-XF-134",
+    "operator": "xf",
+    "route": "125",
+    "type": "ELECTRIC",
+    "model": "Isuzu Citiport",
+    "capacity": 69,
+    "status": "LINE"
+  },
+  {
+    "bort": "99-XF-848",
+    "operator": "xf",
+    "route": "7",
+    "type": "DIESEL",
+    "model": "Isuzu Citiport",
+    "capacity": 69,
+    "status": "LINE"
+  },
+  {
+    "bort": "99-XF-563",
+    "operator": "xf",
+    "route": "18",
+    "type": "DIESEL",
+    "model": "BMC Procity 10m",
+    "capacity": 69,
+    "status": "LINE"
+  },
+  {
+    "bort": "99-XF-460",
+    "operator": "xf",
+    "route": "7",
+    "type": "DIESEL",
+    "model": "BMC Procity 10m",
+    "capacity": 69,
+    "status": "LINE"
+  },
+  {
+    "bort": "99-XF-909",
+    "operator": "xf",
+    "route": "7",
+    "type": "ELECTRIC",
+    "model": "BMC Procity 10m",
+    "capacity": 69,
+    "status": "LINE"
+  },
+  {
+    "bort": "90-CT-488",
+    "operator": "ct",
+    "route": "30",
+    "type": "DIESEL",
+    "model": "Isuzu Citiport",
+    "capacity": 69,
+    "status": "LINE"
+  },
+  {
+    "bort": "90-CT-754",
+    "operator": "ct",
+    "route": "171",
+    "type": "DIESEL",
+    "model": "BMC Procity 10m",
+    "capacity": 69,
+    "status": "LINE"
+  },
+  {
+    "bort": "90-CT-497",
+    "operator": "ct",
+    "route": "171",
+    "type": "DIESEL",
+    "model": "BMC Procity 10m",
+    "capacity": 69,
+    "status": "LINE"
+  },
+  {
+    "bort": "90-CT-573",
+    "operator": "ct",
+    "route": "30",
+    "type": "DIESEL",
+    "model": "BMC Procity 10m",
+    "capacity": 69,
+    "status": "LINE"
+  },
+  {
+    "bort": "90-CT-715",
+    "operator": "ct",
+    "route": "30",
+    "type": "DIESEL",
+    "model": "BMC Procity 10m",
+    "capacity": 69,
+    "status": "LINE"
+  },
+  {
+    "bort": "90-CT-898",
+    "operator": "ct",
+    "route": "108",
+    "type": "DIESEL",
+    "model": "Isuzu Citiport",
+    "capacity": 69,
+    "status": "DEPOT"
+  },
+  {
+    "bort": "90-CT-476",
+    "operator": "ct",
+    "route": "49",
+    "type": "DIESEL",
+    "model": "Isuzu Citiport",
+    "capacity": 69,
+    "status": "LINE"
+  },
+  {
+    "bort": "90-CT-871",
+    "operator": "ct",
+    "route": "171",
+    "type": "DIESEL",
+    "model": "BMC Procity 10m",
+    "capacity": 69,
+    "status": "LINE"
+  },
+  {
+    "bort": "90-CT-347",
+    "operator": "ct",
+    "route": "49",
+    "type": "DIESEL",
+    "model": "BMC Procity 10m",
+    "capacity": 69,
+    "status": "LINE"
+  },
+  {
+    "bort": "90-CT-923",
+    "operator": "ct",
+    "route": "49",
+    "type": "DIESEL",
+    "model": "BMC Procity 10m",
+    "capacity": 69,
+    "status": "DEPOT"
+  },
+  {
+    "bort": "77-DS-324",
+    "operator": "6d",
+    "route": "146",
+    "type": "DIESEL",
+    "model": "Isuzu Citiport",
+    "capacity": 69,
+    "status": "LINE"
+  },
+  {
+    "bort": "77-DS-608",
+    "operator": "6d",
+    "route": "105",
+    "type": "DIESEL",
+    "model": "Isuzu Citiport",
+    "capacity": 69,
+    "status": "DEPOT"
+  },
+  {
+    "bort": "77-DS-383",
+    "operator": "6d",
+    "route": "213",
+    "type": "DIESEL",
+    "model": "BMC Procity 10m",
+    "capacity": 69,
+    "status": "LINE"
+  },
+  {
+    "bort": "77-DS-319",
+    "operator": "6d",
+    "route": "216",
+    "type": "DIESEL",
+    "model": "BMC Procity 10m",
+    "capacity": 69,
+    "status": "LINE"
+  },
+  {
+    "bort": "77-DS-788",
+    "operator": "6d",
+    "route": "216",
+    "type": "DIESEL",
+    "model": "BMC Procity 10m",
+    "capacity": 69,
+    "status": "DEPOT"
+  },
+  {
+    "bort": "77-DS-428",
+    "operator": "6d",
+    "route": "216",
+    "type": "ELECTRIC",
+    "model": "Isuzu Citiport",
+    "capacity": 69,
+    "status": "LINE"
+  },
+  {
+    "bort": "77-DS-794",
+    "operator": "6d",
+    "route": "204",
+    "type": "DIESEL",
+    "model": "Isuzu Citiport",
+    "capacity": 69,
+    "status": "LINE"
+  },
+  {
+    "bort": "77-DS-756",
+    "operator": "6d",
+    "route": "105",
+    "type": "DIESEL",
+    "model": "BMC Procity 10m",
+    "capacity": 69,
+    "status": "LINE"
+  }
+]

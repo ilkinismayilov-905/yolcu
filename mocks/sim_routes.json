@@ -1,0 +1,86 @@
+{
+  "_note": "Trayektoriya KMZ-də marşrut tapılmasa simulyator bu dayanacaq ardıcıllığını xətti interpolyasiya edir. Koordinatlar TƏXMİNİDİR. metro_exits.csv və avtovağzal datası ilə yoxlayıb düzəldin.",
+  "routes": [
+    {
+      "route": "88",
+      "type": "ELECTRIC",
+      "operator": "bb",
+      "speedKmh": 22,
+      "baseOccupancy": 88,
+      "stops": [
+        "avtovagzal",
+        "xocesen",
+        "tbilisi",
+        "elmler",
+        "fuzuli",
+        "may28",
+        "genclik",
+        "babek",
+        "nerimanov"
+      ]
+    },
+    {
+      "route": "4",
+      "type": "DIESEL",
+      "operator": "bb",
+      "speedKmh": 9,
+      "baseOccupancy": 81,
+      "stops": [
+        "avtovagzal",
+        "heyder",
+        "koroglu",
+        "yusif",
+        "nerimanov"
+      ]
+    },
+    {
+      "route": "65",
+      "type": "DIESEL",
+      "operator": "bb",
+      "speedKmh": 14,
+      "baseOccupancy": 58,
+      "stops": [
+        "elmler",
+        "azadliq",
+        "nizami",
+        "genclik",
+        "koroglu"
+      ]
+    },
+    {
+      "route": "33",
+      "type": "ELECTRIC",
+      "operator": "bb",
+      "speedKmh": 20,
+      "baseOccupancy": 31,
+      "stops": [
+        "sahil",
+        "may28",
+        "genclik",
+        "nerimanov"
+      ]
+    },
+    {
+      "route": "M1",
+      "type": "ELECTRIC",
+      "operator": "bb",
+      "speedKmh": 28,
+      "baseOccupancy": 76,
+      "stops": [
+        "avtovagzal",
+        "may28"
+      ]
+    },
+    {
+      "route": "H1",
+      "type": "ELECTRIC",
+      "operator": "bb",
+      "speedKmh": 26,
+      "baseOccupancy": 60,
+      "stops": [
+        "avtovagzal",
+        "koroglu"
+      ]
+    }
+  ]
+}

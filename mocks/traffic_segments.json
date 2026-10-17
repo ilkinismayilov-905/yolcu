@@ -1,0 +1,79 @@
+[
+  {
+    "id": "yusif-seferov",
+    "name": "Yusif Səfərov küç.",
+    "baseLevel": "JAM",
+    "speedKmh": 9,
+    "stops": [
+      "koroglu",
+      "yusif",
+      "nerimanov"
+    ]
+  },
+  {
+    "id": "koroglu-rehimov",
+    "name": "Koroğlu Rəhimov küç.",
+    "baseLevel": "JAM",
+    "speedKmh": 11,
+    "stops": [
+      "koroglu",
+      "genclik"
+    ]
+  },
+  {
+    "id": "azadliq",
+    "name": "Azadlıq pr.",
+    "baseLevel": "JAM",
+    "speedKmh": 13,
+    "stops": [
+      "elmler",
+      "azadliq",
+      "nizami"
+    ]
+  },
+  {
+    "id": "heyder",
+    "name": "Heydər Əliyev pr.",
+    "baseLevel": "SLOW",
+    "speedKmh": 18,
+    "stops": [
+      "avtovagzal",
+      "heyder",
+      "koroglu"
+    ]
+  },
+  {
+    "id": "tbilisi",
+    "name": "Tbilisi pr.",
+    "baseLevel": "SLOW",
+    "speedKmh": 20,
+    "stops": [
+      "xocesen",
+      "tbilisi",
+      "elmler"
+    ]
+  },
+  {
+    "id": "fuzuli",
+    "name": "Füzuli küç.",
+    "baseLevel": "FREE",
+    "speedKmh": 28,
+    "stops": [
+      "elmler",
+      "fuzuli",
+      "may28"
+    ]
+  },
+  {
+    "id": "babek",
+    "name": "Babək pr.",
+    "baseLevel": "FREE",
+    "speedKmh": 30,
+    "stops": [
+      "genclik",
+      "babek",
+      "nerimanov"
+    ],
+    "demoJamTarget": true
+  }
+]

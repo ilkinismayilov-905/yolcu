@@ -1,0 +1,64 @@
+{
+  "_note": "Operator adları real, rəqəmlər demo.",
+  "items": [
+    {
+      "code": "bb",
+      "name": "BakuBus MMC",
+      "fleetTotal": 640,
+      "punctuality": 91,
+      "routes": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "8",
+        "14",
+        "33",
+        "65",
+        "88",
+        "H1",
+        "M1"
+      ]
+    },
+    {
+      "code": "xf",
+      "name": "Xaliq Faiqoğlu MMC",
+      "fleetTotal": 300,
+      "punctuality": 78,
+      "routes": [
+        "7",
+        "18",
+        "61",
+        "125",
+        "139"
+      ]
+    },
+    {
+      "code": "ct",
+      "name": "Çinar-Trans MMC",
+      "fleetTotal": 140,
+      "punctuality": 85,
+      "routes": [
+        "30",
+        "49",
+        "108",
+        "171"
+      ]
+    },
+    {
+      "code": "6d",
+      "name": "6 Dost MMC",
+      "fleetTotal": 60,
+      "punctuality": 69,
+      "routes": [
+        "105",
+        "146",
+        "204",
+        "213",
+        "216"
+      ]
+    }
+  ]
+}

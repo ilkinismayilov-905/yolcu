@@ -1,0 +1,54 @@
+{
+  "_note": "SIM: minutesFromNow simulyator tərəfindən indiki vaxta əlavə olunur. Real inteqrasiyada Biletim.az API-si.",
+  "items": [
+    {
+      "minutesFromNow": 8,
+      "from": "Gəncə",
+      "plate": "90-AB-114",
+      "ticketsSold": 41,
+      "status": "Yoldadır, 18 km"
+    },
+    {
+      "minutesFromNow": 23,
+      "from": "Şəki",
+      "plate": "45-SA-220",
+      "ticketsSold": 28,
+      "status": "Yoldadır, 34 km"
+    },
+    {
+      "minutesFromNow": 38,
+      "from": "Lənkəran",
+      "plate": "40-LN-031",
+      "ticketsSold": 52,
+      "status": "Yoldadır, 61 km"
+    },
+    {
+      "minutesFromNow": 58,
+      "from": "Quba",
+      "plate": "35-QB-077",
+      "ticketsSold": 19,
+      "status": "Yola düşüb"
+    },
+    {
+      "minutesFromNow": 73,
+      "from": "Şamaxı",
+      "plate": "52-SM-118",
+      "ticketsSold": 24,
+      "status": "Yola düşüb"
+    },
+    {
+      "minutesFromNow": 103,
+      "from": "Mingəçevir",
+      "plate": "20-MN-402",
+      "ticketsSold": 38,
+      "status": "Hazırlanır"
+    },
+    {
+      "minutesFromNow": 138,
+      "from": "Qəbələ",
+      "plate": "27-QB-311",
+      "ticketsSold": 26,
+      "status": "Hazırlanır"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "_note": "Koordinatlar TƏXMİNİDİR. metro_exits.csv və avtovağzal datası ilə yoxlayıb düzəldin.",
+  "items": [
+    {
+      "id": "nerimanov",
+      "name": "Nərimanov",
+      "lat": 40.4029,
+      "lon": 49.8707
+    },
+    {
+      "id": "avtovagzal",
+      "name": "Avtovağzal",
+      "lat": 40.4214,
+      "lon": 49.7963
+    },
+    {
+      "id": "may28",
+      "name": "28 May",
+      "lat": 40.38,
+      "lon": 49.8489
+    },
+    {
+      "id": "genclik",
+      "name": "Gənclik",
+      "lat": 40.4004,
+      "lon": 49.8516
+    },
+    {
+      "id": "koroglu",
+      "name": "Koroğlu",
+      "lat": 40.4212,
+      "lon": 49.9187
+    },
+    {
+      "id": "ev",
+      "name": "Ev, Yasamal",
+      "lat": 40.389,
+      "lon": 49.812
+    }
+  ],
+  "demoUser": {
+    "lat": 40.377,
+    "lon": 49.818,
+    "label": "Mənim yerim, Elmlər yaxınlığı"
+  }
+}

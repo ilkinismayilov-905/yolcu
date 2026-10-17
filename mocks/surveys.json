@@ -1,0 +1,127 @@
+[
+  {
+    "title": "Avtovağzal ətrafında yeni ekspress xətt",
+    "status": "ACTIVE",
+    "audience": "ALL",
+    "coinReward": 10,
+    "responses": 3120,
+    "questions": [
+      {
+        "text": "Avtovağzaldan 28 May-a dayanacaqsız ekspress avtobusdan istifadə edərdinizmi?",
+        "options": {
+          "Hər gün": 22,
+          "Həftədə bir neçə dəfə": 37,
+          "Nadir hallarda": 29,
+          "Xeyr": 12
+        }
+      },
+      {
+        "text": "Ekspress üçün hansı interval sizə uyğundur?",
+        "options": {
+          "5 dəqiqə": 31,
+          "8 dəqiqə": 44,
+          "12 dəqiqə": 18,
+          "Fərqi yoxdur": 7
+        }
+      },
+      {
+        "text": "Hazırda Avtovağzaldan şəhərə necə gedirsiniz?",
+        "options": {
+          "Avtobus": 46,
+          "Metro": 21,
+          "Taksi": 24,
+          "Şəxsi avtomobil": 9
+        }
+      }
+    ]
+  },
+  {
+    "title": "88 marşrutunda yeni interval necədir?",
+    "status": "ACTIVE",
+    "audience": "ROUTE_88_4",
+    "coinReward": 5,
+    "responses": 1204,
+    "questions": [
+      {
+        "text": "Gözləmə vaxtı dəyişdimi?",
+        "options": {
+          "Xeyli azaldı": 41,
+          "Bir az azaldı": 33,
+          "Dəyişmədi": 19,
+          "Artdı": 7
+        }
+      }
+    ]
+  },
+  {
+    "title": "Avtobusu ən çox nə qədər gözləyirsiniz?",
+    "status": "CLOSED",
+    "audience": "ALL",
+    "coinReward": 10,
+    "responses": 9840,
+    "questions": [
+      {
+        "text": "Orta gözləmə",
+        "options": {
+          "5 dəqiqədən az": 14,
+          "5–10 dəqiqə": 31,
+          "10–20 dəqiqə": 38,
+          "20 dəqiqədən çox": 17
+        }
+      }
+    ]
+  },
+  {
+    "title": "Sürücülərin davranışını necə qiymətləndirirsiniz?",
+    "status": "CLOSED",
+    "audience": "ALL",
+    "coinReward": 10,
+    "responses": 7220,
+    "questions": [
+      {
+        "text": "Ümumi qiymət",
+        "options": {
+          "Çox yaxşı": 18,
+          "Yaxşı": 39,
+          "Orta": 28,
+          "Pis": 15
+        }
+      }
+    ]
+  },
+  {
+    "title": "Hub-larda özünüzü təhlükəsiz hiss edirsinizmi?",
+    "status": "CLOSED",
+    "audience": "AVTOVAGZAL_2KM",
+    "coinReward": 5,
+    "responses": 5410,
+    "questions": [
+      {
+        "text": "Axşam saatlarında",
+        "options": {
+          "Bəli": 46,
+          "Qismən": 38,
+          "Xeyr": 16
+        }
+      }
+    ]
+  },
+  {
+    "title": "Gecə avtobuslarına ehtiyac",
+    "status": "DRAFT",
+    "audience": "ALL",
+    "coinReward": 10,
+    "responses": 0,
+    "questions": [
+      {
+        "text": "Saat 00:00-dan sonra işləyən avtobuslardan istifadə edərdinizmi?",
+        "options": {
+          "Hər gün": 0,
+          "Həftədə bir neçə dəfə": 0,
+          "Nadir hallarda": 0,
+          "Xeyr": 0
+        }
+      }
+    ]
+  }
+]

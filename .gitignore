@@ -1,0 +1,14 @@
+# Java
+backend/build/
+backend/.gradle/
+*.class
+# Node
+node_modules/
+.next/
+.expo/
+dist/
+# Env
+.env
+.env.local
+# OS
+.DS_Store

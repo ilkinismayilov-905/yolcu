@@ -1,0 +1,58 @@
+[
+  {
+    "id": "koroglu",
+    "name": "Koroğlu",
+    "capacity": 450,
+    "base": 480,
+    "camera": "K-118"
+  },
+  {
+    "id": "may28",
+    "name": "28 May",
+    "capacity": 400,
+    "base": 320,
+    "camera": "K-201"
+  },
+  {
+    "id": "avtovagzal",
+    "name": "Avtovağzal",
+    "capacity": 380,
+    "base": 210,
+    "camera": "K-154"
+  },
+  {
+    "id": "genclik",
+    "name": "Gənclik",
+    "capacity": 300,
+    "base": 150,
+    "camera": "K-230"
+  },
+  {
+    "id": "nizami",
+    "name": "Nizami",
+    "capacity": 300,
+    "base": 120,
+    "camera": "K-042"
+  },
+  {
+    "id": "elmler",
+    "name": "Elmlər",
+    "capacity": 200,
+    "base": 55,
+    "camera": "K-077"
+  },
+  {
+    "id": "nerimanov",
+    "name": "Nərimanov",
+    "capacity": 320,
+    "base": 105,
+    "camera": "K-310"
+  },
+  {
+    "id": "sahil",
+    "name": "Sahil",
+    "capacity": 250,
+    "base": 65,
+    "camera": "K-055"
+  }
+]

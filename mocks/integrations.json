@@ -1,0 +1,74 @@
+[
+  {
+    "name": "Biletim.az",
+    "desc": "Şəhərlərarası reyslər, satılmış bilet sayı, avtobusun yeri",
+    "status": "SIM",
+    "note": "API razılaşması lazımdır"
+  },
+  {
+    "name": "AYNA MaaS",
+    "desc": "Marşrutlar, istifadəçi hesabı",
+    "status": "SIM",
+    "note": "Demo"
+  },
+  {
+    "name": "BakıKart",
+    "desc": "Gediş ödənişi",
+    "status": "SIM",
+    "note": "Sandbox"
+  },
+  {
+    "name": "Partnyor bank",
+    "desc": "Coin-in manata çevrilməsi",
+    "status": "SIM",
+    "note": "Danışıqlar mərhələsi"
+  },
+  {
+    "name": "Hub kameraları",
+    "desc": "İnsan sayı, kamerada hesablanır",
+    "status": "SIM",
+    "note": "Pilot: 186 dayanacaq, 12 hub"
+  },
+  {
+    "name": "Avtobus kameraları",
+    "desc": "Sərnişin sayı, hər 30 saniyə",
+    "status": "SIM",
+    "note": "Pilot: 412 avtobus"
+  },
+  {
+    "name": "YPX radarları",
+    "desc": "Yollarda sürət və maşın sayı",
+    "status": "SIM",
+    "note": "Razılaşma mərhələsində"
+  },
+  {
+    "name": "Operator portalı",
+    "desc": "Şikayət cavabları, bölgü təsdiqi",
+    "status": "LIVE",
+    "note": "4 operator"
+  },
+  {
+    "name": "Google Maps və Waze",
+    "desc": "Marşrut keçidi, deep-link",
+    "status": "LIVE",
+    "note": "Aktivdir"
+  },
+  {
+    "name": "Bakı Metropoliteni",
+    "desc": "Çıxış koordinatları, gündəlik sərnişin",
+    "status": "LIVE",
+    "note": "opendata.az"
+  },
+  {
+    "name": "AYNA açıq dataları",
+    "desc": "Avtovağzallar, trayektoriyalar, velo",
+    "status": "LIVE",
+    "note": "opendata.az"
+  },
+  {
+    "name": "Hava və tədbir təqvimi",
+    "desc": "Tələbat proqnozu üçün",
+    "status": "LIVE",
+    "note": "Qoşulub"
+  }
+]

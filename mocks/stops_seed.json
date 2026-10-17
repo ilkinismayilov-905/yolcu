@@ -1,0 +1,191 @@
+{
+  "_note": "Koordinatlar TƏXMİNİDİR. metro_exits.csv və avtovağzal datası ilə yoxlayıb düzəldin.",
+  "items": [
+    {
+      "id": "avtovagzal",
+      "name": "Avtovağzal",
+      "lat": 40.4214,
+      "lon": 49.7963,
+      "routes": [
+        "88",
+        "4",
+        "M1",
+        "H1"
+      ],
+      "kind": "BUS",
+      "accessible": true
+    },
+    {
+      "id": "xocesen",
+      "name": "Xocəsən",
+      "lat": 40.4094,
+      "lon": 49.7876,
+      "routes": [
+        "88"
+      ],
+      "kind": "BUS",
+      "accessible": true
+    },
+    {
+      "id": "elmler",
+      "name": "Elmlər",
+      "lat": 40.3755,
+      "lon": 49.8152,
+      "routes": [
+        "88",
+        "65"
+      ],
+      "kind": "BUS",
+      "accessible": true
+    },
+    {
+      "id": "tbilisi",
+      "name": "Tbilisi pr.",
+      "lat": 40.387,
+      "lon": 49.804,
+      "routes": [
+        "88"
+      ],
+      "kind": "BUS",
+      "accessible": false
+    },
+    {
+      "id": "nizami",
+      "name": "Nizami metro",
+      "lat": 40.3792,
+      "lon": 49.8302,
+      "routes": [
+        "65"
+      ],
+      "kind": "BUS",
+      "accessible": true
+    },
+    {
+      "id": "fuzuli",
+      "name": "Füzuli küç.",
+      "lat": 40.3778,
+      "lon": 49.8395,
+      "routes": [
+        "88"
+      ],
+      "kind": "BUS",
+      "accessible": true
+    },
+    {
+      "id": "may28",
+      "name": "28 May",
+      "lat": 40.38,
+      "lon": 49.8489,
+      "routes": [
+        "88",
+        "33",
+        "M1"
+      ],
+      "kind": "BUS",
+      "accessible": true
+    },
+    {
+      "id": "sahil",
+      "name": "Sahil",
+      "lat": 40.3717,
+      "lon": 49.8445,
+      "routes": [
+        "33"
+      ],
+      "kind": "BUS",
+      "accessible": true
+    },
+    {
+      "id": "genclik",
+      "name": "Gənclik",
+      "lat": 40.4004,
+      "lon": 49.8516,
+      "routes": [
+        "88",
+        "65",
+        "33"
+      ],
+      "kind": "BUS",
+      "accessible": true
+    },
+    {
+      "id": "babek",
+      "name": "Babək pr. – Gənclik",
+      "lat": 40.399,
+      "lon": 49.856,
+      "routes": [
+        "88"
+      ],
+      "kind": "BUS",
+      "accessible": true
+    },
+    {
+      "id": "nerimanov",
+      "name": "Nərimanov",
+      "lat": 40.4029,
+      "lon": 49.8707,
+      "routes": [
+        "88",
+        "4",
+        "33"
+      ],
+      "kind": "BUS",
+      "accessible": true
+    },
+    {
+      "id": "koroglu",
+      "name": "Koroğlu",
+      "lat": 40.4212,
+      "lon": 49.9187,
+      "routes": [
+        "4",
+        "65",
+        "H1"
+      ],
+      "kind": "BUS",
+      "accessible": true
+    },
+    {
+      "id": "yusif",
+      "name": "Yusif Səfərov küç.",
+      "lat": 40.412,
+      "lon": 49.893,
+      "routes": [
+        "4"
+      ],
+      "kind": "BUS",
+      "accessible": true
+    },
+    {
+      "id": "heyder",
+      "name": "Heydər Əliyev pr.",
+      "lat": 40.417,
+      "lon": 49.845,
+      "routes": [
+        "4"
+      ],
+      "kind": "BUS",
+      "accessible": true
+    },
+    {
+      "id": "mehdiyev",
+      "name": "Ş. Mehdiyev",
+      "lat": 40.379,
+      "lon": 49.818,
+      "routes": [],
+      "kind": "BUS",
+      "accessible": false
+    },
+    {
+      "id": "azadliq",
+      "name": "Azadlıq pr.",
+      "lat": 40.386,
+      "lon": 49.835,
+      "routes": [
+        "65"
+      ],
+      "kind": "BUS",
+      "accessible": true
+    }
+  ]
+}

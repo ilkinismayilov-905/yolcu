@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HALQA mobil (mockup v4)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#E8ECF1; --surface:#FFFFFF; --surface-2:#F2F5F8; --surface-3:#E7ECF2; --line:#E3E8EF;
+  --ink:#0E1A2B; --ink-2:#536274; --ink-3:#8796A8;
+  --primary:#0B6FCB; --primary-ink:#FFFFFF; --primary-soft:#E8F2FC; --live:#1FB8E8;
+  --ok:#13935A; --warn:#C98209; --bad:#D4404A; --crowd:#6E55E8; --coin:#E3A20F; --metro:#C8102E;
+  --bus-e:#13935A; --bus-d:#D4404A;
+  --fluid:#2DB46F; --slow:#F2A93B; --jam:#E5484D;
+  --land:#F0F2F5; --block:#E4E8EE; --road:#FFFFFF; --road-case:#D9DFE7; --park:#DDEEDB; --maplabel:#7A8899;
+  --sh:0 4px 16px rgba(14,26,43,.10);
+  --font:"Onest",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  color-scheme: dark;
+  --bg:#070C13; --surface:#111A26; --surface-2:#18232F; --surface-3:#1F2C3B; --line:#243245;
+  --ink:#E6EDF5; --ink-2:#9AAABD; --ink-3:#6C7C90; --primary:#3B9BFF; --primary-ink:#06111F; --primary-soft:#14273D;
+  --land:#0D151F; --block:#16212D; --road:#24344A; --road-case:#080E16; --park:#132A20; --maplabel:#7D8DA1; --sh:0 4px 16px rgba(0,0,0,.4);
+}}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#070C13; --surface:#111A26; --surface-2:#18232F; --surface-3:#1F2C3B; --line:#243245;
+  --ink:#E6EDF5; --ink-2:#9AAABD; --ink-3:#6C7C90; --primary:#3B9BFF; --primary-ink:#06111F; --primary-soft:#14273D;
+  --land:#0D151F; --block:#16212D; --road:#24344A; --road-case:#080E16; --park:#132A20; --maplabel:#7D8DA1; --sh:0 4px 16px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.4;font-variant-numeric:tabular-nums;display:flex;justify-content:center;align-items:center;gap:56px;padding:24px}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+
+.guide{width:300px}
+.guide h1{font-size:22px;margin:0 0 4px}
+.guide p{color:var(--ink-2);margin:0 0 14px;font-size:14px}
+.guide ol{padding-left:20px;margin:0 0 16px;color:var(--ink-2);font-size:14px;display:grid;gap:5px}
+.guide h2{font-size:13px;color:var(--ink-3);margin:16px 0 8px;font-weight:500}
+.jump{display:flex;flex-wrap:wrap;gap:6px}
+.jump button{border:1px solid var(--line);background:var(--surface);border-radius:20px;padding:6px 11px;font-size:13px;font-weight:500}
+.jump button.on{background:var(--primary);color:var(--primary-ink);border-color:var(--primary)}
+.linkbtn{margin-top:14px;font-size:13px;color:var(--ink-2);text-decoration:underline}
+
+.phone{width:390px;height:844px;border-radius:52px;background:#05080D;padding:12px;box-shadow:0 30px 60px rgba(14,26,43,.22);flex:none}
+.screen{position:relative;width:100%;height:100%;border-radius:42px;overflow:hidden;background:var(--surface)}
+.screen.big{font-size:17px}
+.status{position:absolute;top:0;left:0;right:0;height:46px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;font-weight:600;font-size:14px;z-index:30;pointer-events:none}
+.notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:110px;height:30px;border-radius:20px;background:#05080D;z-index:31}
+.view{position:absolute;inset:0;display:none;flex-direction:column;background:var(--surface)}
+.view.on{display:flex}
+.scroll{flex:1;overflow:auto;padding:56px 18px 100px}
+.scroll::-webkit-scrollbar,.sheet::-webkit-scrollbar,.hscroll::-webkit-scrollbar{display:none}
+
+.tabbar{position:absolute;left:0;right:0;bottom:0;height:84px;background:var(--surface);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding:8px 4px 0;z-index:25}
+.tab{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;color:var(--ink-3);font-weight:500;position:relative}
+.tab svg{width:24px;height:24px}
+.tab.on{color:var(--primary)}
+.tab .pay{width:54px;height:54px;border-radius:17px;background:var(--primary);display:grid;place-items:center;margin-top:-20px;box-shadow:0 8px 18px rgba(11,111,203,.35)}
+.tab .pay svg{stroke:#fff}
+.tab .bdg{position:absolute;top:-2px;left:calc(50% + 4px);background:var(--bad);color:#fff;font-size:10px;border-radius:10px;padding:0 5px;font-weight:700;line-height:16px}
+
+/* map */
+.map{position:absolute;inset:0;background:var(--land)}
+.map svg{width:100%;height:100%;display:block}
+.map:before{content:"";position:absolute;left:0;right:0;top:0;height:64px;background:linear-gradient(var(--surface),transparent);z-index:2;pointer-events:none}
+.mtop{position:absolute;top:50px;left:14px;right:14px;z-index:5;display:grid;gap:8px}
+.mrow{display:flex;gap:8px;align-items:center}
+.alert{flex:1;background:var(--surface);border-radius:14px;padding:9px 12px;display:flex;gap:9px;align-items:center;font-size:13px;font-weight:600;box-shadow:var(--sh);text-align:left}
+.alert i{width:8px;height:8px;border-radius:50%;background:var(--jam);flex:none}
+.av{width:44px;height:44px;border-radius:14px;background:var(--primary-soft);color:var(--primary);display:grid;place-items:center;font-weight:700;box-shadow:var(--sh);flex:none}
+.hscroll{display:flex;gap:6px;overflow-x:auto}
+.lchip{background:var(--surface);border-radius:20px;padding:6px 11px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;box-shadow:var(--sh);white-space:nowrap;color:var(--ink-2)}
+.lchip[aria-pressed="true"]{background:var(--ink);color:var(--surface)}
+.legend{position:absolute;left:14px;background:var(--surface);border-radius:12px;padding:7px 11px;z-index:5;box-shadow:var(--sh);font-size:12px;display:flex;flex-wrap:wrap;gap:4px 12px;max-width:calc(100% - 28px);color:var(--ink-2)}
+.legend span{display:flex;align-items:center;gap:6px}
+.sw{width:16px;height:4px;border-radius:2px;display:inline-block}
+.sq{width:14px;height:10px;border-radius:3px;display:inline-block}
+
+.sheet{position:absolute;left:0;right:0;bottom:84px;background:var(--surface);border-radius:24px 24px 0 0;padding:10px 16px 14px;box-shadow:0 -8px 24px rgba(14,26,43,.10);z-index:6;overflow:auto}
+.grab{width:38px;height:5px;border-radius:3px;background:var(--surface-3);margin:0 auto 12px}
+.where{width:100%;display:flex;align-items:center;gap:12px;background:var(--surface-2);border-radius:14px;padding:14px;font-size:17px;font-weight:700;text-align:left}
+.saved{display:flex;gap:8px;margin:10px 0 2px;overflow-x:auto}
+.saved button{background:var(--surface-2);border-radius:12px;padding:8px 12px;font-size:13px;font-weight:600;white-space:nowrap}
+.sec{margin:16px 2px 6px;font-size:13px;color:var(--ink-3);font-weight:500}
+.stop{border-bottom:1px solid var(--line);padding:10px 2px}
+.stop:last-child{border-bottom:0}
+.stop-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+.arr{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:5px 0;width:100%;text-align:left}
+.arr .min{font-weight:700;text-align:right;min-width:56px}
+.arr .min small{display:block;font-size:11px;font-weight:500;color:var(--ink-3)}
+
+.plate{display:inline-grid;place-items:center;min-width:36px;height:26px;padding:0 7px;border-radius:7px;font-weight:800;font-size:13px;color:#fff;background:var(--ink-2)}
+.plate.e{background:var(--bus-e)} .plate.d{background:var(--bus-d)} .plate.m{background:var(--metro)}
+.plate.sm{height:22px;min-width:30px;font-size:11px;border-radius:6px}
+.plate.xl{min-width:60px;height:46px;font-size:21px;border-radius:12px}
+.occ{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600}
+.occ svg{height:13px}
+
+.btn{border-radius:14px;padding:14px 16px;font-weight:700;text-align:center;background:var(--surface-2);width:100%}
+.btn.p{background:var(--primary);color:var(--primary-ink)}
+.btn.sm{padding:9px 12px;width:auto;font-size:13px;border-radius:11px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.h1{font-size:24px;font-weight:700;margin:4px 0}
+.sub{color:var(--ink-2);font-size:14px;margin:0 0 14px}
+.back{display:flex;align-items:center;gap:6px;color:var(--ink-2);font-weight:600;margin-bottom:10px}
+.card{background:var(--surface-2);border-radius:16px;padding:14px}
+.small{font-size:13px} .muted{color:var(--ink-2)} .faint{color:var(--ink-3)}
+.row{display:flex;align-items:center;gap:10px} .between{justify-content:space-between}
+.st{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--ink-2)}
+.st:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ink-3)}
+.st.ok{color:var(--ok)}.st.ok:before{background:var(--ok)} .st.warn{color:var(--warn)}.st.warn:before{background:var(--warn)} .st.bad{color:var(--bad)}.st.bad:before{background:var(--bad)} .st.info{color:var(--primary)}.st.info:before{background:var(--primary)}
+
+.inp{display:flex;align-items:center;gap:10px;background:var(--surface-2);border-radius:14px;padding:10px 14px}
+.inp small{display:block;font-size:12px;color:var(--ink-3)}
+.inp input{border:0;background:none;outline:0;font-weight:600;width:100%;padding:0}
+.sugg{display:grid;gap:0;margin:-4px 0 10px;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.sugg button{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);font-weight:500}
+.sugg button:last-child{border-bottom:0}
+.filters{display:flex;gap:6px;overflow-x:auto;margin:12px 0}
+.filters::-webkit-scrollbar{display:none}
+.pill{border:1.5px solid var(--line);border-radius:20px;padding:7px 12px;font-size:13px;font-weight:600;white-space:nowrap;color:var(--ink-2)}
+.pill.on{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}
+.opt{border:1.5px solid var(--line);border-radius:18px;padding:14px;margin-bottom:10px;display:grid;gap:8px;width:100%;text-align:left;background:var(--surface)}
+.opt.best{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+.opt .top{display:flex;justify-content:space-between;align-items:center}
+.opt .tm{font-size:22px;font-weight:700}
+.steps{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:13px;color:var(--ink-2)}
+.why{font-size:13px;color:var(--ink-2);background:var(--surface-2);border-radius:12px;padding:10px}
+.ext{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.bil{display:grid;grid-template-columns:40px 1fr auto;gap:12px;align-items:center;background:var(--surface-2);border-radius:16px;padding:12px;margin-bottom:10px}
+.bil .ic{width:40px;height:40px;border-radius:12px;background:#E9F7EF;display:grid;place-items:center;font-weight:800;color:var(--ok);font-size:13px}
+
+/* route preview + walk */
+.rtop{position:absolute;top:50px;left:14px;right:14px;z-index:5;display:flex;gap:8px;align-items:center}
+.rback{width:44px;height:44px;border-radius:14px;background:var(--surface);display:grid;place-items:center;box-shadow:var(--sh);font-size:22px;font-weight:600}
+.rsum{flex:1;background:var(--surface);border-radius:14px;padding:8px 12px;box-shadow:var(--sh);font-size:13px}
+.rsum b{font-size:15px}
+.ok-box{display:flex;gap:10px;align-items:center;background:#E9F7EF;color:var(--ok);border-radius:14px;padding:10px 12px;font-weight:600;font-size:14px;margin-bottom:8px}
+:root[data-theme="dark"] .ok-box{background:rgba(19,147,90,.15)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .ok-box{background:rgba(19,147,90,.15)}}
+.wsteps{list-style:none;margin:0;padding:0;display:grid}
+.wsteps li{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:start;padding:8px 0;position:relative}
+.wsteps li:before{content:"";position:absolute;left:16px;top:40px;bottom:-4px;border-left:2px dotted var(--primary)}
+.wsteps li.bus:before{border-left:3px solid var(--bus-e);left:15px}
+.wsteps li:last-child:before{display:none}
+.wsteps .si{width:34px;height:34px;border-radius:11px;background:var(--primary-soft);color:var(--primary);display:grid;place-items:center;font-size:15px;font-weight:700;z-index:1}
+.wsteps .bus .si{background:var(--bus-e);color:#fff}
+.wsteps b{display:block;font-size:14px}
+.wsteps span{font-size:13px;color:var(--ink-2)}
+.wsteps .d{font-size:12px;color:var(--ink-3);font-weight:600;white-space:nowrap}
+.sw-row{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--surface-2);border-radius:14px;padding:12px;margin:10px 0;font-size:14px;font-weight:600;width:100%;text-align:left}
+.sw-row small{display:block;font-weight:500;color:var(--ink-3);font-size:12px}
+.tgl{width:44px;height:26px;border-radius:14px;background:var(--surface-3);position:relative;flex:none;transition:.2s}
+.tgl:after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:.2s}
+.sw-row[aria-pressed="true"] .tgl{background:var(--primary)}
+.sw-row[aria-pressed="true"] .tgl:after{left:21px}
+.navc{position:absolute;top:48px;left:12px;right:12px;z-index:6;background:var(--ink);color:var(--surface);border-radius:20px;padding:14px 16px;display:grid;grid-template-columns:50px 1fr;gap:12px;align-items:center;box-shadow:var(--sh)}
+.navc .ar{width:50px;height:50px;border-radius:14px;background:rgba(255,255,255,.12);display:grid;place-items:center}
+.navc .ar svg{width:28px;height:28px;transition:transform .3s}
+.navc b{font-size:19px;display:block;line-height:1.2}
+.navc span{font-size:13px;opacity:.8}
+.race{position:absolute;left:12px;right:12px;bottom:24px;z-index:6;background:var(--surface);border-radius:20px;padding:14px;box-shadow:var(--sh);display:grid;gap:10px}
+.track{display:grid;grid-template-columns:66px 1fr 58px;gap:10px;align-items:center;font-size:13px;font-weight:600}
+.bar{height:8px;border-radius:5px;background:var(--surface-3);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:5px}
+
+/* ride */
+.rmap{height:42%;position:relative;background:var(--land)}
+.rmap svg{width:100%;height:100%;display:block}
+.rmap:before{content:"";position:absolute;left:0;right:0;top:0;height:64px;background:linear-gradient(var(--surface),transparent);z-index:2;pointer-events:none}
+.rpanel{flex:1;padding:16px 18px 100px;overflow:auto;margin-top:-22px;background:var(--surface);border-radius:22px 22px 0 0;position:relative}
+.rpanel::-webkit-scrollbar{display:none}
+.paid{display:flex;align-items:center;gap:10px;background:#E9F7EF;color:var(--ok);border-radius:14px;padding:10px 12px;font-weight:600;font-size:14px}
+:root[data-theme="dark"] .paid{background:rgba(19,147,90,.15)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .paid{background:rgba(19,147,90,.15)}}
+.stops{list-style:none;padding:0;margin:12px 0;display:grid}
+.stops li{display:grid;grid-template-columns:20px 1fr auto;gap:10px;align-items:center;padding:6px 0;font-size:14px}
+.stops li i{width:12px;height:12px;border-radius:50%;border:3px solid var(--primary);background:var(--surface);margin-left:4px}
+.stops li.done i{background:var(--primary)}
+.stops li.here i{background:var(--bus-e);border-color:var(--bus-e);box-shadow:0 0 0 5px rgba(19,147,90,.18)}
+
+/* forms */
+.stars{display:flex;gap:6px}
+.stars button{font-size:30px;line-height:1;color:var(--surface-3)}
+.stars button.on{color:var(--coin)}
+.rv{display:grid;gap:6px;margin-bottom:16px}
+.pills{display:flex;flex-wrap:wrap;gap:8px}
+textarea{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12px;font:inherit;background:var(--surface);color:var(--ink);resize:none}
+.cpill{display:inline-flex;align-items:center;gap:6px;background:#FDF4DC;color:#8A6100;border-radius:20px;padding:4px 10px;font-weight:700;font-size:13px}
+:root[data-theme="dark"] .cpill{background:rgba(227,162,15,.15);color:var(--coin)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .cpill{background:rgba(227,162,15,.15);color:var(--coin)}}
+.coin{width:16px;height:16px;border-radius:50%;background:var(--coin);display:inline-grid;place-items:center;font-size:9px;color:#fff;font-weight:800;flex:none}
+.catgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.cat{border:1.5px solid var(--line);border-radius:14px;padding:12px;text-align:left;font-weight:600;font-size:13px}
+.cat.on{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}
+.photo{border:1.5px dashed var(--ink-3);border-radius:14px;padding:14px;text-align:center;color:var(--ink-2);font-weight:600;margin-bottom:12px;width:100%}
+.photo.on{border-style:solid;border-color:var(--ok);color:var(--ok)}
+.secure{display:flex;gap:10px;font-size:13px;color:var(--ink-2);background:var(--surface-2);padding:12px;border-radius:14px;margin:12px 0}
+.tl{list-style:none;padding:0;margin:16px 0;display:grid}
+.tl li{display:grid;grid-template-columns:26px 1fr;gap:10px;padding-bottom:18px;position:relative}
+.tl li:before{content:"";position:absolute;left:11px;top:24px;bottom:0;width:2px;background:var(--line)}
+.tl li:last-child:before{display:none}
+.tl li i{width:24px;height:24px;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;font-size:12px;font-style:normal;font-weight:700;color:var(--ink-3)}
+.tl li.done i{background:var(--primary);color:var(--primary-ink)}
+.nt{display:grid;grid-template-columns:42px 1fr;gap:12px;padding:12px 2px;border-bottom:1px solid var(--line);text-align:left;width:100%}
+.nt .ic{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;font-size:13px;font-weight:800}
+.nt.unread b:after{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--primary);margin-left:6px;vertical-align:middle}
+.prog{height:6px;border-radius:4px;background:var(--surface-3);overflow:hidden;margin:8px 0 20px}
+.prog i{display:block;height:100%;background:var(--primary);transition:width .3s}
+.ans{width:100%;text-align:left;border:1.5px solid var(--line);border-radius:16px;padding:15px;font-weight:600;margin-bottom:10px}
+.ans.on{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}
+
+/* wallet */
+.wallet{background:var(--ink);color:var(--surface);border-radius:22px;padding:20px;position:relative;overflow:hidden}
+.wallet .bal{display:flex;align-items:center;gap:10px;margin:6px 0 2px}
+.wallet .bal b{font-size:40px;font-weight:800;letter-spacing:-.02em}
+.wallet .bal .coin{width:30px;height:30px;font-size:14px}
+.wallet .azn{opacity:.7;font-size:14px;margin-bottom:14px}
+.wallet .btn{background:rgba(255,255,255,.12);color:inherit}
+.wallet .btn.p{background:var(--surface);color:var(--ink)}
+.wallet:after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;border:22px solid rgba(227,162,15,.25)}
+.badges{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.bdg{display:grid;justify-items:center;gap:4px;font-size:11px;text-align:center;color:var(--ink-2)}
+.bdg span{width:52px;height:52px;border-radius:16px;background:var(--surface-2);display:grid;place-items:center;font-size:20px}
+.bdg.locked span{opacity:.35;filter:grayscale(1)}
+.hist{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--line);font-size:14px}
+.hist small{display:block;color:var(--ink-3);font-size:12px}
+.amts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.amts button{border:1.5px solid var(--line);border-radius:14px;padding:12px;font-weight:700}
+.amts button.on{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}
+.qr{width:220px;height:220px;margin:10px auto;background:#fff;border-radius:20px;padding:14px;border:1px solid var(--line)}
+.method{display:flex;align-items:center;gap:12px;border:1.5px solid var(--line);border-radius:16px;padding:12px;margin-bottom:8px;width:100%;text-align:left}
+.method.on{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+.method .mi{width:42px;height:30px;border-radius:7px;display:grid;place-items:center;font-size:11px;font-weight:800;color:#fff}
+.err{color:var(--bad);font-size:13px;font-weight:600;min-height:18px;margin:4px 2px}
+.setrow{display:flex;justify-content:space-between;align-items:center;padding:13px 2px;border-bottom:1px solid var(--line);font-weight:600;width:100%;text-align:left}
+.empty{text-align:center;color:var(--ink-2);padding:24px 8px;font-size:14px}
+
+.push{position:absolute;top:10px;left:10px;right:10px;background:var(--surface);border-radius:20px;padding:12px 14px;display:grid;grid-template-columns:38px 1fr;gap:12px;box-shadow:0 12px 30px rgba(7,12,19,.28);z-index:40;transform:translateY(-130%);transition:transform .45s cubic-bezier(.2,.9,.3,1.15);text-align:left}
+.push.on{transform:translateY(38px)}
+.push .ai{width:38px;height:38px;border-radius:11px;background:var(--primary);display:grid;place-items:center}
+.push .ttl{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-3)}
+.toast{position:absolute;left:50%;bottom:104px;transform:translateX(-50%) translateY(10px);background:var(--ink);color:var(--surface);padding:10px 16px;border-radius:12px;font-weight:600;font-size:14px;opacity:0;transition:.25s;pointer-events:none;z-index:45;max-width:86%;text-align:center}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.burst{position:absolute;z-index:46;pointer-events:none;font-weight:800;color:var(--coin);font-size:28px;left:50%;top:44%;transform:translate(-50%,-50%);opacity:0;display:flex;gap:8px;align-items:center}
+.burst .coin{width:28px;height:28px;font-size:13px}
+.burst.go{animation:burst 1.3s ease-out}
+@keyframes burst{0%{opacity:0;transform:translate(-50%,-30%) scale(.6)}25%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}100%{opacity:0;transform:translate(-50%,-140%)}}
+.foryou{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;background:var(--primary-soft);border-radius:16px;padding:12px 14px;margin-bottom:10px}
+.foryou .k{font-size:12px;font-weight:600;color:var(--primary);grid-column:1/-1;display:flex;justify-content:space-between}
+.foryou .k button{font-size:12px;color:var(--ink-3);font-weight:500;text-decoration:underline}
+.foryou b{font-size:15px}
+.foryou .s{font-size:13px;color:var(--ink-2)}
+.micro{display:flex;gap:12px;font-size:12px;color:var(--ink-3);margin-top:2px}
+.micro span{display:flex;gap:5px;align-items:center}
+.micro i{width:8px;height:8px;border-radius:2px;display:inline-block}
+.pattern{display:grid;grid-template-columns:42px 1fr auto;gap:12px;align-items:center;background:var(--surface-2);border-radius:16px;padding:12px;margin-bottom:8px}
+.pattern .ic{width:42px;height:42px;border-radius:13px;background:var(--surface);display:grid;place-items:center;font-weight:800;font-size:13px;color:var(--primary)}
+.walkdash{animation:dash 1.2s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-11}}
+
+@media (max-width:820px){body{padding:0;display:block}.guide{display:none}.phone{width:100%;height:100vh;height:100dvh;border-radius:0;padding:0;box-shadow:none}.screen{border-radius:0}.notch{display:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<aside class="guide">
+  <h1>HALQA mobil</h1>
+  <p>Sərnişin tətbiqinin kliklə işləyən mockup-ı, v4. Bütün data demo məqsədlidir.</p>
+  <ol>
+    <li>Xəritədə "Velo və skuter", "Tıxac" və "Sıxlıq" qatlarını açın</li>
+    <li>"Sizin üçün" kartında tətbiqin özü təklif etdiyi yola baxın</li>
+    <li>"İş: Nərimanov" seçin, 88 variantına toxunun</li>
+    <li>Dayanacağa yolu görün, naviqasiyanı başladın</li>
+    <li>Ödəyin, minin: 10 saniyə sonra tətbiq düşdüyünüzü özü aşkarlayır</li>
+    <li>Bildirişdən rəy verin, 5 coin qazanın</li>
+    <li>Şikayət göndərin, statusun dəyişməsini izləyin</li>
+    <li>Cüzdanda coin-i banka çevirin</li>
+  </ol>
+  <h2>Bütün ekranlar</h2>
+  <div class="jump" id="jump"></div>
+  <button class="linkbtn" id="themeBtn">Açıq və tünd mövzu arasında keç</button>
+</aside>
+
+<div class="phone">
+<div class="screen" id="screen">
+  <div class="notch"></div>
+  <div class="status"><span>08:12</span><span>●●●● 5G ▮</span></div>
+  <button class="push" id="push"><div class="ai"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6"><circle cx="8.5" cy="12" r="5"/><circle cx="15.5" cy="12" r="5"/></svg></div><div><div class="ttl"><span>HALQA</span><span>indi</span></div><b id="pushT"></b><div class="small muted" id="pushS"></div></div></button>
+
+  <!-- HOME -->
+  <section class="view on" id="v-home">
+    <div class="map"><svg id="homeMap" viewBox="0 0 400 897" preserveAspectRatio="xMidYMin slice" role="img" aria-label="Yaxınlıqdakı dayanacaqlar"></svg></div>
+    <div class="mtop">
+      <div class="mrow"><button class="alert" id="trafficAlert"><i></i>Koroğlu ətrafında tıxac. 4 nömrəli avtobus 15 dəq gecikir</button><button class="av" data-go="v-profile" aria-label="Profil">NƏ</button></div>
+      <div class="hscroll" id="chips"></div>
+    </div>
+    <div class="legend" id="legend"></div>
+    <div class="sheet" style="height:44%">
+      <div class="grab"></div>
+      <div id="forYou"></div>
+      <button class="where" data-dest="Nərimanov" data-go="v-trip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Haraya gedirsiniz?</button>
+      <div class="saved"><button data-dest="Ev, Yasamal" data-go="v-trip">Ev</button><button data-dest="Nərimanov" data-go="v-trip">İş: Nərimanov</button><button data-dest="Avtovağzal" data-go="v-trip">Avtovağzal</button></div>
+      <div class="sec">Yaxınlıqdakı dayanacaqlar</div>
+      <div class="stop"><div class="stop-h"><b>Elmlər dayanacağı</b><span class="small faint">4 dəq, 180 m</span></div>
+        <button class="arr" data-pick="o88"><span class="plate e sm">88</span><span id="occ88"></span><span class="min">6 dəq<small>Nərimanov</small></span></button>
+        <button class="arr" data-pick="oMetro"><span class="plate d sm">65</span><span id="occ65"></span><span class="min">9 dəq<small>Koroğlu</small></span></button><div class="micro"><span><i style="background:var(--live);border-radius:50%"></i>3 skuter</span><span><i style="background:var(--fluid)"></i>Velo parkı, 8 yer</span><span><i style="background:var(--fluid);height:3px"></i>Velo zolağı</span></div></div>
+      <div class="stop"><div class="stop-h"><b>Nizami metro, 2-ci çıxış</b><span class="small faint">4 dəq, 200 m</span></div>
+        <button class="arr" data-pick="oMetro"><span class="plate m sm">M</span><span class="occ faint">Qırmızı xətt</span><span class="min">2 dəq<small>qatar</small></span></button><div class="micro"><span><i style="background:var(--live);border-radius:50%"></i>1 skuter</span><span><i style="background:var(--fluid)"></i>Velo parkı, 5 yer</span></div></div>
+      <div class="stop"><div class="stop-h"><b>Ş. Mehdiyev dayanacağı</b><span class="small faint">2 dəq, 110 m</span></div>
+        <button class="arr" data-pick="o4"><span class="plate d sm">4</span><span id="occ4"></span><span class="min" style="color:var(--bad)">15 dəq<small>tıxacda</small></span></button></div>
+    </div>
+  </section>
+
+  <!-- TRIP -->
+  <section class="view" id="v-trip">
+    <div class="scroll">
+      <button class="back" data-go="v-home">‹ Xəritə</button>
+      <div class="inp" style="margin-bottom:8px"><span style="width:10px;height:10px;border-radius:50%;background:var(--primary);flex:none"></span><div style="flex:1"><small>Haradan</small><b>Mənim yerim, Elmlər yaxınlığı</b></div></div>
+      <div class="inp" style="margin-bottom:8px"><span style="width:10px;height:10px;border-radius:3px;background:var(--jam);flex:none"></span><div style="flex:1"><small>Haraya</small><input id="destIn" value="Nərimanov" autocomplete="off"></div></div>
+      <div class="sugg" id="sugg" style="display:none"></div>
+      <div id="bilCard"></div>
+      <div class="filters" id="filters"></div>
+      <div id="opts"></div>
+      <div class="small faint" style="margin:8px 2px">Avtomobil və ya taksi ilə gedirsiniz?</div>
+      <div class="ext"><button class="btn sm" id="gmaps">Google Maps-də aç</button><button class="btn sm" id="waze">Waze-də aç</button></div>
+    </div>
+  </section>
+
+  <!-- ROUTE -->
+  <section class="view" id="v-route">
+    <div class="map"><svg id="routeMap" viewBox="30 92 300 672" preserveAspectRatio="xMidYMin slice" role="img" aria-label="Dayanacağa yol"></svg></div>
+    <div class="rtop"><button class="rback" data-go="v-trip" aria-label="Geri">‹</button><div class="rsum" id="rsum"></div></div>
+    <div class="sheet" style="height:50%">
+      <div class="grab"></div>
+      <div class="ok-box" id="rcheck"></div>
+      <ol class="wsteps" id="wsteps"></ol>
+      <button class="sw-row" aria-pressed="true" data-sw><span>Avtobus yaxınlaşanda xəbər ver<small>Dayanacağa 2 dəqiqə qalmış</small></span><span class="tgl"></span></button>
+      <button class="btn p" id="startWalk">Naviqasiyanı başla</button>
+    </div>
+  </section>
+
+  <!-- WALK -->
+  <section class="view" id="v-walk">
+    <div class="map"><svg id="walkMap" viewBox="40 140 300 670" preserveAspectRatio="xMidYMin slice" role="img" aria-label="Piyada naviqasiya"></svg></div>
+    <div class="navc"><div class="ar"><svg id="navArrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V5M6 11l6-6 6 6"/></svg></div><div><b id="navT"></b><span id="navS"></span></div></div>
+    <div class="race">
+      <div class="row between"><b id="raceT"></b><button class="btn sm" id="stopWalk">Dayandır</button></div>
+      <div class="track"><span>Siz</span><div class="bar"><i id="barMe" style="width:0;background:var(--primary)"></i></div><span id="meMin"></span></div>
+      <div class="track"><span id="busLbl"></span><div class="bar"><i id="barBus" style="width:0;background:var(--bus-e)"></i></div><span id="busMin"></span></div>
+      <button class="btn p" id="arrived" style="display:none">Ödə və min</button>
+    </div>
+  </section>
+
+  <!-- PAY -->
+  <section class="view" id="v-pay">
+    <div class="scroll" style="text-align:center">
+      <div class="h1">Gediş haqqını ödə</div>
+      <p class="sub">QR kodu avtobusdakı validatora yaxınlaşdırın</p>
+      <div class="qr"><svg id="qr" viewBox="0 0 29 29" width="190" height="190" shape-rendering="crispEdges"></svg></div>
+      <div class="row" style="justify-content:center;margin:6px 0 16px"><b style="font-size:26px">0,60 ₼</b><span class="cpill"><span class="coin">c</span>səfərdən sonra +5</span></div>
+      <div style="text-align:left" id="methods">
+        <button class="method on" data-m="bk"><span class="mi" style="background:var(--primary)">BK</span><div style="flex:1"><b>BakıKart •• 4821</b><div class="small faint">Balans 3,20 ₼</div></div></button>
+        <button class="method" data-m="card"><span class="mi" style="background:#33415A">KART</span><div style="flex:1"><b>Bank kartı •• 0193</b><div class="small faint">Avtomatik ödəniş</div></div></button>
+        <button class="method" data-m="coin"><span class="mi" style="background:var(--coin)">COIN</span><div style="flex:1"><b>Coin ilə, 60 coin</b><div class="small faint" id="payCoinBal"></div></div></button>
+      </div>
+      <div class="err" id="payErr"></div>
+      <button class="btn p" id="payBtn">Ödənişi təsdiqlə</button>
+    </div>
+  </section>
+
+  <!-- RIDE -->
+  <section class="view" id="v-ride">
+    <div class="rmap"><svg id="rideMap" viewBox="0 200 400 520" preserveAspectRatio="xMidYMid slice"></svg></div>
+    <div class="rpanel">
+      <div class="row between"><div class="row"><span class="plate xl e" id="ridePlate">88</span><div><b id="rideDest">Nərimanov istiqaməti</b><div class="small faint">Bort 10-BB-482, BakuBus MMC</div></div></div></div>
+      <div class="paid" style="margin-top:12px" id="paidLine">0,60 ₼ ödənildi, BakıKart</div>
+      <div class="card" style="margin-top:10px;display:grid;gap:8px">
+        <div class="row between"><b class="small">Avtobusda təxminən 38 nəfər</b><span class="st warn">Ayaq üstə yer var</span></div>
+        <div class="bar"><i style="width:68%;background:var(--slow)"></i></div>
+        <div class="small faint">Avtobus kamerası sərnişinləri sayır, görüntü saxlamır. Növbəti avtobus daha boşdur: 9 dəq sonra.</div>
+      </div>
+      <ul class="stops" id="rideStops"></ul>
+      <div class="btn2" style="margin-bottom:8px"><button class="btn" data-go="v-report">Şikayət et</button><button class="btn" data-toast="Səfər linki kopyalandı, yaxınlarınızla paylaşa bilərsiniz">Səfəri paylaş</button></div>
+      <button class="btn p" id="leftBus">Düşdüm</button>
+      <div class="small faint" style="margin-top:10px;text-align:center" id="autoNote">Düşdüyünüz yeri və vaxtı tətbiq GPS ilə özü aşkarlayacaq</div>
+    </div>
+  </section>
+
+  <!-- REVIEW -->
+  <section class="view" id="v-review">
+    <div class="scroll">
+      <div class="row between"><span class="plate e" id="rvPlate">88</span><span class="cpill"><span class="coin">c</span>+5 coin</span></div>
+      <div class="h1">Səfəriniz necə keçdi?</div>
+      <p class="sub" id="rvSub">Rəyiniz AYNA-ya və operatora çatır.</p>
+      <div id="rvBody">
+        <div class="rv"><b>Sürücü</b><div class="stars" data-stars="5"></div></div>
+        <div class="rv"><b>Yol və hərəkət</b><div class="stars" data-stars="3"></div></div>
+        <div class="rv"><b>Avtobusun vəziyyəti</b><div class="stars" data-stars="4"></div></div>
+        <div class="rv"><b>Avtobus nə qədər dolu idi?</b><div class="pills" data-single><button class="pill">Boş</button><button class="pill on">Normal</button><button class="pill">Dolu</button><button class="pill">Həddən artıq dolu</button></div></div>
+        <div class="rv"><b>Nə qeyd edərdiniz?</b><div class="pills"><button class="pill on">Nəzakətli sürücü</button><button class="pill">Təhlükəsiz sürüş</button><button class="pill">Təmiz salon</button><button class="pill">Kondisioner işləmir</button><button class="pill">Dayanacaqda gec saxladı</button></div></div>
+        <textarea rows="2" placeholder="Əlavə fikir, istəyə görə"></textarea>
+        <button class="btn p" style="margin-top:14px" id="sendReview">Göndər və 5 coin al</button>
+        <button class="btn" style="margin-top:8px;background:none" data-go="v-home">İndi yox</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- REPORT -->
+  <section class="view" id="v-report">
+    <div class="scroll">
+      <button class="back" data-go="v-home">‹ Geri</button>
+      <div class="h1">Şikayət göndər</div>
+      <p class="sub">Şikayət birbaşa AYNA-ya çatır. AYNA onu operatora göndərir və cavab müddətini izləyir.</p>
+      <div class="card row" style="margin-bottom:14px"><span class="plate e" id="repPlate">88</span><div style="flex:1"><b>Bort 10-BB-482</b><div class="small faint">BakuBus MMC, son səfəriniz</div></div><button class="btn sm" style="background:var(--surface)" data-toast="Avtobusdakı QR kodu skan edin: bort nömrəsi avtomatik dolacaq">QR skan</button></div>
+      <div class="catgrid" id="repCats" data-single>
+        <button class="cat on">Dayanacaqda saxlamadı</button><button class="cat">Kobud davranış</button><button class="cat">Təhlükəli sürüş</button><button class="cat">Telefonla danışırdı</button><button class="cat">Kondisioner işləmir</button><button class="cat">Çirkli salon</button><button class="cat">Çox uzun gözləmə</button><button class="cat">Əlçatanlıq problemi</button>
+      </div>
+      <button class="photo" id="photoBtn">Foto və ya video əlavə et</button>
+      <textarea rows="3" id="repText">Elmlər dayanacağında 5 nəfər gözləyirdi, avtobus saxlamadan keçdi.</textarea>
+      <div class="secure"><span>🔒</span><span>Adınız və nömrəniz operatora göstərilmir. Operator 24 saat ərzində cavab verməlidir.</span></div>
+      <button class="btn p" id="sendReport">AYNA-ya göndər</button>
+    </div>
+  </section>
+
+  <!-- STATUS -->
+  <section class="view" id="v-status">
+    <div class="scroll" id="statusBody"></div>
+  </section>
+
+  <!-- NOTIFS -->
+  <section class="view" id="v-notifs">
+    <div class="scroll"><div class="row between"><div class="h1">Bildirişlər</div><button class="btn sm" id="readAll">Hamısını oxu</button></div><p class="sub">AYNA-dan və səfərlərinizdən</p><div id="ntList"></div></div>
+  </section>
+
+  <!-- SURVEY -->
+  <section class="view" id="v-survey">
+    <div class="scroll"><button class="back" data-go="v-notifs">‹ Bildirişlər</button><div class="row between"><span class="small faint" id="svStep"></span><span class="cpill"><span class="coin">c</span>+10 coin</span></div><div class="prog"><i id="svProg"></i></div><div id="svBody"></div></div>
+  </section>
+
+  <!-- WALLET -->
+  <section class="view" id="v-wallet">
+    <div class="scroll">
+      <div class="h1" style="margin-bottom:12px">Cüzdan</div>
+      <div class="wallet">
+        <div class="small" style="opacity:.75">Coin balansı</div>
+        <div class="bal"><span class="coin">c</span><b id="wBal">245</b></div>
+        <div class="azn" id="wAzn">≈ 2,45 ₼, partnyor bank məzənnəsi ilə</div>
+        <div class="btn2"><button class="btn p sm" data-go="v-convert" style="width:100%">Banka çevir</button><button class="btn sm" id="payWithCoin" style="width:100%">Gedişə xərclə</button></div>
+      </div>
+      <div class="sec">Coin necə qazanılır</div>
+      <div class="card small" style="display:grid;gap:6px"><div class="row between"><span>Səfərdən sonra rəy</span><b>+5</b></div><div class="row between"><span>Sorğuya cavab</span><b>+5–20</b></div><div class="row between"><span>Şikayət göndərmək</span><b>+5</b></div><div class="row between"><span>Şikayət təsdiqləndi</span><b>+15</b></div></div>
+      <div class="sec">Biletim.az biletləriniz</div>
+      <div class="bil"><div class="ic">BİL</div><div><b>Bakı → Gəncə</b><div class="small faint">18 oktyabr, 18:30, yer 14</div></div><button class="btn sm" data-dest="Avtovağzal" data-go="v-trip">Avtovağzala yol</button></div>
+      <div class="sec">Nişanlar</div>
+      <div class="badges"><div class="bdg"><span>🚌</span>İlk səfər</div><div class="bdg"><span>⭐</span>10 rəy</div><div class="bdg"><span>📋</span>Sorğu ustası</div><div class="bdg locked"><span>🛡️</span>Şəhər gözətçisi</div></div>
+      <div class="sec">Tarixçə</div>
+      <div id="hist"></div>
+    </div>
+  </section>
+
+  <!-- CONVERT -->
+  <section class="view" id="v-convert">
+    <div class="scroll">
+      <button class="back" data-go="v-wallet">‹ Cüzdan</button>
+      <div class="h1">Coin-i banka çevir</div>
+      <p class="sub">Coin partnyor bank vasitəsilə manata çevrilir və kartınıza köçürülür. Məzənnə: 100 coin = 1 ₼. Minimum 100 coin.</p>
+      <div class="amts" id="amts"><button data-amt="100">100</button><button data-amt="200" class="on">200</button><button data-amt="all">Hamısı</button></div>
+      <div class="card row between"><span class="muted">Kartınıza köçürüləcək</span><b style="font-size:22px" id="cvAzn">2,00 ₼</b></div>
+      <div class="sec">Kart</div>
+      <button class="method on"><span class="mi" style="background:#33415A">KART</span><div style="flex:1"><b>Partnyor bank •• 0193</b><div class="small faint">1–2 iş günü ərzində</div></div></button>
+      <div class="err" id="cvErr"></div>
+      <button class="btn p" id="cvBtn">Çevir və köçür</button>
+    </div>
+  </section>
+
+  <!-- TRIPS / TRACKING -->
+  <section class="view" id="v-trips">
+    <div class="scroll">
+      <button class="back" data-go="v-profile">‹ Profil</button>
+      <div class="h1">Səfərlərim</div>
+      <p class="sub">Tətbiq hansı dayanacaqda, nə vaxt mindiyinizi və düşdüyünüzü yadda saxlayır. Buna görə növbəti dəfə yolu özü təklif edir.</p>
+      <button class="sw-row" aria-pressed="true" data-sw="track" id="trackSw"><span>Səfər izləmə<small>Məlumat anonim statistikaya da düşür. İstənilən vaxt söndürə bilərsiniz</small></span><span class="tgl"></span></button>
+      <div class="sec">Tətbiqin öyrəndiyi vərdişlər</div>
+      <div id="patterns"></div>
+      <div class="sec">Son səfərlər</div>
+      <div id="tripList"></div>
+    </div>
+  </section>
+
+  <!-- PROFILE -->
+  <section class="view" id="v-profile">
+    <div class="scroll">
+      <button class="back" data-go="v-home">‹ Xəritə</button>
+      <div class="row" style="margin-bottom:6px"><div class="av" style="width:60px;height:60px;font-size:20px;box-shadow:none">NƏ</div><div><div class="h1" style="font-size:20px;margin:0">Nigar Əliyeva</div><div class="small faint">+994 50 ••• 21</div></div></div>
+      <div class="sec">Rahatlıq</div>
+      <button class="sw-row" aria-pressed="false" data-sw="access"><span>Əlçatanlıq rejimi<small>Yalnız əlçatan avtobuslar və pilləsiz yollar</small></span><span class="tgl"></span></button>
+      <button class="sw-row" aria-pressed="false" data-sw="big"><span>Böyük şrift</span><span class="tgl"></span></button>
+      <div class="sec">Hesab</div>
+      <button class="setrow" data-go="v-trips">Səfərlərim və izləmə<span class="faint">›</span></button>
+      <button class="setrow" id="langBtn">Dil<span class="faint" id="langV">Azərbaycan</span></button>
+      <button class="setrow" id="bilBtn">Biletim.az hesabı<span class="st ok" id="bilV">Qoşulub</span></button>
+      <button class="setrow" data-toast="Məlumatlarınız yalnız anonim statistikada istifadə olunur">Məxfilik və data<span class="faint">›</span></button>
+      <div class="sec">Mənim şikayətlərim</div>
+      <div id="myReports"></div>
+    </div>
+  </section>
+
+  <div class="burst" id="burst"><span class="coin">c</span><span id="burstT">+5</span></div>
+  <div class="toast" id="toast"></div>
+
+  <nav class="tabbar" id="tabbar">
+    <button class="tab on" data-go="v-home" data-tab="v-home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 4 3 6.5v13.5l6-2.5 6 2.5 6-2.5V4l-6 2.5z"/><path d="M9 4v13.5M15 6.5V20"/></svg>Xəritə</button>
+    <button class="tab" data-go="v-trip" data-tab="v-trip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="19" r="2"/><circle cx="18" cy="5" r="2"/><path d="M8 19h7a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h7"/></svg>Səfər</button>
+    <button class="tab" data-go="v-pay" data-tab="v-pay"><span class="pay"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/></svg></span>Ödə</button>
+    <button class="tab" data-go="v-notifs" data-tab="v-notifs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></svg>Bildiriş<span class="bdg" id="ntBadge">2</span></button>
+    <button class="tab" data-go="v-wallet" data-tab="v-wallet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M9.5 10h4a1.5 1.5 0 0 1 0 3h-3a1.5 1.5 0 0 0 0 3h4"/></svg>Coin</button>
+  </nav>
+</div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const ns='http://www.w3.org/2000/svg';
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const azn=c=>(c/100).toFixed(2).replace('.',',');
+
+/* ============ STATE ============ */
+const S={coins:245,history:[['Sorğu: interval rahatlığı','16 okt',10],['Təsdiqlənmiş şikayət #A-2031','15 okt',15],['Səfər rəyi, 88','15 okt',5],['Gediş haqqı, coin ilə','14 okt',-60]],
+  dest:'Nərimanov',filter:'fast',opt:'o88',paidWith:null,reviewed:false,surveyDone:false,reports:[{id:'A-2031',cat:'Kobud davranış',route:'65',stage:4,when:'15 okt'}],
+  notifs:[{id:'sv',t:'AYNA sorğusu: yeni ekspress xətt',s:'Avtovağzal → 28 May ekspress haqqında fikriniz. 1 dəqiqə, +10 coin.',when:'5 dəq əvvəl',to:'v-survey',read:false,ic:'SOR',c:'var(--primary)'},
+          {id:'r2031',t:'Şikayətinizə cavab verildi',s:'#A-2031: BakuBus sürücü ilə izahat işi aparıldığını bildirdi.',when:'Dünən',to:'status:A-2031',read:false,ic:'ŞİK',c:'var(--ok)'},
+          {id:'iv',t:'88-də səhər intervalı 8 dəqiqəyə endirildi',s:'Avtobus kameraları dolu getdiyini göstərdi, rəylər də təsdiqlədi.',when:'2 gün əvvəl',to:null,read:true,ic:'88',c:'var(--bus-e)'},
+          {id:'ev',t:'Bu axşam stadionda oyun var',s:'19:00-dan sonra 65 və 88 sıx olacaq. Metro ilə getməyi tövsiyə edirik.',when:'3 saat əvvəl',to:null,read:true,ic:'TƏD',c:'var(--ink-2)'}],
+  access:false,track:true,autoEnded:false,
+  trips:[{route:'88',cls:'e',from:'Elmlər',to:'Nərimanov',on:'08:14',off:'08:41',day:'Dünən',auto:true},{route:'88',cls:'e',from:'Elmlər',to:'Nərimanov',on:'08:11',off:'08:37',day:'15 okt',auto:true},{route:'65',cls:'d',from:'Gənclik',to:'Elmlər',on:'18:40',off:'19:02',day:'15 okt',auto:true},{route:'88',cls:'e',from:'Elmlər',to:'Nərimanov',on:'08:16',off:'08:44',day:'14 okt',auto:false}]};
+
+/* ============ helpers ============ */
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),2400);}
+function push(t,s,to){const p=$('#push');$('#pushT').textContent=t;$('#pushS').textContent=s;p.dataset.to=to||'';p.classList.add('on');clearTimeout(p._h);p._h=setTimeout(()=>p.classList.remove('on'),6000);}
+$('#push').onclick=()=>{const p=$('#push');p.classList.remove('on');if(p.dataset.to)route(p.dataset.to);};
+function addCoins(n,label){S.coins+=n;S.history.unshift([label,'İndi',n]);renderWallet();if(n>0){$('#burstT').textContent='+'+n;const b=$('#burst');b.classList.remove('go');void b.offsetWidth;b.classList.add('go');}}
+function addNotif(n){S.notifs.unshift({read:false,when:'İndi',...n});renderNotifs();}
+function occ(l){const lab=['','Boş','Orta','Dolu'][l],col=['','var(--ok)','var(--warn)','var(--bad)'][l];let s='';for(let i=0;i<3;i++)s+=`<g transform="translate(${i*11} 0)" fill="${i<l?col:'var(--surface-3)'}"><circle cx="5" cy="3.4" r="3"/><path d="M.5 13c0-3 2-5.2 4.5-5.2S9.5 10 9.5 13z"/></g>`;return `<span class="occ" style="color:${col}"><svg viewBox="0 0 33 13" width="33" aria-hidden="true">${s}</svg>${lab}</span>`;}
+$('#occ88').innerHTML=occ(2);$('#occ65').innerHTML=occ(3);$('#occ4').innerHTML=occ(3);
+
+/* ============ local map ============ */
+const STREETS=[{id:'s1',d:'M-60 332 L460 288',n:'Azadlıq pr.',maj:1,l:'jam'},{id:'s2',d:'M66 -60 L176 960',n:'Tbilisi pr.',maj:1,l:'fluid'},{id:'s3',d:'M-60 172 L460 138',n:'Ş. Mehdiyev küç.',l:'fluid'},{id:'s4',d:'M298 -60 L344 960',n:'Məmmədəmin küç.',l:'slow'},{id:'s5',d:'M-60 472 L460 438',l:'fluid'},{id:'s6',d:'M-60 610 L460 576',l:'fluid'}];
+const BLOCKS=[[-40,190,112,108],[128,182,78,104],[228,178,68,106],[330,166,110,108],[330,0,110,124],[-40,0,100,150],[-40,350,128,104],[136,342,166,86],[340,326,110,102],[-40,486,140,112],[146,468,166,96],[350,452,100,104],[-40,628,150,200],[156,610,170,200],[358,596,90,200]];
+const STOPS={E:{x:118,y:322,n:'Elmlər',crowd:12},N:{x:328,y:284,n:'Nizami metro',crowd:21,metro:1},M:{x:252,y:162,n:'Ş. Mehdiyev',crowd:8}};
+const USER=[215,228];
+const OPTS={
+  o88:{plate:'88',cls:'e',title:'Tövsiyə olunur',total:31,walk:4,occ:2,access:true,stop:'E',busEta:6,ride:22,mode:'walk',
+    path:'M215 228 L216 305 L128 313 L118 322',dist:180,busPath:'M66 -60 L118 322',busOn:'M66 -60 L176 960',
+    why:'4 nömrəli marşrut Yusif Səfərov küçəsindəki tıxacdan keçir, orada orta sürət 9 km/s-dir. 88 Füzuli küçəsi və Babək prospekti ilə gedir, hərəkət sərbəstdir.',
+    steps:[['↑','Binadan çıxıb cənuba gedin','Azadlıq prospektinə doğru','80 m'],['↱','Azadlıq prospektində sağa dönün','Səki ilə Tbilisi prospektinə qədər','95 m'],['⇌','Piyada keçidindən keçin','Svetoforlu keçid','5 m'],['B','Elmlər dayanacağı','88-i mavi stendin yanında gözləyin','4 dəq']],
+    nav:[[0,'80 m düz gedin','Azadlıq prospektinə doğru',0],[.43,'Sağa dönün, 95 m','Azadlıq prospekti ilə',90],[.93,'Piyada keçidindən keçin','Dayanacaq qarşıdadır',0]]},
+  oSc:{plate:'88',cls:'e',title:'Dayanacağa skuterlə',total:28,walk:1,occ:2,access:false,stop:'E',busEta:6,ride:22,mode:'scooter',
+    path:'M215 228 L216 305 L128 313 L118 322',dist:180,busPath:'M66 -60 L118 322',busOn:'M66 -60 L176 960',
+    why:'Yaxınlığınızda 3 skuter var. Elmlər dayanacağında skuter parkı mövcuddur.',
+    steps:[['S','Skuteri 30 m-də götürün','Binanın qarşısında','30 m'],['↱','Azadlıq prospektində sağa dönün','Velosiped zolağı ilə','150 m'],['B','Elmlər dayanacağı','Skuteri parka qoyun, 88-i gözləyin','1 dəq']],
+    nav:[[0,'Skuterlə 80 m düz','Azadlıq prospektinə doğru',0],[.43,'Sağa dönün, 95 m','Velosiped zolağı ilə',90],[.93,'Skuter parkı qarşıdadır','Elmlər dayanacağı',0]]},
+  o4:{plate:'4',cls:'d',title:'Tıxacdan keçir',total:43,walk:2,occ:3,access:false,stop:'M',busEta:15,ride:36,mode:'walk',
+    path:'M215 228 L214 158 L246 155 L252 162',dist:110,busPath:'M460 138 L252 160',busOn:'M460 138 L-60 172',
+    why:'Bu marşrut Yusif Səfərov küçəsindəki tıxacdan keçir. Avtobus hazırda 15 dəqiqə gecikir.',
+    steps:[['↑','Şimala gedin','Ş. Mehdiyev küçəsinə doğru','70 m'],['↱','Sağa dönün','Ş. Mehdiyev küçəsi ilə','35 m'],['B','Ş. Mehdiyev dayanacağı','4-ü gözləyin','2 dəq']],
+    nav:[[0,'70 m şimala gedin','Ş. Mehdiyev küçəsinə doğru',0],[.63,'Sağa dönün, 35 m','Ş. Mehdiyev küçəsi',90],[.92,'Dayanacaq qarşıdadır','',0]]},
+  oMetro:{plate:'M',cls:'m',title:'Metro ilə',total:36,walk:4,occ:2,access:true,stop:'N',busEta:2,ride:28,mode:'walk',
+    path:'M215 228 L216 305 L318 296 L328 286',dist:200,busPath:null,busOn:null,
+    why:'Nizami-dən Gəncliyə metro, oradan 65 ilə. Tıxacdan tam qaçırsınız.',
+    steps:[['↑','Cənuba gedin','Azadlıq prospektinə doğru','80 m'],['↰','Sola dönün','Azadlıq prospekti ilə şərqə','100 m'],['M','Nizami metro, 2-ci çıxış','Gənclik istiqamətinə minin','4 dəq']],
+    nav:[[0,'80 m düz gedin','Azadlıq prospektinə doğru',0],[.40,'Sola dönün, 100 m','Azadlıq prospekti ilə',-90],[.93,'Metro girişi qarşıdadır','2-ci çıxış',0]]},
+};
+function buildLocal(svg,o){
+  const p=o.p;let s=`<rect x="-200" y="-200" width="800" height="1400" fill="var(--land)"/><g fill="var(--block)">${BLOCKS.map(b=>`<rect x="${b[0]}" y="${b[1]}" width="${b[2]}" height="${b[3]}" rx="10"/>`).join('')}</g>`;
+  s+=`<rect x="110" y="14" width="168" height="98" rx="26" fill="var(--park)"/>`;
+  s+=`<g fill="none" stroke-linecap="round">`;STREETS.forEach(t=>s+=`<path id="${p}${t.id}" d="${t.d}" stroke="var(--road-case)" stroke-width="${t.maj?22:14}"/>`);STREETS.forEach(t=>s+=`<path d="${t.d}" stroke="var(--road)" stroke-width="${t.maj?18:10}"/>`);s+=`</g>`;
+  s+=`<g class="L-traffic" fill="none" stroke-linecap="round" style="display:${o.traffic?'':'none'}">`;STREETS.forEach(t=>s+=`<path d="${t.d}" stroke="var(--${t.l})" stroke-width="${t.maj?8:6}"/>`);s+=`</g>`;
+  s+=`<g font-size="13" font-weight="600" fill="var(--maplabel)">`;STREETS.filter(t=>t.n).forEach(t=>s+=`<text dy="4.5"><textPath href="#${p}${t.id}" startOffset="${t.id==='s2'?'58%':'72%'}" text-anchor="middle">${t.n}</textPath></text>`);s+=`</g>`;
+  const O=o.opt&&OPTS[o.opt];
+  if(o.ride)s+=`<path d="${OPTS[S.opt].busOn||'M66 -60 L176 960'}" stroke="var(--bus-${OPTS[S.opt].cls==='d'?'d':'e'})" stroke-width="9" fill="none" stroke-linecap="round" opacity=".85"/>`;
+  if(O){if(O.busPath)s+=`<path d="${O.busPath}" stroke="var(--bus-${O.cls==='d'?'d':'e'})" stroke-width="7" fill="none" opacity=".85" stroke-linecap="round"/>`;
+    s+=`<path id="${p}walk" d="${O.path}" fill="none" stroke="var(--primary)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="${O.mode==='scooter'?'14 8':'0.1 11'}" class="${reduce?'':'walkdash'}"/>`;}
+  s+=`<g class="L-micro" style="display:${o.micro?'':'none'}"><path d="M-60 462 L460 428" stroke="var(--fluid)" stroke-width="4" stroke-dasharray="10 6" fill="none" stroke-linecap="round"/><path d="M84 -60 L194 960" stroke="var(--fluid)" stroke-width="4" stroke-dasharray="10 6" fill="none" stroke-linecap="round"/>`+
+   [[150,352,'8 velo','P'],[346,318,'5 velo','P'],[268,456,'12 velo','P']].map(([x,y,t,k])=>`<g transform="translate(${x} ${y})"><rect x="-11" y="-11" width="22" height="22" rx="6" fill="var(--fluid)"/><text y="5" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">${k}</text><g transform="translate(14 -9)"><rect width="${t.length*7+12}" height="18" rx="9" fill="var(--surface)" stroke="var(--line)"/><text x="6" y="13" font-size="11" font-weight="700" fill="var(--ink)">${t}</text></g></g>`).join('')+
+   [[96,296],[140,300],[132,346],[238,246],[312,262]].map(([x,y])=>`<g transform="translate(${x} ${y})"><circle r="8" fill="var(--live)" stroke="#fff" stroke-width="2"/><path d="M-3 3h6M-1 3l2-6h2" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round"/></g>`).join('')+`</g>`;
+  s+=`<g class="L-stops" style="display:${o.stops===false?'none':''}">`;
+  Object.entries(STOPS).forEach(([k,t])=>{const hl=O&&O.stop===k,dim=O&&O.stop!==k;const ic=t.metro?`<text y="5" text-anchor="middle" font-size="14" font-weight="800" fill="var(--metro)">M</text>`:`<path d="M-6 -6h12v10h-12z M-6 -1h12 M-4 6v2 M4 6v2" stroke="var(--primary)" stroke-width="2" fill="none" stroke-linejoin="round"/>`;
+    const lx=k==='N'?-8:20,ly=k==='N'?-26:-6,w=t.n.length*7.6+18,rx=k==='N'?-w+8:0;
+    s+=`<g transform="translate(${t.x} ${t.y})" opacity="${dim?.4:1}">${hl?`<circle r="26" fill="var(--primary)" opacity=".14"/>`:''}<circle r="15" fill="var(--surface)" stroke="${t.metro?'var(--metro)':'var(--primary)'}" stroke-width="3"/>${ic}<g transform="translate(${lx} ${ly})"><rect x="${rx}" y="-13" width="${w}" height="24" rx="8" fill="var(--surface)" stroke="var(--line)"/><text x="${rx+9}" y="3.5" font-size="13" font-weight="700" fill="var(--ink)">${t.n}</text></g><g class="L-crowd" style="display:${o.crowd?'':'none'}" transform="translate(-18 18)"><rect width="${String(t.crowd).length*8+52}" height="20" rx="10" fill="var(--crowd)"/><text x="8" y="14" font-size="12" font-weight="700" fill="#fff">${t.crowd} nəfər</text></g></g>`;});
+  s+=`</g><g id="${p}user" transform="translate(${USER[0]} ${USER[1]})" style="display:${o.noUser?'none':''}"><circle r="22" fill="var(--live)" opacity=".2">${reduce?'':'<animate attributeName="r" values="12;30;12" dur="2.4s" repeatCount="indefinite"/>'}</circle><circle r="10" fill="var(--primary)" stroke="#fff" stroke-width="3.5"/></g><g class="L-buses" id="${p}buses" style="display:${o.buses===false?'none':''}"></g>`;
+  svg.innerHTML=s;return svg;
+}
+function busEl(rt,cls,big){const el=document.createElementNS(ns,'g');const w=big?46:36,h=big?28:22;el.innerHTML=`<rect x="${-w/2}" y="${-h/2}" width="${w}" height="${h}" rx="7" fill="var(--bus-${cls==='d'?'d':'e'})" stroke="#fff" stroke-width="2.5"/><text text-anchor="middle" y="${big?6:4.5}" font-size="${big?15:12}" font-weight="800" fill="#fff" font-family="Onest,sans-serif">${rt}</text>`;return el;}
+const anims=new Map();
+function along(key,svg,el,d,dur,start,loop,stopAt){
+  if(anims.has(key))cancelAnimationFrame(anims.get(key));
+  const path=document.createElementNS(ns,'path');path.setAttribute('d',d);path.setAttribute('fill','none');svg.appendChild(path);
+  const len=path.getTotalLength();const t0=performance.now()-start*dur;const set=f=>{const q=path.getPointAtLength(f*len);el.setAttribute('transform',`translate(${q.x} ${q.y})`);};
+  if(reduce){set(stopAt??start);return;}
+  const tick=now=>{let f=Math.max(0,(now-t0)/dur);if(loop)f%=1;else f=Math.min(f,stopAt??1);set(f);anims.set(key,requestAnimationFrame(tick));};anims.set(key,requestAnimationFrame(tick));
+}
+
+/* HOME map */
+const L={stops:true,buses:true,micro:false,traffic:false,crowd:false};
+const home=buildLocal($('#homeMap'),{p:'h'});
+(function(){const g=home.querySelector('#hbuses');const a=busEl('88','e');g.appendChild(a);along('h88',home,a,'M66 -60 L176 960',26000,.08,true);const b=busEl('65','d');g.appendChild(b);along('h65',home,b,'M460 288 L-60 332',30000,.3,true);const c=busEl('4','d');g.appendChild(c);along('h4',home,c,'M460 138 L-60 172',60000,.6,true);})();
+const CHIPS=[['stops','Dayanacaq'],['buses','Avtobus'],['micro','Velo və skuter'],['traffic','Tıxac'],['crowd','Sıxlıq']];
+$('#chips').innerHTML=CHIPS.map(([k,l])=>`<button class="lchip" aria-pressed="${L[k]}" data-layer="${k}">${l}</button>`).join('');
+$('#chips').onclick=e=>{const b=e.target.closest('[data-layer]');if(!b)return;const k=b.dataset.layer;L[k]=!L[k];b.setAttribute('aria-pressed',L[k]);applyLayers();};
+function applyLayers(){home.querySelector('.L-micro').style.display=L.micro?'':'none';home.querySelector('.L-stops').style.display=L.stops?'':'none';home.querySelector('.L-buses').style.display=L.buses?'':'none';home.querySelector('.L-traffic').style.display=L.traffic?'':'none';home.querySelectorAll('.L-crowd').forEach(g=>g.style.display=L.crowd?'':'none');
+  let h;if(L.micro&&!L.traffic&&!L.crowd)h=`<span><i class="sw" style="background:var(--fluid)"></i>Velo zolağı</span><span><i class="sq" style="background:var(--fluid);border-radius:4px"></i>Velo parkı</span><span><i class="sq" style="background:var(--live);border-radius:50%;width:11px;height:11px"></i>Skuter</span>`;
+  else if(L.traffic&&L.crowd)h=`<span><i class="sw" style="background:var(--fluid)"></i>Sərbəst</span><span><i class="sw" style="background:var(--slow)"></i>Ləng</span><span><i class="sw" style="background:var(--jam)"></i>Tıxac</span><span><i class="sq" style="background:var(--crowd);border-radius:6px"></i>Gözləyən</span>`;
+  else if(L.traffic)h=`<span class="faint">Yol:</span><span><i class="sw" style="background:var(--fluid)"></i>Sərbəst</span><span><i class="sw" style="background:var(--slow)"></i>Ləng</span><span><i class="sw" style="background:var(--jam)"></i>Tıxac</span>`;
+  else if(L.crowd)h=`<span><i class="sq" style="background:var(--crowd);border-radius:6px;width:22px"></i>Dayanacaqda gözləyən insan sayı</span>`;
+  else h=`<span><i class="sq" style="background:var(--primary);border-radius:50%;width:10px;height:10px"></i>Siz</span>${L.buses?'<span><i class="sq" style="background:var(--bus-e)"></i>Elektrik</span><span><i class="sq" style="background:var(--bus-d)"></i>Dizel avtobus</span>':''}`;
+  const lg=$('#legend');lg.innerHTML=h;lg.style.bottom='calc(84px + 44% + 10px)';}
+applyLayers();
+$('#trafficAlert').onclick=()=>{if(!L.traffic)$('[data-layer="traffic"]').click();toast('Tıxac qatı açıldı');};
+
+/* ============ TRIP ============ */
+const DESTS=[['Nərimanov',0],['Avtovağzal',6],['28 May',-8],['Ev, Yasamal',-4],['Gənclik',-6],['Koroğlu',4]];
+const FILTERS=[['fast','Ən sürətli'],['walk','Az piyada'],['empty','Az dolu'],['access','Əlçatan']];
+function renderTrip(){
+  $('#destIn').value=S.dest;const off=(DESTS.find(d=>d[0]===S.dest)||[0,0])[1];
+  $('#filters').innerHTML=FILTERS.map(([k,l])=>`<button class="pill ${S.filter===k?'on':''}" data-filter="${k}">${l}</button>`).join('');
+  let keys=Object.keys(OPTS);if(S.filter==='access'||S.access)keys=keys.filter(k=>OPTS[k].access);
+  keys.sort((a,b)=>S.filter==='walk'?OPTS[a].walk-OPTS[b].walk:S.filter==='empty'?OPTS[a].occ-OPTS[b].occ||OPTS[a].total-OPTS[b].total:OPTS[a].total-OPTS[b].total);
+  const best=[...keys].sort((a,b)=>OPTS[a].total-OPTS[b].total)[0];
+  $('#opts').innerHTML=keys.map(k=>{const o=OPTS[k];const t=o.total+off;const first=o.mode==='scooter'?`Skuter ${o.walk} dəq`:`Piyada ${o.walk} dəq`;
+    return `<button class="opt ${k===best?'best':''}" data-pick="${k}"><div class="top"><span class="st ${k===best?'info':o.cls==='d'?'warn':''}">${k===best?'Ən sürətli':o.title}</span><span class="tm">${t} dəq</span></div><div class="steps">${first} › <span class="plate ${o.cls} sm">${o.plate}</span>${k==='oMetro'?' › <span class="plate d sm">65</span>':''} › piyada 2 dəq</div><div class="row" style="flex-wrap:wrap;gap:10px">${occ(o.occ)}${o.access?'<span class="st">Əlçatan</span>':''}<span class="st">${STOPS[o.stop].n}-dən</span></div>${k===best||k==='o4'?`<div class="why">${o.why}</div>`:''}</button>`;}).join('')||`<div class="empty">Əlçatan variant tapılmadı. Filtri dəyişin.</div>`;
+  $('#bilCard').innerHTML=S.dest==='Avtovağzal'?`<div class="bil"><div class="ic">BİL</div><div><b>Şəhərlərarası səfərə gedirsiniz?</b><div class="small faint">Bakı → Gəncə, 18:30 biletiniz var</div></div><button class="btn sm" data-toast="Biletim.az-da biletiniz açılır: QR kodu sürücüyə göstərin">Bilet</button></div>`:'';
+}
+$('#destIn').addEventListener('focus',showSugg);$('#destIn').addEventListener('input',showSugg);
+function showSugg(){const q=$('#destIn').value.toLowerCase();const L2=DESTS.filter(d=>d[0].toLowerCase().includes(q));$('#sugg').innerHTML=L2.map(d=>`<button data-setdest="${d[0]}">${d[0]}</button>`).join('');$('#sugg').style.display=L2.length?'grid':'none';}
+document.addEventListener('click',e=>{if(!e.target.closest('#sugg')&&e.target.id!=='destIn')$('#sugg').style.display='none';});
+
+/* ============ ROUTE + WALK ============ */
+let rmapBus=null;
+function renderRoute(){
+  const o=OPTS[S.opt];const st=STOPS[o.stop];
+  const rmap=buildLocal($('#routeMap'),{p:'r',opt:S.opt});
+  if(o.busPath){const b=busEl(o.plate,o.cls,true);rmap.querySelector('#rbuses').appendChild(b);along('rbus',rmap,b,o.busPath,60000,.25,false,.92);
+    const g=document.createElementNS(ns,'g');g.setAttribute('transform',`translate(${st.x} ${st.y})`);g.innerHTML=`<g transform="translate(-14 -62)"><rect x="-48" y="-16" width="124" height="30" rx="10" fill="var(--bus-${o.cls==='d'?'d':'e'})"/><text x="14" y="4" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">${o.plate} gəlir: ${o.busEta} dəq</text></g>`;rmap.appendChild(g);}
+  $('#rsum').innerHTML=`<b>${st.n} ${o.stop==='N'?'girişinə':'dayanacağına'} ${o.walk} dəq</b><div class="faint">${o.dist} m ${o.mode==='scooter'?'skuterlə':'piyada'}, sonra <span class="plate ${o.cls} sm">${o.plate}</span></div>`;
+  const spare=o.busEta-o.walk;
+  $('#rcheck').innerHTML=spare>=0?`✓ ${o.stop==='N'?'Qatara':'Avtobusa'} çatırsınız: ${o.plate} ${o.busEta} dəqiqəyə gəlir${spare>0?`, ${spare} dəq ehtiyatınız var`:''}`:`Bu avtobusa çatmırsınız. Növbəti ${o.plate} ${o.busEta+8} dəqiqəyə gəlir`;
+  $('#wsteps').innerHTML=o.steps.map(([i,b,s,d])=>`<li><div class="si">${i}</div><div><b>${b}</b><span>${s}</span></div><div class="d">${d}</div></li>`).join('')+`<li class="bus"><div class="si">${o.plate}</div><div><b>${o.plate==='M'?'Metro ilə Gəncliyə, sonra 65':o.plate+' ilə'} ${o.ride} dəq</b><span>Doluluq: ${occ(o.occ)}</span></div><div class="d">${o.ride} dəq</div></li><li><div class="si">✓</div><div><b>${S.dest}</b><span>Mənzil başına 2 dəq piyada</span></div><div class="d"></div></li>`;
+  $('#startWalk').textContent=o.mode==='scooter'?'Skuterlə naviqasiyanı başla':'Naviqasiyanı başla';
+}
+let walkRAF=null;
+function startWalk(){
+  const o=OPTS[S.opt];route('v-walk');
+  const wmap=buildLocal($('#walkMap'),{p:'w',opt:S.opt});
+  const path=wmap.querySelector('#wwalk'),len=path.getTotalLength(),user=wmap.querySelector('#wuser');
+  let bus=null,bpath=null,blen=0;if(o.busPath){bus=busEl(o.plate,o.cls,true);wmap.querySelector('#wbuses').appendChild(bus);bpath=document.createElementNS(ns,'path');bpath.setAttribute('d',o.busPath);wmap.appendChild(bpath);blen=bpath.getTotalLength();}
+  $('#busLbl').innerHTML=`<span class="plate ${o.cls} sm">${o.plate}</span>`;$('#barBus').style.background=o.cls==='m'?'var(--metro)':`var(--bus-${o.cls==='d'?'d':'e'})`;
+  $('#arrived').style.display='none';$('#arrived').textContent=o.stop==='N'?'Metroya daxil oldum':'Ödə və min';
+  const DUR=reduce?1:(o.mode==='scooter'?6000:11000);const t0=performance.now();let told=false;cancelAnimationFrame(walkRAF);
+  const tick=now=>{const f=Math.max(0,Math.min((now-t0)/DUR,1));const q=path.getPointAtLength(f*len);user.setAttribute('transform',`translate(${q.x} ${q.y})`);
+    if(bus){const qb=bpath.getPointAtLength(Math.min(.25+f*.55,.8)*blen);bus.setAttribute('transform',`translate(${qb.x} ${qb.y})`);}
+    const me=o.walk*(1-f),bl=Math.max(0,o.busEta-o.walk*f);
+    $('#barMe').style.width=f*100+'%';$('#barBus').style.width=(1-bl/o.busEta)*100+'%';$('#meMin').textContent=f>=1?'çatdınız':Math.max(1,Math.ceil(me))+' dəq';$('#busMin').textContent=Math.ceil(bl)+' dəq';
+    const step=[...o.nav].reverse().find(s=>f>=s[0]);$('#navT').textContent=step[1];$('#navS').textContent=step[2];$('#navArrow').style.transform=`rotate(${step[3]}deg)`;
+    $('#raceT').textContent=f>=1?'Çatdınız':`${o.stop==='N'?'Metroya':'Dayanacağa'} ${Math.round(o.dist*(1-f))} m`;
+    if(f>=1){$('#navT').textContent=`${STOPS[o.stop].n}`;$('#navS').textContent=`${o.plate} ${Math.ceil(bl)} dəqiqəyə gəlir`;$('#navArrow').style.transform='rotate(0)';$('#arrived').style.display='block';
+      if(!told){told=true;push(`${o.plate} yaxınlaşır`,`${Math.ceil(bl)} dəqiqəyə ${STOPS[o.stop].n}-də olacaq. Doluluq: ${['','boş','orta','dolu'][o.occ]}`,o.stop==='N'?'':'v-pay');}return;}
+    walkRAF=requestAnimationFrame(tick);};walkRAF=requestAnimationFrame(tick);
+}
+$('#startWalk').onclick=startWalk;
+$('#stopWalk').onclick=()=>{cancelAnimationFrame(walkRAF);route('v-route');toast('Naviqasiya dayandırıldı');};
+$('#arrived').onclick=()=>{if(OPTS[S.opt].stop==='N'){S.paidWith='BakıKart';route('v-ride');toast('Metroya BakıKart ilə daxil oldunuz');}else route('v-pay');};
+
+/* ============ PAY ============ */
+let payM='bk';
+$('#methods').onclick=e=>{const m=e.target.closest('[data-m]');if(!m)return;payM=m.dataset.m;$$('[data-m]').forEach(x=>x.classList.toggle('on',x===m));$('#payErr').textContent='';};
+$('#payBtn').onclick=()=>{
+  if(payM==='coin'){if(S.coins<60){$('#payErr').textContent=`Coin kifayət etmir: ${S.coins} coin var, 60 lazımdır. Başqa ödəniş üsulu seçin.`;return;}addCoins(-60,'Gediş haqqı, coin ilə');}
+  S.paidWith={bk:'BakıKart •• 4821',card:'Bank kartı •• 0193',coin:'60 coin'}[payM];S.reviewed=false;
+  toast('0,60 ₼ ödənildi. Xoş səfər');setTimeout(()=>route('v-ride'),700);};
+$('#payWithCoin').onclick=()=>{payM='coin';$$('[data-m]').forEach(x=>x.classList.toggle('on',x.dataset.m==='coin'));route('v-pay');};
+
+/* ============ RIDE ============ */
+function renderRide(){const o=OPTS[S.opt];$('#ridePlate').textContent=o.plate==='M'?'65':o.plate;$('#ridePlate').className='plate xl '+(o.plate==='M'||o.cls==='d'?'d':'e');$('#rideDest').textContent=S.dest+' istiqaməti';$('#paidLine').textContent=`0,60 ₼ ödənildi, ${S.paidWith||'BakıKart •• 4821'}`;
+  const stops=[STOPS[o.stop].n,'Füzuli küçəsi','28 May','Gənclik',S.dest];$('#rideStops').innerHTML=stops.map((s,i)=>`<li class="${i===0?'done':i===1?'here':''}"><i></i>${i===4?`<b>${s}, düşəcəksiniz</b>`:i===1?`<b>${s}</b>`:`<span>${s}</span>`}<span class="small faint">${i===1?'indi':`08:${String(18+i*6).padStart(2,'0')}`}</span></li>`).join('');
+  S.autoEnded=false;clearTimeout(autoTimer);if(S.track)autoTimer=setTimeout(()=>{if($('#v-ride').classList.contains('on'))endRide(true);},10000);
+  const rm=buildLocal($('#rideMap'),{p:'x',ride:true,noUser:true,stops:true});const b=busEl($('#ridePlate').textContent,o.cls==='d'||o.plate==='M'?'d':'e',true);rm.querySelector('#xbuses').appendChild(b);along('ride',rm,b,o.busOn||'M118 322 L176 960',40000,.3,true);}
+$('#leftBus').onclick=()=>endRide(false);
+
+/* ============ REVIEW ============ */
+$$('[data-stars]').forEach(w=>{const init=+w.dataset.stars;for(let i=1;i<=5;i++){const s=document.createElement('button');s.textContent='★';s.setAttribute('aria-label',i+' ulduz');if(i<=init)s.classList.add('on');s.onclick=()=>w.querySelectorAll('button').forEach((x,j)=>x.classList.toggle('on',j<i));w.appendChild(s);}});
+function renderReview(){const o=OPTS[S.opt];const pl=o.plate==='M'?'65':o.plate;$('#rvPlate').textContent=pl;$('#rvPlate').className='plate '+(o.cls==='d'||o.plate==='M'?'d':'e');$('#rvSub').textContent=`${STOPS[o.stop].n} → ${S.dest}. Rəyiniz AYNA-ya və operatora çatır.`;
+  $('#sendReview').disabled=S.reviewed;$('#sendReview').textContent=S.reviewed?'Bu səfərə artıq rəy vermisiniz':'Göndər və 5 coin al';}
+$('#sendReview').onclick=()=>{if(S.reviewed)return;S.reviewed=true;addCoins(5,`Səfər rəyi, ${$('#rvPlate').textContent}`);toast('Rəyiniz göndərildi');setTimeout(()=>route('v-wallet'),900);};
+
+/* ============ REPORT ============ */
+let repN=2042;
+$('#photoBtn').onclick=e=>{e.currentTarget.classList.toggle('on');e.currentTarget.textContent=e.currentTarget.classList.contains('on')?'✓ 1 foto əlavə edildi':'Foto və ya video əlavə et';};
+function renderReportForm(){const o=OPTS[S.opt];const pl=o.plate==='M'?'65':o.plate;$('#repPlate').textContent=pl;$('#repPlate').className='plate '+(o.cls==='d'||o.plate==='M'?'d':'e');}
+$('#sendReport').onclick=()=>{const cat=$('#repCats .cat.on').textContent;const id='A-'+(repN++);const r={id,cat,route:$('#repPlate').textContent,stage:1,when:'İndi'};S.reports.unshift(r);addCoins(5,'Şikayət göndərildi');route('status:'+id);
+  setTimeout(()=>{r.stage=2;refreshStatus(id);},4000);
+  setTimeout(()=>{r.stage=3;refreshStatus(id);addNotif({id:'r'+id,t:'Şikayətiniz operatora göndərildi',s:`#${id}: BakuBus MMC 24 saat ərzində cavab verməlidir.`,to:'status:'+id,ic:'ŞİK',c:'var(--primary)'});push('Şikayətiniz operatora göndərildi',`#${id}, BakuBus MMC`,'status:'+id);},9000);};
+const STAGES=['Göndərildi','AYNA qəbul etdi','Operatora göndərildi','Operator cavab verdi'];
+function statusHTML(id){const r=S.reports.find(x=>x.id===id);if(!r)return '';return `<button class="back" data-go="v-home">‹ Xəritə</button><span class="st ${r.stage>=4?'ok':'info'}">${r.stage>=4?'Cavab verilib':'İcradadır'}</span><div class="h1" style="margin-top:6px">Şikayət #${r.id}</div><p class="sub">${r.route} nömrəli avtobus. ${r.cat}.</p>
+  <ul class="tl">${STAGES.map((s,i)=>`<li class="${r.stage>i?'done':''}"><i>${r.stage>i?'✓':i+1}</i><div><b>${s}</b><div class="small faint">${i===0?r.when:i===1&&r.stage>1?'GPS və bilet məlumatı ilə təsdiqləndi':i===2&&r.stage>2?'BakuBus MMC, cavab müddəti 24 saat':i===3&&r.stage>3?'Sürücü ilə izahat işi aparıldı':'Gözlənilir'}</div></div></li>`).join('')}</ul>
+  ${r.stage>=4?'<div class="card small">Təsdiqlənmiş şikayət üçün <b>15 coin</b> hesabınıza köçürüldü.</div>':'<div class="card small muted">Hər addımda bildiriş alacaqsınız.</div>'}`;}
+let curStatus=null;function refreshStatus(id){if(curStatus===id&&$('#v-status').classList.contains('on'))$('#statusBody').innerHTML=statusHTML(id);renderProfile();}
+
+/* ============ NOTIFS ============ */
+function renderNotifs(){const u=S.notifs.filter(n=>!n.read).length;$('#ntBadge').textContent=u;$('#ntBadge').style.display=u?'':'none';
+  $('#ntList').innerHTML=S.notifs.map((n,i)=>`<button class="nt ${n.read?'':'unread'}" data-nt="${i}"><div class="ic" style="background:var(--surface-2);color:${n.c}">${n.ic}</div><div><b>${n.t}</b><div class="small muted">${n.s}</div><div class="small faint">${n.when}</div></div></button>`).join('');}
+$('#ntList').onclick=e=>{const b=e.target.closest('[data-nt]');if(!b)return;const n=S.notifs[+b.dataset.nt];n.read=true;renderNotifs();if(n.to)route(n.to);};
+$('#readAll').onclick=()=>{S.notifs.forEach(n=>n.read=true);renderNotifs();toast('Bütün bildirişlər oxundu');};
+
+/* ============ SURVEY ============ */
+const SV=[['Avtovağzaldan 28 May-a dayanacaqsız ekspress avtobusdan istifadə edərdinizmi?',['Hər gün','Həftədə bir neçə dəfə','Nadir hallarda','Xeyr']],['Ekspress üçün hansı interval sizə uyğundur?',['5 dəqiqə','8 dəqiqə','12 dəqiqə','Fərqi yoxdur']],['Hazırda Avtovağzaldan şəhərə necə gedirsiniz?',['Avtobus','Metro','Taksi','Şəxsi avtomobil']]];
+function renderSurvey(i){$('#svStep').textContent=S.surveyDone?'Tamamlanıb':`Sual ${Math.min(i+1,3)} / 3`;$('#svProg').style.width=(S.surveyDone?100:(i+1)/3*100)+'%';const b=$('#svBody');
+  if(S.surveyDone&&i===0){b.innerHTML=`<div class="empty"><div class="h1">Bu sorğunu artıq cavablamısınız</div><p class="sub">Nəticələr hazır olanda sizə bildiriş göndərəcəyik.</p><button class="btn" data-go="v-notifs">Bildirişlərə qayıt</button></div>`;return;}
+  if(i>=SV.length){S.surveyDone=true;const n=S.notifs.find(x=>x.id==='sv');if(n){n.read=true;n.t='Sorğu tamamlandı: yeni ekspress xətt';n.s='Təşəkkürlər. 10 coin hesabınıza köçürüldü.';}renderNotifs();addCoins(10,'AYNA sorğusu: ekspress xətt');b.innerHTML=`<div class="empty" style="padding-top:40px"><div class="h1">Təşəkkürlər</div><p class="sub">Cavablarınız AYNA-nın ekspress xətt qərarında istifadə olunacaq.</p><button class="btn p" data-go="v-wallet">Cüzdana bax</button></div>`;return;}
+  b.innerHTML=`<div class="h1" style="font-size:21px;margin-bottom:18px">${SV[i][0]}</div>`+SV[i][1].map(a=>`<button class="ans">${a}</button>`).join('');b.querySelectorAll('.ans').forEach(x=>x.onclick=()=>{x.classList.add('on');setTimeout(()=>renderSurvey(i+1),300);});}
+
+/* ============ WALLET + CONVERT ============ */
+function renderWallet(){$('#wBal').textContent=S.coins;$('#wAzn').textContent=`≈ ${azn(S.coins)} ₼, partnyor bank məzənnəsi ilə`;$('#payCoinBal').textContent=`Balans: ${S.coins} coin`;
+  $('#hist').innerHTML=S.history.slice(0,8).map(([l,w,n])=>`<div class="hist"><span>${l}<small>${w}</small></span><b style="color:${n>0?'var(--ok)':'var(--ink-2)'}">${n>0?'+':''}${n} coin</b></div>`).join('');updAmt();}
+let amt=200;
+$('#amts').onclick=e=>{const b=e.target.closest('[data-amt]');if(!b)return;amt=b.dataset.amt==='all'?'all':+b.dataset.amt;$$('[data-amt]').forEach(x=>x.classList.toggle('on',x===b));updAmt();};
+function updAmt(){const a=amt==='all'?Math.floor(S.coins/100)*100:amt;$('#cvAzn').textContent=azn(a)+' ₼';$('#cvErr').textContent='';}
+$('#cvBtn').onclick=()=>{const a=amt==='all'?Math.floor(S.coins/100)*100:amt;if(a<100||a>S.coins){$('#cvErr').textContent=`Kifayət qədər coin yoxdur. Balans: ${S.coins} coin, minimum 100.`;return;}
+  addCoins(-a,`Banka köçürmə, ${azn(a)} ₼ (icra olunur)`);toast(`${a} coin çevrildi. ${azn(a)} ₼ kartınıza köçürülür`);route('v-wallet');
+  setTimeout(()=>{const h=S.history.find(x=>x[0].includes('icra olunur'));if(h)h[0]=h[0].replace('icra olunur','tamamlandı');renderWallet();addNotif({id:'cv'+Date.now(),t:'Köçürmə tamamlandı',s:`${azn(a)} ₼ partnyor bank kartınıza köçürüldü.`,to:'v-wallet',ic:'₼',c:'var(--coin)'});push('Köçürmə tamamlandı',`${azn(a)} ₼ kartınıza köçürüldü`,'v-wallet');},7000);};
+
+/* ============ PROFILE ============ */
+function renderProfile(){$('#myReports').innerHTML=S.reports.length?S.reports.map(r=>`<button class="setrow" data-go-status="${r.id}"><span>#${r.id}, ${r.cat}<br><small class="faint" style="font-weight:500">${r.route} nömrəli, ${r.when}</small></span><span class="st ${r.stage>=4?'ok':'info'}">${r.stage>=4?'Cavab verilib':STAGES[r.stage-1]}</span></button>`).join(''):'<div class="empty">Hələ şikayət göndərməmisiniz.</div>';}
+$('#myReports').onclick=e=>{const b=e.target.closest('[data-go-status]');if(b)route('status:'+b.dataset.goStatus);};
+const LANGS=['Azərbaycan','English','Русский'];let li=0;$('#langBtn').onclick=()=>{li=(li+1)%3;$('#langV').textContent=LANGS[li];toast('Dil: '+LANGS[li]+' (demo-da mətnlər dəyişmir)');};
+let bil=true;$('#bilBtn').onclick=()=>{bil=!bil;$('#bilV').textContent=bil?'Qoşulub':'Qoşulmayıb';$('#bilV').className='st '+(bil?'ok':'');toast(bil?'Biletim.az hesabı qoşuldu':'Biletim.az hesabı ayrıldı');};
+
+/* ============ SƏFƏR İZLƏMƏ + PROAKTİV TƏKLİF ============ */
+function patternsOf(){const m={};S.trips.forEach(t=>{const k=t.from+'→'+t.to+'|'+t.route;m[k]=m[k]||{...t,n:0};m[k].n++;});return Object.values(m).sort((a,b)=>b.n-a.n);}
+function renderForYou(){const P=patternsOf()[0];
+  $('#forYou').innerHTML=S.track&&P?`<div class="foryou"><div class="k"><span>Sizin üçün</span><button id="whyFy">Niyə görürəm?</button></div><div><b>İş günləri bu saatda ${P.to}a gedirsiniz</b><div class="s"><span class="plate ${P.cls} sm">${P.route}</span> ${P.from} dayanacağından 6 dəqiqəyə gəlir</div></div><button class="btn p sm" data-dest="${P.to}" data-pick="o88">Yola düş</button></div>`:'';
+  const wf=$('#whyFy');if(wf)wf.onclick=e=>{e.stopPropagation();toast(`Son 3 həftədə ${P.n+9} dəfə 08:00–08:30 arası ${P.from} → ${P.to} getmisiniz`);};}
+function renderTrips(){$('#trackSw').setAttribute('aria-pressed',S.track);
+  const P=patternsOf();$('#patterns').innerHTML=S.track?P.slice(0,2).map((p,i)=>`<div class="pattern"><div class="ic">${i===0?'08:10':'18:40'}</div><div><b>${p.from} → ${p.to}</b><div class="small faint">${i===0?'İş günləri, səhər':'Axşam'}, ${p.n+(i===0?9:4)} dəfə</div></div><span class="plate ${p.cls} sm">${p.route}</span></div>`).join(''):'<div class="empty">Səfər izləmə söndürülüb. Tətbiq vərdişlərinizi öyrənmir və yol təklif etmir.</div>';
+  $('#tripList').innerHTML=S.trips.map(t=>`<div class="hist"><span><span class="plate ${t.cls} sm" style="margin-right:8px">${t.route}</span>${t.from} → ${t.to}<small>${t.day}: mindi ${t.on}, düşdü ${t.off}${t.auto?', avtomatik aşkarlandı':''}</small></span></div>`).join('');}
+let autoTimer=null;
+function endRide(auto){clearTimeout(autoTimer);if(S.autoEnded)return;S.autoEnded=true;const o=OPTS[S.opt];const pl=o.plate==='M'?'65':o.plate;
+  if(S.track)S.trips.unshift({route:pl,cls:o.cls==='d'||o.plate==='M'?'d':'e',from:STOPS[o.stop].n,to:S.dest,on:'08:18',off:'08:41',day:'Bu gün',auto});
+  renderForYou();toast(auto?`Düşdüyünüz aşkarlandı: ${S.dest}, 08:41`:`Səfər bitdi: ${S.dest}`);route('v-home');
+  setTimeout(()=>push('Səfəriniz necə keçdi?',`${pl} nömrəli avtobus. Qiymətləndirin, 5 coin qazanın`,'v-review'),1100);}
+
+/* ============ ROUTER ============ */
+const SCREENS=[['v-home','Xəritə'],['v-trip','Marşrut variantları'],['v-route','Dayanacağa yol'],['v-walk','Naviqasiya'],['v-pay','Ödəniş'],['v-ride','Səfər'],['v-review','Rəy'],['v-report','Şikayət'],['status:A-2031','Şikayət statusu'],['v-notifs','Bildirişlər'],['v-survey','Sorğu'],['v-wallet','Coin cüzdanı'],['v-convert','Banka çevir'],['v-trips','Səfərlərim'],['v-profile','Profil']];
+$('#jump').innerHTML=SCREENS.map(([id,l])=>`<button data-jump="${id}">${l}</button>`).join('');
+$('#jump').onclick=e=>{const b=e.target.closest('[data-jump]');if(!b)return;if(b.dataset.jump==='v-walk')startWalk();else route(b.dataset.jump);};
+function route(id){
+  let view=id;if(id.startsWith('status:')){curStatus=id.split(':')[1];$('#statusBody').innerHTML=statusHTML(curStatus);view='v-status';}
+  if(view!=='v-walk')cancelAnimationFrame(walkRAF);
+  if(view==='v-trip')renderTrip();if(view==='v-route')renderRoute();if(view==='v-ride')renderRide();if(view==='v-review')renderReview();if(view==='v-report')renderReportForm();if(view==='v-survey')renderSurvey(0);if(view==='v-wallet')renderWallet();if(view==='v-convert')updAmt();if(view==='v-profile')renderProfile();if(view==='v-trips')renderTrips();if(view==='v-home')renderForYou();if(view!=='v-ride')clearTimeout(autoTimer);if(view==='v-notifs')renderNotifs();
+  $$('.view').forEach(v=>v.classList.toggle('on',v.id===view));
+  $$('[data-tab]').forEach(t=>t.classList.toggle('on',t.dataset.tab===view));
+  $$('#jump button').forEach(b=>b.classList.toggle('on',b.dataset.jump===id||(id.startsWith('status:')&&b.dataset.jump.startsWith('status:'))));
+  $('#tabbar').style.display=['v-review','v-survey','v-route','v-walk','v-convert'].includes(view)?'none':'grid';
+  const sc=document.querySelector('#'+view+' .scroll');if(sc)sc.scrollTop=0;
+}
+document.addEventListener('click',e=>{
+  const d=e.target.closest('[data-dest]');if(d)S.dest=d.dataset.dest;
+  const sd=e.target.closest('[data-setdest]');if(sd){S.dest=sd.dataset.setdest;$('#sugg').style.display='none';renderTrip();}
+  const f=e.target.closest('[data-filter]');if(f){S.filter=f.dataset.filter;renderTrip();}
+  const pk=e.target.closest('[data-pick]');if(pk){S.opt=pk.dataset.pick;route('v-route');return;}
+  const g=e.target.closest('[data-go]');if(g)route(g.dataset.go);
+  const t=e.target.closest('[data-toast]');if(t)toast(t.dataset.toast);
+  const pill=e.target.closest('.pill:not([data-filter]),.cat');if(pill){const grp=pill.parentElement,single=grp.hasAttribute('data-single');if(single)grp.querySelectorAll('.pill,.cat').forEach(p=>p.classList.remove('on'));pill.classList.toggle('on',single?true:!pill.classList.contains('on'));}
+  const sw=e.target.closest('[data-sw]');if(sw){const v=sw.getAttribute('aria-pressed')!=='true';sw.setAttribute('aria-pressed',v);if(sw.dataset.sw==='big')$('#screen').classList.toggle('big',v);if(sw.dataset.sw==='track'){S.track=v;renderTrips();renderForYou();toast(v?'Səfər izləmə açıldı':'Səfər izləmə söndürüldü: tətbiq yol təklif etməyəcək');}
+    if(sw.dataset.sw==='access'){S.access=v;toast(v?'Əlçatanlıq rejimi: yalnız əlçatan variantlar göstəriləcək':'Əlçatanlıq rejimi söndürüldü');}}
+});
+const gm=()=>toast('Google Maps açılır: '+S.dest+' istiqaməti');$('#gmaps').onclick=gm;$('#waze').onclick=()=>toast('Waze açılır: '+S.dest+' istiqaməti');
+
+/* QR */
+(function(){let s='<rect width="29" height="29" fill="#fff"/>',sd=7;const r=()=>(sd=(sd*9301+49297)%233280)/233280;const fi=(x,y)=>`<rect x="${x}" y="${y}" width="7" height="7" fill="#0E1A2B"/><rect x="${x+1}" y="${y+1}" width="5" height="5" fill="#fff"/><rect x="${x+2}" y="${y+2}" width="3" height="3" fill="#0E1A2B"/>`;for(let y=0;y<29;y++)for(let x=0;x<29;x++){const inF=(x<8&&y<8)||(x>20&&y<8)||(x<8&&y>20);if(!inF&&r()>.52)s+=`<rect x="${x}" y="${y}" width="1" height="1" fill="#0E1A2B"/>`;}$('#qr').innerHTML=s+fi(0,0)+fi(22,0)+fi(0,22);})();
+
+$('#themeBtn').onclick=()=>{const r=document.documentElement;const dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;r.dataset.theme=dark?'light':'dark';};
+renderWallet();renderNotifs();renderProfile();renderForYou();route('v-home');
+setTimeout(()=>{if($('#v-home').classList.contains('on')&&!S.surveyDone)push('AYNA sorğusu: yeni ekspress xətt','1 dəqiqəlik sorğu. Cavab verin, 10 coin qazanın','v-survey');},4000);
+</script>
+</body>
+</html>

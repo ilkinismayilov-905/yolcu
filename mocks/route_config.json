@@ -1,0 +1,32 @@
+[
+  {
+    "route": "88",
+    "intervalMin": 12,
+    "busCount": 6
+  },
+  {
+    "route": "4",
+    "intervalMin": 10,
+    "busCount": 5
+  },
+  {
+    "route": "65",
+    "intervalMin": 12,
+    "busCount": 4
+  },
+  {
+    "route": "33",
+    "intervalMin": 12,
+    "busCount": 5
+  },
+  {
+    "route": "M1",
+    "intervalMin": 10,
+    "busCount": 3
+  },
+  {
+    "route": "H1",
+    "intervalMin": 12,
+    "busCount": 3
+  }
+]
