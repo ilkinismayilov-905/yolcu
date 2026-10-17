@@ -29,9 +29,9 @@
 
 ## BE-2 SSE və EventBus — H2–H4 (BE-B) · MUST
 
-- [ ] **BE-2.1** `stream/EventBus`: emitter reyestri (userId, rol), `publishAll/ToRole/ToUser`, 20 san `ping`, təmizləmə.
-- [ ] **BE-2.2** `GET /stream?token=` (`SseEmitter(0L)`).
-- [ ] **BE-2.3** `EventBridge`: Spring domain event-lərini SSE-yə çevirir.
+- [x] **BE-2.1** `stream/EventBus`: emitter reyestri (userId, rol), `publishAll/ToRole/ToUser`, 20 san `ping`, təmizləmə.
+- [x] **BE-2.2** `GET /stream?token=` (`SseEmitter(0L)`).
+- [x] **BE-2.3** `EventBridge`: Spring domain event-lərini SSE-yə çevirir.
 
 **Qəbul:** iki brauzer tabında `new EventSource('/api/v1/stream?token=..')` → `ping` hər 20 saniyədə gəlir; tab bağlananda reyestrdən silinir (log).
 

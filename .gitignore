@@ -15,3 +15,6 @@ graft/
 # IDE / local Claude settings
 .idea/
 .claude/settings.local.json
+*.tsbuildinfo
+next-env.d.ts
+.pnpm-store/

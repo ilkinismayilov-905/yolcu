@@ -30,13 +30,13 @@ Sidebar qrupları (mockup-dakı kimi): **Canlı** (Canlı xəritə, Hub kamerala
 
 ## WEB-0 Təməl — H0–H3 · MUST
 
-- [ ] **WEB-0.1** `create-next-app` (TS, App Router, Tailwind). Token-lər `tailwind.config` və `globals.css` CSS dəyişənləri kimi (`08_DESIGN_SYSTEM` §1), açıq/tünd rejim (`data-theme` + sistem).
-- [ ] **WEB-0.2** Şrift: Onest (`next/font/google`), `font-variant-numeric: tabular-nums`.
+- [x] **WEB-0.1** `create-next-app` (TS, App Router, Tailwind). Token-lər `tailwind.config` və `globals.css` CSS dəyişənləri kimi (`08_DESIGN_SYSTEM` §1), açıq/tünd rejim (`data-theme` + sistem).
+- [x] **WEB-0.2** Şrift: Onest (`next/font/google`), `font-variant-numeric: tabular-nums`.
 - [ ] **WEB-0.3** Primitiv komponentlər: `Button` (p/default/quiet/sm), `Panel` (+ başlıq, meta, actions), `Kpi`, `Seg` (seqmentli), `Toggle` (qat çipi), `Switch`, `Plate` (marşrut lövhəsi), `Status` (nöqtə + mətn), `Bar`, `Table` (+ boş vəziyyət), `Pager`, `Drawer`, `Modal`, `Toast`, `DemoBadge`.
-- [ ] **WEB-0.4** Layout: sidebar (qruplar), topbar (qlobal axtarış, "Demo data", "Canlı" nöqtəsi + saat, mövzu düyməsi, avatar).
-- [ ] **WEB-0.5** `/login` (email, şifrə, xəta mesajı), token `localStorage`-da, 401-də login-ə yönləndir.
-- [ ] **WEB-0.6** `packages/shared` qoşulur: `api.ts` tipləri, `client.ts` (`NEXT_PUBLIC_API_MODE=mock|live`), `headway.ts`, `toll.ts`.
-- [ ] **WEB-0.7** `useStream` hook (EventSource, yenidən qoşulma, "Bağlantı bərpa olunur" zolağı) + `StreamProvider` (hadisəni TanStack Query cache-inə yazır).
+- [x] **WEB-0.4** Layout: sidebar (qruplar), topbar (qlobal axtarış, "Demo data", "Canlı" nöqtəsi + saat, mövzu düyməsi, avatar).
+- [x] **WEB-0.5** `/login` (email, şifrə, xəta mesajı), token `localStorage`-da, 401-də login-ə yönləndir.
+- [x] **WEB-0.6** `packages/shared` qoşulur: `api.ts` tipləri, `client.ts` (`NEXT_PUBLIC_API_MODE=mock|live`), `headway.ts`, `toll.ts`.
+- [x] **WEB-0.7** `useStream` hook (EventSource, yenidən qoşulma, "Bağlantı bərpa olunur" zolağı) + `StreamProvider` (hadisəni TanStack Query cache-inə yazır).
 
 **Qəbul:** dispetçer daxil olur, bütün 11 səhifəyə sidebar ilə keçir (boş olsa da), mövzu dəyişir, mock rejimdə də işləyir.
 

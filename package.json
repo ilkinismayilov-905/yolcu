@@ -1,0 +1,10 @@
+{
+  "name": "yolcu",
+  "private": true,
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "dev": "pnpm -F web dev",
+    "build": "pnpm -F web build",
+    "test": "pnpm -F @yolcu/shared test"
+  }
+}

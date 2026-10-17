@@ -1,0 +1,4 @@
+packages:
+  - web
+  - packages/*
+  # - mobile   # add when the Expo app is created

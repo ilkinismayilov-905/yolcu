@@ -290,4 +290,6 @@ event: report.created
 data: {"code":"A-2042","route":"88",...}
 ```
 
+Qoşulan kimi `event: hello` → `{"userId":1,"role":"DISPATCHER","ts":"..."}`, sonra hər 20 san `event: ping` → `{"ts":"..."}`.
+
 Hadisə siyahısı: `02_ARCHITECTURE.md` → SSE.

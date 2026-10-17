@@ -11,6 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.async.AsyncRequestNotUsableException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
@@ -50,6 +51,10 @@ public class GlobalExceptionHandler {
     ResponseEntity<ApiError> forbidden(AccessDeniedException e) {
         return status(HttpStatus.FORBIDDEN, "FORBIDDEN", "İcazə yoxdur");
     }
+
+    // client closed an SSE stream: nothing can be written back, EventBus already logged the removal
+    @ExceptionHandler(AsyncRequestNotUsableException.class)
+    void clientGone() {}
 
     @ExceptionHandler(Exception.class)
     ResponseEntity<ApiError> other(Exception e) {

@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+/* Design tokens: docs/08_DESIGN_SYSTEM.md §1 (= design/web_dashboard.html :root). The only place with hex colors. */
+:root {
+  color-scheme: light;
+  --bg: #F4F6F9; --surface: #FFFFFF; --surface-2: #F2F5F8; --surface-3: #E9EEF4; --line: #E3E8EF;
+  --ink: #0E1A2B; --ink-2: #536274; --ink-3: #8796A8;
+  --primary: #0B6FCB; --primary-ink: #FFFFFF; --primary-soft: #E8F2FC; --live: #1FB8E8;
+  --ok: #13935A; --warn: #C98209; --bad: #D4404A; --crowd: #6E55E8; --coin: #E3A20F;
+  --bus-e: #13935A; --bus-d: #D4404A; --metro: #C8102E;
+  --fluid: #2DB46F; --slow: #F2A93B; --jam: #E5484D;
+  --on-color: #FFFFFF; /* text/icons on solid colored fills (plates, badges) */
+  --shadow: 0 1px 2px rgba(14, 26, 43, .04), 0 4px 14px rgba(14, 26, 43, .05);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #0B121C; --surface: #111A26; --surface-2: #16212F; --surface-3: #1C2939; --line: #223044;
+    --ink: #E6EDF5; --ink-2: #9AAABD; --ink-3: #6C7C90;
+    --primary: #3B9BFF; --primary-ink: #06111F; --primary-soft: #14273D;
+    --shadow: none;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0B121C; --surface: #111A26; --surface-2: #16212F; --surface-3: #1C2939; --line: #223044;
+  --ink: #E6EDF5; --ink-2: #9AAABD; --ink-3: #6C7C90;
+  --primary: #3B9BFF; --primary-ink: #06111F; --primary-soft: #14273D;
+  --shadow: none;
+}
+
+/* Tailwind v4 theme mapping (replaces tailwind.config): bg-surface, text-ink-2, border-line, ... */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-line: var(--line);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-primary: var(--primary);
+  --color-primary-ink: var(--primary-ink);
+  --color-primary-soft: var(--primary-soft);
+  --color-live: var(--live);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --color-bad: var(--bad);
+  --color-crowd: var(--crowd);
+  --color-coin: var(--coin);
+  --color-bus-e: var(--bus-e);
+  --color-bus-d: var(--bus-d);
+  --color-metro: var(--metro);
+  --color-fluid: var(--fluid);
+  --color-slow: var(--slow);
+  --color-jam: var(--jam);
+  --color-on-color: var(--on-color);
+  --shadow-card: var(--shadow);
+  --font-sans: var(--font-onest), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+html, body { height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+
+/* "Canlı" pulse dot */
+.pulse { position: relative; }
+.pulse::after {
+  content: ""; position: absolute; inset: -4px; border-radius: 50%;
+  border: 2px solid currentColor; opacity: 0; animation: ring 2s infinite;
+}
+@keyframes ring { 0% { transform: scale(.5); opacity: .7 } 100% { transform: scale(1.6); opacity: 0 } }
+@media (prefers-reduced-motion: reduce) { *, *::after { animation: none !important; transition: none !important; } }
