@@ -38,7 +38,7 @@ Hər kəs öz qovluğunda ayrıca Claude Code sessiyası işlədir. Müqavilə d
 
 ## 3. Demo konfiqurasiyası
 
-- Bir laptop: Docker Postgres + backend (`demo` profili) + web (`pnpm build && pnpm start`, dev yox).
+- Bir laptop, **bir proses**: `./run.sh` (lokal Postgres 5432-dədirsə `DB_PORT=5433 ./run.sh`) → Docker Postgres + Spring Boot, dashboard və API birlikdə **http://localhost:8080**-də. Ayrıca web serveri yoxdur, CORS yoxdur. İlk start web build-ə görə bir neçə dəqiqə çəkir, demo-dan əvvəl bir dəfə işə sal.
 - Telefon (və ehtiyat ikinci telefon) eyni Wi-Fi-da, Expo Go, `EXPO_PUBLIC_API_URL` = laptopun IP-si. Hotspot ehtiyat kimi hazır.
 - Proyektora web (1920 × 1080), telefon ekranı kamera və ya ekran yayımı ilə.
 - Demo-dan 5 dəqiqə əvvəl: `/demo/reset`.

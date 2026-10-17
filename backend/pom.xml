@@ -100,4 +100,69 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <!-- -Pweb: build the Next.js static export and serve it from :8080 -->
+        <profile>
+            <id>web</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.5.0</version>
+                        <configuration>
+                            <!-- npx pins the pnpm from root package.json, so no global install is needed -->
+                            <executable>npx</executable>
+                            <workingDirectory>${project.basedir}/..</workingDirectory>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>pnpm-install</id>
+                                <phase>generate-resources</phase>
+                                <goals><goal>exec</goal></goals>
+                                <configuration>
+                                    <arguments>
+                                        <argument>--yes</argument>
+                                        <argument>pnpm@9.15.9</argument>
+                                        <argument>install</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>web-build-export</id>
+                                <phase>generate-resources</phase>
+                                <goals><goal>exec</goal></goals>
+                                <configuration>
+                                    <arguments>
+                                        <argument>--yes</argument>
+                                        <argument>pnpm@9.15.9</argument>
+                                        <argument>--filter</argument>
+                                        <argument>web</argument>
+                                        <argument>build:export</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy-web</id>
+                                <phase>process-resources</phase>
+                                <goals><goal>copy-resources</goal></goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.outputDirectory}/static</outputDirectory>
+                                    <resources>
+                                        <resource><directory>${project.basedir}/../web/out</directory></resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

@@ -37,7 +37,9 @@ public class SecurityConfig {
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/error").permitAll()
                         .requestMatchers("/api/v1/admin/**").hasAnyRole("DISPATCHER", "ADMIN")
                         .requestMatchers("/api/v1/me/**").authenticated()
-                        .anyRequest().authenticated())
+                        .requestMatchers("/api/**", "/actuator/**").authenticated()
+                        // everything else is the static web dashboard (auth is enforced client-side + by the API)
+                        .anyRequest().permitAll())
                 .exceptionHandling(e -> e
                         .authenticationEntryPoint((req, res, ex) ->
                                 write(res, mapper, HttpServletResponse.SC_UNAUTHORIZED, "UNAUTHORIZED", "Giriş tələb olunur"))

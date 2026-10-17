@@ -82,14 +82,18 @@ Hər funksiya `docs/01_SCOPE_REAL_SIM_FAKE.md`-də bu etiketlərdən birini daş
 
 ## 7. Əmrlər
 
-```bash
-docker compose up -d db                       # Postgres :5432
-cd backend && mvn spring-boot:run            # API :8080, Swagger: /swagger-ui.html
-cd web && pnpm dev                            # :3000
-cd mobile && npx expo start                   # telefonda Expo Go ilə
-```
+| Əmr (repo kökündə) | Nə edir | Ünvan |
+|---|---|---|
+| `./run.sh` | **Demo / hamısı bir prosesdə:** Postgres + web statik export (`-Pweb`) + Spring Boot | **:8080** — dashboard, `/api/v1`, `/swagger-ui.html` |
+| `pnpm dev` | **İnkişaf:** Postgres + backend (profilsiz, sürətli) + Next.js dev (hot reload), `concurrently` ilə | web :3000, API :8080 |
+| `cd backend && mvn spring-boot:run` | Yalnız backend | :8080 |
+| `cd backend && mvn -B -ntp test` | Backend testləri (pnpm işə düşmür) | — |
+| `pnpm build` / `pnpm test` | Web build / `packages/shared` testləri | — |
+| `cd mobile && npx expo start` | Mobil, telefonda Expo Go ilə | — |
 
-Lokal Postgres 5432-ni tutursa: `DB_PORT=5433 docker compose up -d db` və `DB_PORT=5433 mvn spring-boot:run`.
+Lokal Postgres 5432-ni tutursa: `DB_PORT=5433 ./run.sh`, `DB_PORT=5433 pnpm dev` (və ya `DB_PORT=5433 docker compose up -d db` + `DB_PORT=5433 mvn spring-boot:run`).
+
+pnpm qlobal quraşdırılmayıbsa `npx -y pnpm@9.15.9 ...` işlət (9.15.0 Node 26-da "Done"-dan sonra çıxmır). pnpm əmrlərini `CI=true` ilə işlət ki, sual verməsin.
 
 Mobil telefon backend-ə laptopun LAN IP-si ilə qoşulur: `EXPO_PUBLIC_API_URL=http://192.168.x.x:8080`.
 

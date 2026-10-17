@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:export": "NEXT_OUTPUT=export NEXT_PUBLIC_API_MODE=live NEXT_PUBLIC_API_URL= next build",
     "start": "next start",
     "typecheck": "tsc --noEmit"
   },

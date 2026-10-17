@@ -1,7 +1,7 @@
 import { createClient, type ApiMode } from '@yolcu/shared/client';
 
 export const API_MODE: ApiMode = process.env.NEXT_PUBLIC_API_MODE === 'live' ? 'live' : 'mock';
-export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080';
+export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? '';
 
 const TOKEN_KEY = 'yolcu.token';
 

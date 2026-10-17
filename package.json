@@ -1,10 +1,13 @@
 {
   "name": "yolcu",
   "private": true,
-  "packageManager": "pnpm@9.15.0",
+  "packageManager": "pnpm@9.15.9",
   "scripts": {
-    "dev": "pnpm -F web dev",
+    "dev": "docker compose up -d db && concurrently -k -n api,web -c blue,green \"mvn -B -ntp -f backend/pom.xml spring-boot:run\" \"pnpm -F web dev\"",
     "build": "pnpm -F web build",
     "test": "pnpm -F @yolcu/shared test"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.6"
   }
 }
