@@ -46,7 +46,7 @@ Yolcu — AYNA üçün vahid nəqliyyat platformasıdır. **Web dashboard** (AYN
 Yolcu/
 ├── CLAUDE.md
 ├── docs/  design/  mocks/
-├── backend/                 # Spring Boot (Gradle, Kotlin DSL)
+├── backend/                 # Spring Boot (Maven, mvnw)
 │   └── src/main/java/az/yolcu/...
 ├── web/                     # Next.js
 ├── mobile/                  # Expo
@@ -84,7 +84,7 @@ Hər funksiya `docs/01_SCOPE_REAL_SIM_FAKE.md`-də bu etiketlərdən birini daş
 
 ```bash
 docker compose up -d db                       # Postgres :5432
-cd backend && ./gradlew bootRun               # API :8080, Swagger: /swagger-ui.html
+cd backend && ./mvnw spring-boot:run          # API :8080, Swagger: /swagger-ui.html
 cd web && pnpm dev                            # :3000
 cd mobile && npx expo start                   # telefonda Expo Go ilə
 ```

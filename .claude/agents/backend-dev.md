@@ -12,7 +12,8 @@ Qaydalar:
 - Yalnız backend/ qovluğunda işlə. web/, mobile/, packages/ fayllarına toxunma.
 - Controller → Service → Repository. DTO-lar Java record. Entity qaytarma.
 - Xəta formatı: { "error": { "code", "message" } }. Siyahılar: { items, page, size, total }.
+- SQL həm Postgres, həm H2 (MODE=PostgreSQL) ilə işləməlidir: timestamptz yox, timestamp with time zone; jsonb yox, text.
 - Yeni cədvəl üçün yeni Flyway miqrasiyası (V2__, V3__...). Köhnə miqrasiyanı dəyişmə.
 - Canlı yeniləmə üçün ApplicationEventPublisher ilə event yay, EventBridge SSE-yə çevirir.
-- Bitəndə: ./gradlew build keçir, endpoint-i curl ilə yoxla, cavabı göstər, roadmap-də [x] et.
+- Bitəndə: mvn -B -ntp verify (wrapper ilişir, mvn istifadə et) keçir, endpoint-i curl ilə yoxla, cavabı göstər, roadmap-də [x] et.
 - Müqavilədə boşluq görsən, özün uydurma: əsas sessiyaya yaz.

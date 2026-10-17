@@ -8,14 +8,14 @@
 
 ## BE-0 Skelet — H0–H2 (BE-A) · MUST
 
-- [ ] **BE-0.1** start.spring.io: Java 21, Gradle Kotlin, Web, Data JPA, Validation, Security, PostgreSQL, Flyway, Lombok (istəyə görə). `springdoc-openapi-starter-webmvc-ui`, `jjwt-api/impl/jackson`.
-- [ ] **BE-0.2** `docker-compose.yml` (postgres:16), `application.yml` (`02_ARCHITECTURE` §10), `h2` profili ehtiyat üçün.
-- [ ] **BE-0.3** `V1__init.sql` — bütün cədvəllər (`02_ARCHITECTURE` §3).
-- [ ] **BE-0.4** `common/`: `ApiError`, `GlobalExceptionHandler` (kodlar `03_API` cədvəlindən), `PageResponse<T>`, `GeoUtil.distanceMeters`, `AppClock` (demo saatı).
-- [ ] **BE-0.5** `security/`: JWT (HS256, 12 saat), `JwtFilter` (header və `?token=` query), rol qaydaları, CORS.
-- [ ] **BE-0.6** `auth/`: `/auth/login`, `/auth/demo-login`, `/me`.
+- [x] **BE-0.1** start.spring.io: Java 21, Maven (mvnw), Web, Data JPA, Validation, Security, PostgreSQL, Flyway, Lombok (istəyə görə). `springdoc-openapi-starter-webmvc-ui`, `jjwt-api/impl/jackson`.
+- [x] **BE-0.2** `docker-compose.yml` (postgres:16), `application.yml` (`02_ARCHITECTURE` §10), `h2` profili ehtiyat üçün.
+- [x] **BE-0.3** `V1__init.sql` — bütün cədvəllər (`02_ARCHITECTURE` §3).
+- [x] **BE-0.4** `common/`: `ApiError`, `GlobalExceptionHandler` (kodlar `03_API` cədvəlindən), `PageResponse<T>`, `GeoUtil.distanceMeters`, `AppClock` (demo saatı).
+- [x] **BE-0.5** `security/`: JWT (HS256, 12 saat), `JwtFilter` (header və `?token=` query), rol qaydaları, CORS.
+- [x] **BE-0.6** `auth/`: `/auth/login`, `/auth/demo-login`, `/me`.
 
-**Qəbul:** `docker compose up -d db && ./gradlew bootRun` xətasız başlayır; Swagger açılır; `curl -X POST /api/v1/auth/demo-login` token qaytarır; tokensiz `/me` → 401 və `{"error":{"code":"UNAUTHORIZED"}}`.
+**Qəbul:** `docker compose up -d db && ./mvnw spring-boot:run` xətasız başlayır; Swagger açılır; `curl -X POST /api/v1/auth/demo-login` token qaytarır; tokensiz `/me` → 401 və `{"error":{"code":"UNAUTHORIZED"}}`.
 
 ## BE-1 Data və seed — H1–H4 (BE-B) · MUST
 

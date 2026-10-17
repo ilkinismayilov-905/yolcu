@@ -73,7 +73,7 @@ create table users (
   coin_balance  int not null default 0,
   accessibility boolean not null default false,
   tracking_consent boolean not null default true,
-  created_at    timestamptz not null default now()
+  created_at    timestamp with time zone not null default now()
 );
 
 create table operators (
@@ -102,7 +102,7 @@ create table route_config (
   bus_count        int not null,
   cycle_min        int not null,                 -- dövr vaxtı
   auto_mode        boolean not null default false,
-  updated_at       timestamptz not null default now()
+  updated_at       timestamp with time zone not null default now()
 );
 
 create table trips (
@@ -117,8 +117,8 @@ create table trips (
   alight_detected varchar(8),                    -- AUTO | MANUAL
   synthetic   boolean not null default false,    -- analitika seed-i
   paid_with   varchar(20) not null,              -- BAKIKART | CARD | COIN
-  started_at  timestamptz not null default now(),
-  ended_at    timestamptz
+  started_at  timestamp with time zone not null default now(),
+  ended_at    timestamp with time zone
 );
 
 create table reviews (
@@ -134,7 +134,7 @@ create table reviews (
   crowd_level   varchar(12) not null,             -- EMPTY | NORMAL | FULL | OVERFULL
   tags          text,                             -- vergüllə
   comment       text,
-  created_at    timestamptz not null default now()
+  created_at    timestamp with time zone not null default now()
 );
 
 create table reports (
@@ -151,9 +151,9 @@ create table reports (
   lat double precision, lon double precision,
   status        varchar(12) not null,             -- NEW | REVIEW | FORWARDED | ANSWERED | RESOLVED
   answer_text   text,
-  created_at    timestamptz not null default now(),
-  forwarded_at  timestamptz,
-  updated_at    timestamptz not null default now()
+  created_at    timestamp with time zone not null default now(),
+  forwarded_at  timestamp with time zone,
+  updated_at    timestamp with time zone not null default now()
 );
 create index on reports(status); create index on reports(created_at desc);
 
@@ -163,7 +163,7 @@ create table report_events (
   type       varchar(20) not null,                -- CREATED | STATUS | FORWARDED | SHARED | ANSWERED
   note       text,
   actor      varchar(60),
-  created_at timestamptz not null default now()
+  created_at timestamp with time zone not null default now()
 );
 
 create table surveys (
@@ -172,8 +172,8 @@ create table surveys (
   status       varchar(10) not null,              -- DRAFT | ACTIVE | CLOSED
   audience     varchar(60) not null,              -- ALL | AVTOVAGZAL_2KM | ROUTE_88_4
   coin_reward  int not null,
-  created_at   timestamptz not null default now(),
-  published_at timestamptz, closed_at timestamptz
+  created_at   timestamp with time zone not null default now(),
+  published_at timestamp with time zone, closed_at timestamp with time zone
 );
 create table survey_questions (
   id        bigserial primary key,
@@ -187,7 +187,7 @@ create table survey_answers (
   survey_id  bigint not null references surveys(id),
   user_id    bigint not null references users(id),
   answers    text not null,                        -- JSON: {"<questionId>":"<option>"}
-  created_at timestamptz not null default now(),
+  created_at timestamp with time zone not null default now(),
   unique (survey_id, user_id)
 );
 
@@ -198,7 +198,7 @@ create table coin_tx (
   reason     varchar(30) not null,                 -- REVIEW | SURVEY | REPORT | REPORT_VERIFIED | FARE | CONVERSION | SEED
   ref_id     varchar(40),
   label      varchar(120) not null,
-  created_at timestamptz not null default now(),
+  created_at timestamp with time zone not null default now(),
   unique (user_id, reason, ref_id)                 -- eyni şeyə iki dəfə mükafat yoxdur
 );
 
@@ -209,8 +209,8 @@ create table coin_conversions (
   azn        numeric(10,2) not null,
   card_mask  varchar(30) not null,
   status     varchar(12) not null,                 -- PENDING | COMPLETED
-  created_at timestamptz not null default now(),
-  completed_at timestamptz
+  created_at timestamp with time zone not null default now(),
+  completed_at timestamp with time zone
 );
 
 create table notifications (
@@ -220,8 +220,8 @@ create table notifications (
   title      varchar(160) not null,
   body       text,
   target     varchar(60),                          -- mobil route: "survey:5", "report:A-2042", "review:trip:12", "wallet"
-  read_at    timestamptz,
-  created_at timestamptz not null default now()
+  read_at    timestamp with time zone,
+  created_at timestamp with time zone not null default now()
 );
 create index on notifications(user_id, created_at desc);
 
@@ -237,7 +237,7 @@ create table hub_proposals (
   items       text not null,                       -- JSON: nə qurulmalı
   impact      text not null,                       -- JSON: gözlənilən təsir
   status      varchar(10) not null default 'NEW',  -- NEW | ACCEPTED | REJECTED
-  created_at  timestamptz not null default now()
+  created_at  timestamp with time zone not null default now()
 );
 
 create table alerts (                              -- dashboard hadisələr lenti
@@ -246,7 +246,7 @@ create table alerts (                              -- dashboard hadisələr lent
   title      varchar(200) not null,
   body       text,
   target     varchar(30),                          -- web səhifə: "p-occ"
-  created_at timestamptz not null default now()
+  created_at timestamp with time zone not null default now()
 );
 ```
 

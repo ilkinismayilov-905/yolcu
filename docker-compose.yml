@@ -1,0 +1,9 @@
+services:
+  db:
+    image: postgres:16
+    environment: { POSTGRES_DB: yolcu, POSTGRES_USER: yolcu, POSTGRES_PASSWORD: yolcu }
+    ports: ["${DB_PORT:-5432}:5432"]  # lokal Postgres 5432-ni tutursa: DB_PORT=5433
+    volumes: [yolcu-db:/var/lib/postgresql/data]
+
+volumes:
+  yolcu-db:

@@ -1,0 +1,28 @@
+yolcu:
+  jwt-secret: ${JWT_SECRET:change-me-32-bytes-minimum-secret-key!!}
+  cors-origins: http://localhost:3000,http://192.168.1.10:3000
+  data-dir: ../data/processed
+  mocks-dir: ../mocks
+  coin-rate: 100                 # 100 coin = 1 AZN
+  demo:
+    clock-start: "08:12"         # demo saatı bu saatdan başlayır, real vaxtla irəliləyir
+    auto-advance-reports: false  # true: dashboard-da adam yoxdursa şikayət öz-özünə irəliləyir
+    bank-delay-seconds: 60
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:${DB_PORT:5432}/yolcu
+    username: yolcu
+    password: yolcu
+  jpa.hibernate.ddl-auto: validate
+  jpa.open-in-view: false
+springdoc:
+  swagger-ui.path: /swagger-ui.html
+
+---
+# Ehtiyat: ./mvnw spring-boot:run -Dspring-boot.run.arguments='--spring.profiles.active=h2'
+spring:
+  config.activate.on-profile: h2
+  datasource:
+    url: jdbc:h2:mem:yolcu;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH
+    username: sa
+    password: ""
