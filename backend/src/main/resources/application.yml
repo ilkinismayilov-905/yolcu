@@ -15,6 +15,11 @@ spring:
     password: yolcu
   jpa.hibernate.ddl-auto: validate
   jpa.open-in-view: false
+  # devtools: restart on target/classes change only; no LiveReload server (Next.js has its own HMR)
+  devtools:
+    livereload.enabled: false
+    restart.poll-interval: 1s
+    restart.quiet-period: 400ms
 springdoc:
   swagger-ui.path: /swagger-ui.html
 

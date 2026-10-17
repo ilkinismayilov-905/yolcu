@@ -3,11 +3,12 @@
   "private": true,
   "packageManager": "pnpm@9.15.9",
   "scripts": {
-    "dev": "docker compose up -d db && concurrently -k -n api,web -c blue,green \"mvn -B -ntp -f backend/pom.xml spring-boot:run\" \"pnpm -F web dev\"",
+    "dev": "docker compose up -d db && concurrently -k -n api,watch,web -c blue,yellow,green \"mvn -B -ntp -f backend/pom.xml spring-boot:run\" \"nodemon --on-change-only --watch backend/src -e java,yml,yaml,sql,json --delay 1 --exec \\\"mvn -q -o -f backend/pom.xml compile\\\"\" \"NEXT_PUBLIC_API_MODE=live NEXT_PUBLIC_API_URL=http://localhost:8080 next dev web -p 3000\"",
     "build": "pnpm -F web build",
     "test": "pnpm -F @yolcu/shared test"
   },
   "devDependencies": {
-    "concurrently": "^10.0.6"
+    "concurrently": "^10.0.6",
+    "nodemon": "^3.1.14"
   }
 }

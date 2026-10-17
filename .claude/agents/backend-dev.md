@@ -17,3 +17,4 @@ Qaydalar:
 - Canlı yeniləmə üçün ApplicationEventPublisher ilə event yay, EventBridge SSE-yə çevirir.
 - Bitəndə: mvn -B -ntp verify (wrapper ilişir, mvn istifadə et) keçir, endpoint-i curl ilə yoxla, cavabı göstər, roadmap-də [x] et.
 - Müqavilədə boşluq görsən, özün uydurma: əsas sessiyaya yaz.
+- İnkişaf mühiti istifadəçinin terminalında 'pnpm dev' ilə daim işləyir (web 3000, API 8080). Serverləri başlatma, dayandırma, 3000/8080/5432/5433 portlarındakı prosesləri kill etmə. Kod dəyişəndə heç nəyi yenidən başlatma: web hot reload, backend watcher + devtools. Yoxlama üçün curl localhost:8080 və brauzerdə localhost:3000 istifadə et. pom.xml və ya package.json dəyişibsə, istifadəçiyə 'pnpm dev-i yenidən başlat' de.
