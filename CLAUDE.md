@@ -84,10 +84,12 @@ Hər funksiya `docs/01_SCOPE_REAL_SIM_FAKE.md`-də bu etiketlərdən birini daş
 
 ```bash
 docker compose up -d db                       # Postgres :5432
-cd backend && ./mvnw spring-boot:run          # API :8080, Swagger: /swagger-ui.html
+cd backend && mvn spring-boot:run            # API :8080, Swagger: /swagger-ui.html
 cd web && pnpm dev                            # :3000
 cd mobile && npx expo start                   # telefonda Expo Go ilə
 ```
+
+Lokal Postgres 5432-ni tutursa: `DB_PORT=5433 docker compose up -d db` və `DB_PORT=5433 mvn spring-boot:run`.
 
 Mobil telefon backend-ə laptopun LAN IP-si ilə qoşulur: `EXPO_PUBLIC_API_URL=http://192.168.x.x:8080`.
 
