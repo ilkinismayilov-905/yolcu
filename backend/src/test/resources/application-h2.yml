@@ -1,0 +1,2 @@
+yolcu:
+  scheduling: false   # simulators are ticked manually in tests

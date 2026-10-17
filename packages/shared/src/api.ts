@@ -63,6 +63,7 @@ export interface AuthResponse {
 /** Layer names for GET /geo/layers/{name} (raw GeoJSON FeatureCollection). */
 export type GeoLayerName =
   | 'routes'
+  | 'routes-lite' // simplified `routes` (same properties) for the web live map
   | 'terminals'
   | 'bike-parkings'
   | 'bike-lanes'
@@ -194,6 +195,88 @@ export interface OkResponse {
   ok: true;
 }
 
+// ---- 8. Live data (SIM): /live/buses, /live/traffic, /live/hubs ----
+
+export type BusType = 'ELECTRIC' | 'DIESEL';
+
+/** GET /live/buses?route= item; also the `bus.positions` SSE item. */
+export interface LiveBus {
+  bort: string;
+  route: string;
+  type: BusType;
+  lat: number;
+  lon: number;
+  bearing: number; // degrees, 0 = north
+  occupancy: number; // % full, 0–100
+  capacity: number; // places
+}
+
+export type TrafficLevel = 'FREE' | 'SLOW' | 'JAM';
+
+/** GET /live/traffic item; `traffic.updated` SSE sends the full list. */
+export interface TrafficSegment {
+  id: string;
+  name: string;
+  level: TrafficLevel;
+  speedKmh: number;
+  /** [lat, lon] pairs (not GeoJSON order). */
+  line: [number, number][];
+}
+
+/** GET /live/hubs item. */
+export interface LiveHub {
+  id: string;
+  name: string;
+  lat: number;
+  lon: number;
+  count: number;
+  capacity: number;
+  trend10: number;
+  forecast15: number;
+}
+
+/** `hub.counts` SSE item (every 5 s). `trend` = LiveHub.trend10. */
+export interface HubCount {
+  hubId: string;
+  count: number;
+  trend: number;
+  forecast15: number;
+}
+
+// ---- 9. Admin dashboard: /admin/kpis, /admin/feed, /admin/hubs ----
+
+/** GET /admin/kpis */
+export interface Kpis {
+  avgSpeedKmh: number;
+  avgSpeedYesterday: number;
+  waitingAtHubs: number;
+  avgOccupancy: number; // %
+  overfullBuses: number; // buses over 90 %
+  satisfaction: number; // 0–5
+  satisfactionWeekDelta: number;
+}
+
+export type AlertCategory = 'HUB' | 'OCC' | 'AI' | 'BILETIM' | 'REPORT' | 'EVENT' | 'WEATHER';
+
+/** GET /admin/feed?limit=50 item (newest first); `alert.created` SSE payload. */
+export interface Alert {
+  id: number;
+  category: AlertCategory | (string & {});
+  title: string;
+  body: string | null;
+  /** Web page id from the mockup, e.g. "p-occ", "p-reports". */
+  target: string | null;
+  createdAt: string;
+}
+
+/** GET /admin/hubs item: /live/hubs + camera data. */
+export interface AdminHub extends LiveHub {
+  level: string; // e.g. "HIGH"; full value list not fixed in the contract yet
+  avgWaitMin: number;
+  camera: string; // "K-201"
+  recommendation: string | null;
+}
+
 // ---- 11. SSE (GET /api/v1/stream?token=...), list in 02_ARCHITECTURE.md §4 ----
 
 export const STREAM_EVENTS = [
@@ -231,16 +314,16 @@ export interface CoinUpdatedPayload {
 
 /** Payload types get narrowed per event as their slices land; until then `unknown`. */
 export interface StreamEventMap {
-  'bus.positions': unknown;
-  'hub.counts': unknown;
-  'alert.created': unknown;
+  'bus.positions': LiveBus[];
+  'hub.counts': HubCount[];
+  'alert.created': Alert;
   'report.created': ReportListItem;
   'report.updated': ReportListItem;
   'notification.created': unknown;
   'coin.updated': CoinUpdatedPayload;
   'route.updated': unknown;
   'proposal.created': unknown;
-  'traffic.updated': unknown;
+  'traffic.updated': TrafficSegment[];
   ping: PingPayload;
   hello: HelloPayload;
 }

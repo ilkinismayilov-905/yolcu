@@ -81,6 +81,7 @@ Böyük hərflə etiket (ALL CAPS) yoxdur. Başlıqlar cümlə formasında.
 
 ## 5. Xəritə qaydaları
 
+- Xəritə real OSM xəritəsidir, mockup-dakı SVG yalnız nümunədir. Panel, çiplər, legend və lent dizaynı mockup-dan götürülür; küçə adları Azərbaycanca (`name:az`, yoxdursa `name`), atribusiya aşağı sağda: "© OpenStreetMap contributors, OpenFreeMap".
 - Web: MapLibre + OpenFreeMap `positron` (sakit, açıq). Tünd rejimdə tünd vektor stil (məs. MapTiler `dataviz-dark`, açarla) və ya açıq xəritə saxlanılır.
 - Mobil: `react-native-maps` (iOS Apple, Android Google). Xəritə üzərində default yalnız: istifadəçi, dayanacaqlar, yaxın avtobuslar.
 - Hər əlavə qat öz legend sətrini gətirir. Eyni anda iki qatdan çox açıqdırsa legend qısalır.

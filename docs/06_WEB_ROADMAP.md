@@ -32,7 +32,7 @@ Sidebar qrupları (mockup-dakı kimi): **Canlı** (Canlı xəritə, Hub kamerala
 
 - [x] **WEB-0.1** `create-next-app` (TS, App Router, Tailwind). Token-lər `tailwind.config` və `globals.css` CSS dəyişənləri kimi (`08_DESIGN_SYSTEM` §1), açıq/tünd rejim (`data-theme` + sistem).
 - [x] **WEB-0.2** Şrift: Onest (`next/font/google`), `font-variant-numeric: tabular-nums`.
-- [ ] **WEB-0.3** Primitiv komponentlər: `Button` (p/default/quiet/sm), `Panel` (+ başlıq, meta, actions), `Kpi`, `Seg` (seqmentli), `Toggle` (qat çipi), `Switch`, `Plate` (marşrut lövhəsi), `Status` (nöqtə + mətn), `Bar`, `Table` (+ boş vəziyyət), `Pager`, `Drawer`, `Modal`, `Toast`, `DemoBadge`.
+- [x] **WEB-0.3** Primitiv komponentlər: `Button` (p/default/quiet/sm), `Panel` (+ başlıq, meta, actions), `Kpi`, `Seg` (seqmentli), `Toggle` (qat çipi), `Switch`, `Plate` (marşrut lövhəsi), `Status` (nöqtə + mətn), `Bar`, `Table` (+ boş vəziyyət), `Pager`, `Drawer`, `Modal`, `Toast`, `DemoBadge`.
 - [x] **WEB-0.4** Layout: sidebar (qruplar), topbar (qlobal axtarış, "Demo data", "Canlı" nöqtəsi + saat, mövzu düyməsi, avatar).
 - [x] **WEB-0.5** `/login` (email, şifrə, xəta mesajı), token `localStorage`-da, 401-də login-ə yönləndir.
 - [x] **WEB-0.6** `packages/shared` qoşulur: `api.ts` tipləri, `client.ts` (`NEXT_PUBLIC_API_MODE=mock|live`), `headway.ts`, `toll.ts`.
@@ -42,12 +42,14 @@ Sidebar qrupları (mockup-dakı kimi): **Canlı** (Canlı xəritə, Hub kamerala
 
 ## WEB-1 Canlı xəritə — H3–H8 · MUST
 
-- [ ] **WEB-1.1** `react-map-gl` + MapLibre, açıq stil: OpenFreeMap `positron` (açarsız). Mərkəz Bakı, zoom 12.
-- [ ] **WEB-1.2** Qatlar və çiplər: Tıxac (`/live/traffic`, xətt rəngi səviyyəyə görə), Hub sıxlığı (dairə + "N nəfər" etiketi), Avtobuslar, Marşrutlar (`/geo/layers/routes`), Kameralar, AI təklifləri.
-- [ ] **WEB-1.3** **Avtobuslar qatında yalnız 2 avtobus**: 88-dən biri və 4-dən biri (`bus.positions` SSE, client-də filtr). Avtobusa klik → `/occupancy?route=88`.
-- [ ] **WEB-1.4** KPI kartları (`/admin/kpis`, 30 san yenilənmə).
-- [ ] **WEB-1.5** Hadisələr lenti (`/admin/feed` + `alert.created`, `report.created`), kateqoriya rəngi, kliklə müvafiq səhifəyə keçid, yeni hadisə qısa vurğu.
-- [ ] **WEB-1.6** Legend (sabit, aşağı solda).
+> Xəritə real OSM xəritəsidir, mockup-dakı SVG yalnız nümunədir. Bütün qatlar real koordinatlarla backend-dən gəlir (`/live/*`, `/geo/layers/routes-lite`, `metro-exits`, `bike-lanes`, `bike-parkings`); client-də həndəsə uydurulmur.
+
+- [x] **WEB-1.1** `react-map-gl` + MapLibre, açıq stil: OpenFreeMap `positron` (açarsız). Mərkəz Bakı, zoom 12. Küçə adları `name:az`, atribusiya aşağı sağda.
+- [x] **WEB-1.2** Qatlar və çiplər: Tıxac (`/live/traffic`, xətt rəngi səviyyəyə görə), Hub sıxlığı (dairə + "N nəfər" etiketi), Avtobuslar, Marşrutlar (`/geo/layers/routes-lite`), Kameralar (`/admin/hubs`), AI təklifləri (WEB-1.7-də dolur), Metro (`metro-exits`), Velo (`bike-lanes` + `bike-parkings`, default bağlı).
+- [x] **WEB-1.3** **Avtobuslar qatında yalnız 2 avtobus**: 88-dən biri və 4-dən biri (`bus.positions` SSE, client-də filtr). Avtobusa klik → `/occupancy?route=88`.
+- [x] **WEB-1.4** KPI kartları (`/admin/kpis`, 30 san yenilənmə).
+- [x] **WEB-1.5** Hadisələr lenti (`/admin/feed` + `alert.created`; yeni şikayət backend-də `REPORT` alert-i yaradır), kateqoriya rəngi, kliklə müvafiq səhifəyə keçid, yeni hadisə qısa vurğu.
+- [x] **WEB-1.6** Legend (sabit, aşağı solda).
 - [ ] **WEB-1.7** **"Süni tıxac yarat (demo)"** düyməsi → `POST /demo/trigger/artificial-jam` → Babək pr. rəngi dəyişir → `proposal.created` gələndə xəritədə kəsik xətli "Yeni hub təklifi" markeri + sağda **Hub təklifi drawer-i** (səbəb, 4 göstərici, nə qurulmalı, təsir, "Plana əlavə et" → `accept`, "Analitikaya bax").
 
 **Qəbul:** xəritədə 2 avtobus real vaxtda hərəkət edir; qatlar açılıb-bağlanır; demo düyməsindən 5 saniyə sonra hub təklifi drawer-i açılır.

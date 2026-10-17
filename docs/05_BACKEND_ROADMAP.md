@@ -39,13 +39,13 @@
 
 ## BE-3 Simulyator və canlı data — H4–H8 (BE-B) · MUST
 
-- [ ] **BE-3.1** `SimulationService`: marşrut həndəsəsi (GeoStore və ya `sim_routes.json`), virtual avtobuslar (`buses` bortları ilə), 2 san tick, `bus.positions` SSE.
-- [ ] **BE-3.2** Doluluq random walk (`04_DATA` §5), interval dəyişəndə baza yenilənir.
-- [ ] **BE-3.3** Hub sayları, 5 san tick, `hub.counts` SSE; trend və 15 dəq proqnoz.
-- [ ] **BE-3.4** Tıxac seqmentləri (`traffic_segments.json`), `traffic.updated`.
-- [ ] **BE-3.5** Skuterlər (SIM) + velo parkları (REAL) → `GET /live/micromobility`.
-- [ ] **BE-3.6** `GET /live/buses`, `/live/traffic`, `/live/hubs`.
-- [ ] **BE-3.7** ETA: dayanacağa ən yaxın gələn avtobusun məsafəsi / marşrut sürəti.
+- [x] **BE-3.1** `SimulationService`: marşrut həndəsəsi (GeoStore və ya `sim_routes.json`), virtual avtobuslar (`buses` bortları ilə), 2 san tick, `bus.positions` SSE.
+- [x] **BE-3.2** Doluluq random walk (`04_DATA` §5), interval dəyişəndə baza yenilənir.
+- [x] **BE-3.3** Hub sayları, 5 san tick, `hub.counts` SSE; trend və 15 dəq proqnoz.
+- [x] **BE-3.4** Tıxac seqmentləri (`traffic_segments.json`), `traffic.updated`.
+- [x] **BE-3.5** Skuterlər (SIM) + velo parkları (REAL) → `GET /live/micromobility`.
+- [x] **BE-3.6** `GET /live/buses`, `/live/traffic`, `/live/hubs`.
+- [x] **BE-3.7** ETA: dayanacağa ən yaxın gələn avtobusun məsafəsi / marşrut sürəti.
 
 **Qəbul:** `/live/buses?route=88` 6 avtobus qaytarır və koordinatlar 2 saniyədə dəyişir; SSE-də `bus.positions` axır; `/live/micromobility` Elmlər ətrafında velo parkı və skuter qaytarır.
 
@@ -98,7 +98,7 @@
 - [ ] **BE-8.3** Topa yığılma detektoru + `GET /admin/occupancy/bunching`, `POST .../message`.
 - [ ] **BE-8.4** `GET /admin/hubs` (+ tövsiyə qaydası), `POST /admin/hubs/{id}/apply`.
 - [ ] **BE-8.5** `BiletimAdapter` interfeysi + `MockBiletimAdapter` → `GET /admin/biletim/arrivals`.
-- [ ] **BE-8.6** `FeedService` (`alerts` cədvəli) + `GET /admin/feed`, `GET /admin/kpis`.
+- [x] **BE-8.6** `FeedService` (`alerts` cədvəli) + `GET /admin/feed`, `GET /admin/kpis`.
 
 **Qəbul:** `POST /admin/occupancy/routes/88/interval {8}` → 30 saniyə ərzində 88-in orta doluluğu 60–70%-ə enir; `route.updated` SSE gəlir; avtomatik rejimdə tövsiyələr özü tətbiq olunur və lentdə görünür.
 

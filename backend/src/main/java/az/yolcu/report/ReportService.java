@@ -98,6 +98,7 @@ public class ReportService {
         var item = item(r, now);
         events.publishEvent(StreamEvent.toRole(Role.DISPATCHER, "report.created", item));
         events.publishEvent(StreamEvent.toRole(Role.ADMIN, "report.created", item));
+        events.publishEvent(new ReportCreatedEvent(item));
         return new ReportCreated(detail(r, null), awarded);
     }
 

@@ -42,6 +42,8 @@ Baza URL: `/api/v1`. Bütün cavablar JSON, sahə adları `camelCase`, vaxt ISO-
 ## 2. Geo və yerlər (açıq)
 
 **GET** `/geo/layers/{name}` — `name`: `terminals | routes | bike-parkings | bike-lanes | metro-exits` → GeoJSON `FeatureCollection`
+`name` əlavə olaraq: `routes-lite` (xəritə üçün bunu istifadə edin) — `routes`-dan Douglas–Peucker (tolerans 0,00008° ≈ 8–9 m) ilə sadələşdirilmiş eyni 243 feature, `properties` yalnız `{ "route", "name" }`, koordinatlar 5 onluq rəqəm (≈ 650 KB, gzip ≈ 175 KB; `routes` 8,9 MB / gzip 2 MB). `metro-ridership` (stansiya nöqtələri) də verilir.
+Cavab başlıqları: `Content-Type: application/geo+json`, `Cache-Control: max-age=3600`, zəif `ETag` (`If-None-Match` → `304`), `Accept-Encoding: gzip` → gzip.
 
 **GET** `/stops?lat=40.379&lon=49.832&radius=600`
 
@@ -198,11 +200,21 @@ Min 100, 100-ə bölünməlidir. 60 san sonra `COMPLETED` + bildiriş.
 **GET** `/live/traffic` → `[{ "id": "yusif-seferov", "name": "Yusif Səfərov küç.", "level": "JAM", "speedKmh": 9, "line": [[lat,lon],...] }]` (`level`: `FREE | SLOW | JAM`)
 **GET** `/live/hubs` → `[{ "id": "may28", "name": "28 May", "lat": .., "lon": .., "count": 340, "capacity": 400, "trend10": 18, "forecast15": 420 }]`
 
+Qeydlər (hamısı giriş tələb edir, istənilən rol):
+- `/live/buses`: `route` verilməsə bütün simulyasiya avtobusları. `occupancy` faizdir (0–100), `capacity` yer sayı, `bearing` 0–359°. Mövqe real trayektoriya (`routes` qatı, `properties.route`) üzərindədir, 2 saniyədə yenilənir. Bortlar `buses` cədvəlindən (`status = LINE`); marşrutda `route_config.busCount`-dan az bort varsa, o qədər avtobus göstərilir.
+- `/live/traffic`: `line` real küçə boyuncadır (seqmentin dayanacaqlarından keçən real avtobus trayektoriyasının hissəsi), heç vaxt dayanacaqlar arası düz xətt deyil. Uyğun trayektoriya tapılmayan seqment siyahıda **yoxdur** (siyahı 7-dən az ola bilər). `level` saata görə: pik saatlarda (07–10, 17–20) `baseLevel`, qalan vaxt bir pillə yüngül.
+- `/live/hubs`: `lat/lon` metro stansiyasının real nöqtəsidir (çıxışların mərkəzi, `metro-ridership`). `trend10` = son 10 dəqiqədəki dəyişmə, `forecast15 = count + trend10 × 1,5`.
+- `/live/micromobility`: `radius` default 800, 1–5000 m (əks halda `VALIDATION`); `lat`/`lon` yoxdursa `VALIDATION`. `bikeParkings` real AYNA qatıdır (məsafəyə görə sıralı); mənbədə tutum yoxdur, `capacity` hələlik hamısında `10`-dur. `scooters` SIM.
+
+SSE yükləri (`02_ARCHITECTURE` §4): `bus.positions` → `/live/buses` elementi ilə eyni massiv (bütün marşrutlar); `hub.counts` → `[{ "hubId": "may28", "count": 340, "trend": 18, "forecast15": 420 }]` (DISPATCHER, ADMIN; hər 5 san); `traffic.updated` → `/live/traffic` ilə eyni massiv, yalnız hər hansı `level` dəyişəndə; `alert.created` → `Alert` (DISPATCHER, ADMIN).
+
 ## 9. Admin (DISPATCHER, ADMIN)
 
 ### Dashboard
 **GET** `/admin/kpis` → `{ "avgSpeedKmh": 18, "avgSpeedYesterday": 22, "waitingAtHubs": 12480, "avgOccupancy": 74, "overfullBuses": 63, "satisfaction": 4.2, "satisfactionWeekDelta": 0.2 }`
 **GET** `/admin/feed?limit=50` → `Alert[]` · `{ "id": 1, "category": "OCC", "title": "...", "body": "...", "target": "p-occ", "createdAt": "..." }`
+`Alert.category`: `HUB | OCC | AI | BILETIM | REPORT | EVENT | WEATHER`. `target` — web səhifə id-si (`p-hubs`, `p-occ`, `p-split`, `p-express`, `p-reports` ...). Lent ən yenisi əvvəl, `limit` 1–200 (default 50). Yeni şikayət gələndə `REPORT` alert-i yaranır (`title`: `Yeni şikayət #A-2044: 88, <kateqoriya>`, `body`: mətn, `target`: `p-reports`) və `alert.created` SSE yayılır.
+KPI mənbələri: `avgSpeedKmh` — simulyasiya avtobuslarının marşrut sürətlərinin orta qiyməti; `avgSpeedYesterday` — hələlik sabit `22`; `waitingAtHubs` — `/live/hubs` `count` cəmi; `avgOccupancy` — avtobusların orta doluluğu (%); `overfullBuses` — doluluğu > 90% olan simulyasiya avtobusları; `satisfaction` — bütün rəylərin orta balı (3 reytinqin ortası, 1 onluq); `satisfactionWeekDelta` — son 7 gün − əvvəlki 7 gün.
 
 ### Hub kameraları
 **GET** `/admin/hubs` → `/live/hubs` + `{ "level": "HIGH", "avgWaitMin": 11, "camera": "K-201", "recommendation": "65 intervalı 12 → 9 dəq" }`

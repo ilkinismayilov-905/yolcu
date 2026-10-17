@@ -2,6 +2,7 @@ package az.yolcu.geo;
 
 import static org.hamcrest.Matchers.hasItems;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -24,6 +25,15 @@ class GeoControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.type").value("FeatureCollection"))
                 .andExpect(jsonPath("$.features.length()").value(1));
+    }
+
+    @Test
+    void layerHasEtagAndRevalidates() throws Exception {
+        var etag = mvc.perform(get("/api/v1/geo/layers/bike-lanes"))
+                .andExpect(header().string("Cache-Control", "max-age=3600"))
+                .andReturn().getResponse().getHeader("ETag");
+        mvc.perform(get("/api/v1/geo/layers/bike-lanes").header("If-None-Match", etag))
+                .andExpect(status().isNotModified());
     }
 
     @Test

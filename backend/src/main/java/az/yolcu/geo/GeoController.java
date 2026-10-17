@@ -2,7 +2,6 @@ package az.yolcu.geo;
 
 import az.yolcu.geo.dto.NearbyStop;
 import az.yolcu.geo.dto.Place;
-import com.fasterxml.jackson.databind.JsonNode;
 import java.time.Duration;
 import java.util.List;
 import org.springframework.http.CacheControl;
@@ -27,12 +26,15 @@ public class GeoController {
         this.stops = stops;
     }
 
+    /** Pre-serialized bytes; If-None-Match with the ETag → 304 (handled by Spring for ResponseEntity). */
     @GetMapping("/geo/layers/{name}")
-    public ResponseEntity<JsonNode> layer(@PathVariable String name) {
+    public ResponseEntity<byte[]> layer(@PathVariable String name) {
+        var layer = geo.bytes(name);
         return ResponseEntity.ok()
                 .contentType(GEO_JSON)
                 .cacheControl(CacheControl.maxAge(Duration.ofHours(1)))
-                .body(geo.get(name));
+                .eTag(layer.etag())
+                .body(layer.body());
     }
 
     @GetMapping("/stops")

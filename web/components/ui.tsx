@@ -67,12 +67,12 @@ export function PageHeader({ title, desc, actions }: { title: string; desc?: str
   );
 }
 
-export function Kpi({ label, value, sub, tone }: { label: string; value: ReactNode; sub?: ReactNode; tone?: 'bad' | 'ok' }) {
+export function Kpi({ label, value, sub, tone, subTone }: { label: string; value: ReactNode; sub?: ReactNode; tone?: 'bad' | 'ok'; subTone?: 'bad' | 'ok' }) {
   return (
     <div className="rounded-[14px] border border-line bg-surface px-4 py-3.5 shadow-card">
       <div className="text-[13px] text-ink-2">{label}</div>
       <div className={`my-0.5 text-[26px] font-bold tracking-[-.02em] ${tone === 'bad' ? 'text-bad' : tone === 'ok' ? 'text-ok' : ''}`}>{value}</div>
-      {sub && <div className="text-xs text-ink-3">{sub}</div>}
+      {sub && <div className={`text-xs ${subTone === 'bad' ? 'text-bad' : subTone === 'ok' ? 'text-ok' : 'text-ink-3'}`}>{sub}</div>}
     </div>
   );
 }
@@ -170,3 +170,45 @@ export function Pager({ page, pages, onPage }: { page: number; pages: number; on
     </div>
   );
 }
+
+/** Layer chip (mockup .toggle): bordered pill with a checkbox square. */
+export function Toggle({ on, onChange, children, className = '' }: { on: boolean; onChange: (v: boolean) => void; children: ReactNode; className?: string }) {
+  return (
+    <button
+      type="button"
+      aria-pressed={on}
+      onClick={() => onChange(!on)}
+      className={`inline-flex cursor-pointer items-center gap-2 rounded-[20px] border bg-surface py-[5px] pr-3 pl-2 text-[13px] font-medium ${
+        on ? 'border-primary text-ink' : 'border-line text-ink-2'
+      } ${className}`}
+    >
+      <i className={`grid size-3.5 place-items-center rounded-[4px] border-[1.5px] ${on ? 'border-primary bg-primary' : 'border-ink-3'}`}>
+        {on && <span className="h-[3px] w-1.5 translate-x-px -translate-y-px -rotate-45 border-b-2 border-l-2 border-on-color" />}
+      </i>
+      {children}
+    </button>
+  );
+}
+
+/** On/off switch with its label (mockup .switch), e.g. auto mode. */
+export function Switch({ on, onChange, children, disabled }: { on: boolean; onChange: (v: boolean) => void; children: ReactNode; disabled?: boolean }) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={on}
+      disabled={disabled}
+      onClick={() => onChange(!on)}
+      className="inline-flex cursor-pointer items-center gap-2.5 font-semibold disabled:cursor-not-allowed disabled:opacity-50"
+    >
+      <span className={`relative h-[22px] w-[38px] shrink-0 rounded-xl transition-colors ${on ? 'bg-primary' : 'bg-surface-3'}`}>
+        <span className={`absolute top-[3px] left-[3px] size-4 rounded-full bg-on-color shadow-card transition-transform ${on ? 'translate-x-4' : ''}`} />
+      </span>
+      {children}
+    </button>
+  );
+}
+
+/** 12480 → "12 480", 4.2 → "4,2" (08_DESIGN_SYSTEM §6). */
+export const fmtNum = (n: number, digits = 0) =>
+  n.toFixed(digits).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
