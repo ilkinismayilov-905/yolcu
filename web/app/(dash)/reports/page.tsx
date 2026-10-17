@@ -17,12 +17,13 @@ import {
 import { Button, Kpi, PageHeader, Pager, Panel, Plate, Seg, Status, Table, TD, TR_CLICK } from '@/components/ui';
 import { Drawer, Modal } from '@/components/Overlay';
 import { useToast } from '@/components/Toast';
-import { api } from '@/lib/api';
+import { API_MODE, api } from '@/lib/api';
 import { navItem } from '@/lib/nav';
 import {
   OPERATORS,
   REPORTS_PER_PAGE,
   clockTime,
+  exportReportsCsv,
   isClosed,
   replaceInLists,
   reportKeys,
@@ -96,6 +97,12 @@ function Reports() {
     queryFn: () => api.get<PageResponse<ReportListItem>>(reportsPath(f)),
     placeholderData: keepPreviousData,
   });
+  // shortcut: mock mode has no CSV (toast only); generate client-side if offline demo needs it.
+  const csv = useMutation({
+    mutationFn: () => (API_MODE === 'mock' ? Promise.reject(new Error('Mock rejimində CSV ixrac yoxdur')) : exportReportsCsv(f)),
+    onSuccess: (n) => toast(`CSV yükləndi: ${n} şikayət`),
+    onError: (e) => toast(errText(e)),
+  });
   const total = list.data?.total ?? 0;
   const pages = Math.max(1, Math.ceil(total / REPORTS_PER_PAGE));
   const s = stats.data;
@@ -106,7 +113,11 @@ function Reports() {
       <PageHeader
         title="Şikayətlər"
         desc={navItem('/reports').desc}
-        actions={<Button onClick={() => toast('CSV faylı hazırlanır')}>CSV ixrac</Button>}
+        actions={
+          <Button disabled={csv.isPending} aria-busy={csv.isPending} onClick={() => csv.mutate()}>
+            {csv.isPending ? 'Hazırlanır…' : 'CSV ixrac'}
+          </Button>
+        }
       />
       <div className="mb-4 grid grid-cols-4 gap-4 max-[1100px]:grid-cols-2">
         <Kpi label="Bu gün daxil olub" value={kv(s?.today)} sub="Hamısı mobil tətbiqdən" />

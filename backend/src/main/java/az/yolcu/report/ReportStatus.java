@@ -3,7 +3,14 @@ package az.yolcu.report;
 import java.util.Set;
 
 public enum ReportStatus {
-    NEW, REVIEW, FORWARDED, ANSWERED, RESOLVED;
+    NEW("Yeni"), REVIEW("Baxılır"), FORWARDED("Operatora göndərilib"), ANSWERED("Cavab verilib"), RESOLVED("Həll edilib");
+
+    /** Azerbaijani label for exports. */
+    public final String label;
+
+    ReportStatus(String label) {
+        this.label = label;
+    }
 
     /** NEW → REVIEW → FORWARDED → ANSWERED/RESOLVED, NEW → FORWARDED, ANSWERED → RESOLVED. */
     public boolean canMoveTo(ReportStatus next) {

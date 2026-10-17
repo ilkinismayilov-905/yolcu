@@ -57,6 +57,7 @@
 - [x] **BE-4.4** `GET /admin/reports/{code}`, `PATCH .../status` (keçid qaydaları), `POST .../forward`, `POST .../resolve`, `POST .../share`.
 - [x] **BE-4.5** Hər status dəyişimində: `report_events` sətri + sərnişinə `notification` + `report.updated` SSE (dispetçerlərə və sahibə).
 - [x] **BE-4.6** `late` hesabı (`FORWARDED` + 24 saat).
+- [x] **BE-4.7** `GET /admin/reports/export.csv` (eyni filtrlər, səhifələməsiz, BOM + `;` + CRLF, formula-injection qoruması, `X-Total-Count`).
 
 **Qəbul:** mobil token ilə şikayət göndər → dispetçer SSE-də `report.created` 1 saniyədən tez gəlir; `forward` → sərnişinin SSE-sində `notification.created` və `report.updated`; `resolve` → sərnişinə +15 coin.
 

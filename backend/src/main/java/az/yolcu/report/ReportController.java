@@ -10,8 +10,12 @@ import az.yolcu.report.dto.ResolveRequest;
 import az.yolcu.report.dto.ShareRequest;
 import az.yolcu.report.dto.StatusRequest;
 import jakarta.validation.Valid;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -59,6 +63,19 @@ public class ReportController {
                                              @RequestParam(defaultValue = "0") int page,
                                              @RequestParam(defaultValue = "20") int size) {
         return service.list(status, category, operator, q, page, size);
+    }
+
+    @GetMapping("/admin/reports/export.csv")
+    public ResponseEntity<String> exportCsv(@RequestParam(required = false) String status,
+                                            @RequestParam(required = false) String category,
+                                            @RequestParam(required = false) String operator,
+                                            @RequestParam(required = false) String q) {
+        var csv = service.exportCsv(status, category, operator, q);
+        return ResponseEntity.ok()
+                .contentType(new MediaType("text", "csv", StandardCharsets.UTF_8))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"sikayetler-" + csv.date() + ".csv\"")
+                .header("X-Total-Count", String.valueOf(csv.rows()))
+                .body(csv.body());
     }
 
     @GetMapping("/admin/reports/stats")

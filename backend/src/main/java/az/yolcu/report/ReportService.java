@@ -3,6 +3,7 @@ package az.yolcu.report;
 import az.yolcu.coin.CoinService;
 import az.yolcu.common.ApiException;
 import az.yolcu.common.AppClock;
+import az.yolcu.common.Csv;
 import az.yolcu.common.PageResponse;
 import az.yolcu.fleet.Operator;
 import az.yolcu.fleet.OperatorRepository;
@@ -24,7 +25,9 @@ import az.yolcu.user.UserRepository;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,6 +50,7 @@ public class ReportService {
     static final Duration LATE_AFTER = Duration.ofHours(24);
     static final int COINS_CREATE = 5, COINS_RESOLVED = 15;
     private static final String PASSENGER_ACTOR = "Sərnişin";
+    private static final DateTimeFormatter CSV_TIME = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private static final Sort NEWEST = Sort.by(Sort.Order.desc("createdAt"), Sort.Order.desc("id"));
 
     private final ReportRepository reports;
@@ -114,6 +118,24 @@ public class ReportService {
     public PageResponse<ReportListItem> list(String status, String category, String operator, String q, int page, int size) {
         var now = clock.now();
         return PageResponse.of(reports.findAll(spec(status, category, operator, q), pageable(page, size)), r -> item(r, now));
+    }
+
+    public record CsvExport(String body, int rows, LocalDate date) {}
+
+    /** Same filters as {@link #list}, no paging, newest first. */
+    @Transactional(readOnly = true)
+    public CsvExport exportCsv(String status, String category, String operator, String q) {
+        var now = clock.now();
+        var all = reports.findAll(spec(status, category, operator, q), NEWEST);
+        var sb = new StringBuilder(Csv.BOM)
+                .append(Csv.row("ID", "Vaxt", "Marşrut", "Bort", "Operator", "Mövzu", "Mətn", "Status", "Yer", "Gecikir"));
+        for (var r : all) {
+            var it = item(r, now);
+            sb.append(Csv.row(it.code(), it.createdAt() == null ? null : CSV_TIME.format(it.createdAt()), it.route(),
+                    it.bort(), it.operator(), it.category(), r.getText(), r.getStatus().label, it.place(),
+                    it.late() ? "Bəli" : "Xeyr"));
+        }
+        return new CsvExport(sb.toString(), all.size(), now.atZoneSameInstant(AppClock.ZONE).toLocalDate());
     }
 
     @Transactional(readOnly = true)

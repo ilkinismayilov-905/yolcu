@@ -228,6 +228,8 @@ Min 100, 100-ə bölünməlidir. 60 san sonra `COMPLETED` + bildiriş.
 ### Şikayətlər
 **GET** `/admin/reports?status=NEW&category=&operator=bb&q=10-BB&page=0&size=10` → `Page<ReportListItem>`
 `status` filtri: `NEW | REVIEW | FORWARDED | CLOSED` (`CLOSED` = `ANSWERED` + `RESOLVED`)
+**GET** `/admin/reports/export.csv?status=&category=&operator=&q=` → CSV fayl, `/admin/reports` ilə eyni filtrlər, səhifələmə yoxdur (bütün uyğun sətirlər, ən yenisi əvvəl)
+Başlıqlar: `Content-Type: text/csv;charset=UTF-8` · `Content-Disposition: attachment; filename="sikayetler-YYYY-MM-DD.csv"` · `X-Total-Count: <sətir sayı>`. Gövdə: UTF-8 BOM, ayırıcı `;`, CRLF, başlıq `ID;Vaxt;Marşrut;Bort;Operator;Mövzu;Mətn;Status;Yer;Gecikir` (`Vaxt` = `yyyy-MM-dd HH:mm` Bakı vaxtı, `Status` azərbaycanca, `Gecikir` = `Bəli`/`Xeyr`, `Mətn` tam mətn). `=`, `+`, `-`, `@` ilə başlayan xanaların əvvəlinə `'` əlavə olunur
 **GET** `/admin/reports/stats` → `{ "today": 214, "open": 23, "forwarded": 6, "late": 2, "newCount": 15 }`
 **GET** `/admin/reports/{code}` → `ReportDetail` (+ `"passenger": "Gizli"`)
 **PATCH** `/admin/reports/{code}/status` — `{ "status": "REVIEW", "note": "" }` → `ReportDetail`

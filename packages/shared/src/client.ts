@@ -21,6 +21,8 @@ export interface ClientConfig {
   mocks?: Record<string, MockHandler>;
 }
 
+const NETWORK_MSG = 'Serverə qoşulmaq olmadı. İnterneti və ya serverin işlədiyini yoxlayın.';
+
 const MOCK_USERS: Record<string, UserDto> = {
   'dispatcher@yolcu.az': { id: 1, fullName: 'Leyla Məmmədova', role: 'DISPATCHER', coinBalance: 0, accessibility: false, trackingConsent: false },
   'admin@yolcu.az': { id: 2, fullName: 'Admin', role: 'ADMIN', coinBalance: 0, accessibility: false, trackingConsent: false },
@@ -82,7 +84,7 @@ export function createClient(cfg: ClientConfig) {
           body: body !== undefined ? JSON.stringify(body) : undefined,
         });
       } catch {
-        throw new ApiError(0, 'NETWORK', 'Serverə qoşulmaq olmadı. İnterneti və ya serverin işlədiyini yoxlayın.');
+        throw new ApiError(0, 'NETWORK', NETWORK_MSG);
       }
       if (res.status === 204) return undefined as T;
       const text = await res.text();
@@ -98,8 +100,27 @@ export function createClient(cfg: ClientConfig) {
     }
   }
 
+  /** GET a file (live only): raw Blob (bytes untouched, e.g. CSV BOM kept) + response headers. */
+  async function download(path: string): Promise<{ blob: Blob; headers: Headers }> {
+    if (cfg.mode === 'mock') throw new ApiError(501, 'MOCK', 'Mock rejimində fayl yükləmə yoxdur');
+    const token = cfg.getToken();
+    let res: Response;
+    try {
+      res = await fetch(`${cfg.baseUrl}/api/v1${path}`, { headers: token ? { Authorization: `Bearer ${token}` } : {} });
+    } catch {
+      throw new ApiError(0, 'NETWORK', NETWORK_MSG);
+    }
+    if (!res.ok) {
+      if (res.status === 401 && token) cfg.onUnauthorized?.();
+      const err = ((await res.json().catch(() => undefined)) as ApiErrorBody | undefined)?.error;
+      throw new ApiError(res.status, err?.code ?? 'HTTP_' + res.status, err?.message ?? `Xəta baş verdi (${res.status})`);
+    }
+    return { blob: await res.blob(), headers: res.headers };
+  }
+
   return {
     request,
+    download,
     get: <T>(path: string) => request<T>('GET', path),
     post: <T>(path: string, body?: unknown) => request<T>('POST', path, body),
     put: <T>(path: string, body?: unknown) => request<T>('PUT', path, body),
