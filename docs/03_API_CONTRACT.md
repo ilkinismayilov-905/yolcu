@@ -46,8 +46,10 @@ Baza URL: `/api/v1`. Bütün cavablar JSON, sahə adları `camelCase`, vaxt ISO-
 **GET** `/stops?lat=40.379&lon=49.832&radius=600`
 
 ```json
-[{ "id": "elmler", "name": "Elmlər dayanacağı", "lat": 40.3755, "lon": 49.8156, "routes": ["88","65"], "kind": "BUS", "accessible": true }]
+[{ "id": "elmler", "name": "Elmlər dayanacağı", "lat": 40.3755, "lon": 49.8156, "routes": ["88","65"], "kind": "BUS", "accessible": true, "distanceMeters": 290 }]
 ```
+
+Məsafəyə görə sıralanır. `radius` default 600 m; `lat`/`lon` yoxdursa 400 `VALIDATION`.
 
 **GET** `/places` → `[{ "id": "nerimanov", "name": "Nərimanov", "lat": 40.4029, "lon": 49.8711 }]`
 

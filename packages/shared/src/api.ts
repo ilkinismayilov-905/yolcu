@@ -58,6 +58,39 @@ export interface AuthResponse {
   user: UserDto;
 }
 
+// ---- 2. Geo: /geo/layers/{name}, /stops, /places ----
+
+/** Layer names for GET /geo/layers/{name} (raw GeoJSON FeatureCollection). */
+export type GeoLayerName =
+  | 'routes'
+  | 'terminals'
+  | 'bike-parkings'
+  | 'bike-lanes'
+  | 'metro-exits'
+  | 'metro-ridership';
+
+export interface Stop {
+  id: string;
+  name: string;
+  lat: number;
+  lon: number;
+  routes: string[];
+  kind: string; // only "BUS" in seed data so far
+  accessible: boolean;
+}
+
+/** GET /stops?lat&lon&radius item, sorted by distance. */
+export interface NearbyStop extends Stop {
+  distanceMeters: number;
+}
+
+export interface Place {
+  id: string;
+  name: string;
+  lat: number;
+  lon: number;
+}
+
 // ---- 11. SSE (GET /api/v1/stream?token=...), list in 02_ARCHITECTURE.md §4 ----
 
 export const STREAM_EVENTS = [
