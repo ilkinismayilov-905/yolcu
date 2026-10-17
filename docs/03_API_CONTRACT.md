@@ -158,7 +158,7 @@ Məsafəyə görə sıralanır. `radius` default 600 m; `lat`/`lon` yoxdursa 400
 ```
 → `ReportDetail` + `coinsAwarded`. Dashboard-a `report.created` SSE.
 
-**GET** `/me/reports` → `ReportListItem[]` · **GET** `/me/reports/{code}` → `ReportDetail`
+**GET** `/me/reports?page=0&size=20` → `{ items: ReportListItem[], page, size, total }` · **GET** `/me/reports/{code}` → `ReportDetail`
 
 ```jsonc
 // ReportListItem
@@ -233,7 +233,7 @@ Min 100, 100-ə bölünməlidir. 60 san sonra `COMPLETED` + bildiriş.
 **PATCH** `/admin/reports/{code}/status` — `{ "status": "REVIEW", "note": "" }` → `ReportDetail`
 **POST** `/admin/reports/{code}/forward` → `ReportDetail` (status `FORWARDED`, sərnişinə bildiriş)
 **POST** `/admin/reports/{code}/resolve` — `{ "answerText": "Sürücü ilə izahat işi aparıldı" }` → `ReportDetail` (+15 coin sərnişinə)
-**POST** `/admin/reports/{code}/share` — `{ "targets": ["OPERATOR","YPX"], "hidePersonal": true }` → `{ "ok": true }`
+**POST** `/admin/reports/{code}/share` — `{ "targets": ["OPERATOR","YPX"], "hidePersonal": true }` → `{ "ok": true }` · `targets`: `OPERATOR`, `YPX` (Dövlət Yol Polisi), `CITY` (Bakı Şəhər İcra Hakimiyyəti)
 
 Status keçidləri: `NEW → REVIEW → FORWARDED → ANSWERED/RESOLVED`. `NEW`-dən birbaşa `FORWARDED` də olar. Səhv keçid → `VALIDATION`.
 `late` = `FORWARDED` və `forwardedAt` 24 saatdan köhnədir (seed-də bir neçəsi belədir).

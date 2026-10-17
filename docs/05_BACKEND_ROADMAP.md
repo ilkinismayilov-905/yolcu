@@ -51,12 +51,12 @@
 
 ## BE-4 Şikayətlər — H3–H8 (BE-A) · MUST
 
-- [ ] **BE-4.1** `POST /me/reports` (validasiya, kateqoriya siyahısı, rate limit 3/10 dəq, `code` generatoru `A-XXXX`), `CREATED` event, `report.created` SSE.
-- [ ] **BE-4.2** `GET /me/reports`, `GET /me/reports/{code}`.
-- [ ] **BE-4.3** `GET /admin/reports` (status/kateqoriya/operator/q filtrləri, səhifələmə, `created_at desc`), `GET /admin/reports/stats`.
-- [ ] **BE-4.4** `GET /admin/reports/{code}`, `PATCH .../status` (keçid qaydaları), `POST .../forward`, `POST .../resolve`, `POST .../share`.
-- [ ] **BE-4.5** Hər status dəyişimində: `report_events` sətri + sərnişinə `notification` + `report.updated` SSE (dispetçerlərə və sahibə).
-- [ ] **BE-4.6** `late` hesabı (`FORWARDED` + 24 saat).
+- [x] **BE-4.1** `POST /me/reports` (validasiya, kateqoriya siyahısı, rate limit 3/10 dəq, `code` generatoru `A-XXXX`), `CREATED` event, `report.created` SSE.
+- [x] **BE-4.2** `GET /me/reports`, `GET /me/reports/{code}`.
+- [x] **BE-4.3** `GET /admin/reports` (status/kateqoriya/operator/q filtrləri, səhifələmə, `created_at desc`), `GET /admin/reports/stats`.
+- [x] **BE-4.4** `GET /admin/reports/{code}`, `PATCH .../status` (keçid qaydaları), `POST .../forward`, `POST .../resolve`, `POST .../share`.
+- [x] **BE-4.5** Hər status dəyişimində: `report_events` sətri + sərnişinə `notification` + `report.updated` SSE (dispetçerlərə və sahibə).
+- [x] **BE-4.6** `late` hesabı (`FORWARDED` + 24 saat).
 
 **Qəbul:** mobil token ilə şikayət göndər → dispetçer SSE-də `report.created` 1 saniyədən tez gəlir; `forward` → sərnişinin SSE-sində `notification.created` və `report.updated`; `resolve` → sərnişinə +15 coin.
 

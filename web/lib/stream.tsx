@@ -4,6 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState, ty
 import { useQueryClient } from '@tanstack/react-query';
 import { STREAM_EVENTS, type StreamEvent, type StreamEventName } from '@yolcu/shared/api';
 import { API_MODE, API_URL, getToken } from './api';
+import { onMockEvent } from './mockBus';
 
 export type StreamStatus = 'connecting' | 'open' | 'reconnecting';
 export type StreamHandlers = { [K in StreamEventName]?: (data: Extract<StreamEvent, { type: K }>['data']) => void };
@@ -23,7 +24,12 @@ export function StreamProvider({ children }: { children: ReactNode }) {
   const listeners = useRef(new Set<Listener>());
 
   useEffect(() => {
-    if (API_MODE === 'mock') return; // mock: no backend, always "connected"
+    if (API_MODE === 'mock')
+      // mock: no backend, always "connected"; events come from mock handlers
+      return onMockEvent((ev) => {
+        qc.setQueryData(streamKey(ev.type), ev.data);
+        listeners.current.forEach((l) => l(ev));
+      });
     let es: EventSource | null = null;
     let timer: ReturnType<typeof setTimeout> | undefined;
     let closed = false;

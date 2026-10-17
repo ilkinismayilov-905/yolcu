@@ -66,3 +66,107 @@ export function PageHeader({ title, desc, actions }: { title: string; desc?: str
     </div>
   );
 }
+
+export function Kpi({ label, value, sub, tone }: { label: string; value: ReactNode; sub?: ReactNode; tone?: 'bad' | 'ok' }) {
+  return (
+    <div className="rounded-[14px] border border-line bg-surface px-4 py-3.5 shadow-card">
+      <div className="text-[13px] text-ink-2">{label}</div>
+      <div className={`my-0.5 text-[26px] font-bold tracking-[-.02em] ${tone === 'bad' ? 'text-bad' : tone === 'ok' ? 'text-ok' : ''}`}>{value}</div>
+      {sub && <div className="text-xs text-ink-3">{sub}</div>}
+    </div>
+  );
+}
+
+export function Seg<T extends string>({ options, value, onChange, label }: {
+  options: readonly (readonly [T, string])[]; value: T; onChange: (v: T) => void; label?: string;
+}) {
+  return (
+    <div role="group" aria-label={label} className="inline-flex gap-0.5 rounded-[10px] border border-line bg-surface-2 p-[3px]">
+      {options.map(([k, l]) => (
+        <button
+          key={k}
+          type="button"
+          aria-pressed={k === value}
+          onClick={() => onChange(k)}
+          className={`cursor-pointer rounded-[7px] px-3 py-1.5 text-[13px] ${
+            k === value ? 'bg-surface font-semibold text-ink shadow-card' : 'font-medium text-ink-2 hover:text-ink'
+          }`}
+        >
+          {l}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+const ELECTRIC = ['88', '33', 'H1', 'M1'];
+export type PlateKind = 'e' | 'd' | 'x' | 'm';
+const PLATE_BG: Record<PlateKind, string> = { e: 'bg-bus-e', d: 'bg-bus-d', x: 'bg-primary', m: 'bg-metro' };
+
+/** Route plate; kind defaults to electric (green) / diesel (red) by route number as in the mockup. */
+export function Plate({ route, kind, lg }: { route: string; kind?: PlateKind; lg?: boolean }) {
+  const k = kind ?? (ELECTRIC.includes(route) ? 'e' : 'd');
+  const size = lg ? 'h-[38px] min-w-14 rounded-[9px] text-lg' : 'h-6 min-w-[34px] rounded-md text-xs';
+  return <span className={`inline-grid place-items-center px-[7px] font-extrabold tracking-[.01em] text-on-color ${PLATE_BG[k]} ${size}`}>{route}</span>;
+}
+
+/** Progress bar, `value` 0–100; `color` is a token bg class (bg-ok, bg-jam...). */
+export function Bar({ value, color = 'bg-primary', label }: { value: number; color?: string; label?: string }) {
+  const v = Math.max(0, Math.min(100, value));
+  return (
+    <div role="meter" aria-valuenow={Math.round(v)} aria-valuemin={0} aria-valuemax={100} aria-label={label} className="h-1.5 min-w-[70px] overflow-hidden rounded bg-surface-3">
+      <i className={`block h-full rounded ${color}`} style={{ width: `${v}%` }} />
+    </div>
+  );
+}
+
+/** Table with header and loading / error / empty rows. Rows: <tr><td className={TD}>. */
+export function Table({ head, loading, error, onRetry, empty, isEmpty, children }: {
+  head: string[]; loading?: boolean; error?: string | null; onRetry?: () => void; empty: ReactNode; isEmpty?: boolean; children?: ReactNode;
+}) {
+  const msg = loading ? (
+    'Yüklənir…'
+  ) : error ? (
+    <>
+      <span className="text-bad">{error}</span>
+      {onRetry && <Button sm className="ml-3" onClick={onRetry}>Yenidən cəhd et</Button>}
+    </>
+  ) : isEmpty ? (
+    empty
+  ) : null;
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full border-collapse">
+        <thead>
+          <tr>
+            {head.map((h) => (
+              <th key={h} className="whitespace-nowrap border-b border-line bg-surface px-4 py-2.5 text-left text-xs font-medium text-ink-3">{h}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody className="[&_tr:last-child>td]:border-b-0">
+          {msg ? (
+            <tr>
+              <td colSpan={head.length} className="p-10 text-center text-ink-2">{msg}</td>
+            </tr>
+          ) : (
+            children
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+export const TD = 'whitespace-nowrap border-b border-line px-4 py-[11px] align-middle';
+export const TR_CLICK = 'cursor-pointer hover:[&>td]:bg-surface-2 focus-visible:[&>td]:bg-surface-2';
+
+export function Pager({ page, pages, onPage }: { page: number; pages: number; onPage: (p: number) => void }) {
+  return (
+    <div className="flex items-center gap-2 border-t border-line px-4 py-2.5 text-[13px] text-ink-2">
+      <span>Səhifə {page + 1} / {pages}</span>
+      <span className="flex-1" />
+      <Button sm disabled={page === 0} onClick={() => onPage(page - 1)}>Əvvəlki</Button>
+      <Button sm disabled={page >= pages - 1} onClick={() => onPage(page + 1)}>Növbəti</Button>
+    </div>
+  );
+}

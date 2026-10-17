@@ -10,6 +10,7 @@
   --bus-e: #13935A; --bus-d: #D4404A; --metro: #C8102E;
   --fluid: #2DB46F; --slow: #F2A93B; --jam: #E5484D;
   --on-color: #FFFFFF; /* text/icons on solid colored fills (plates, badges) */
+  --scrim: rgba(8, 14, 24, .38); /* behind drawer / modal */
   --shadow: 0 1px 2px rgba(14, 26, 43, .04), 0 4px 14px rgba(14, 26, 43, .05);
 }
 @media (prefers-color-scheme: dark) {
@@ -55,6 +56,7 @@
   --color-slow: var(--slow);
   --color-jam: var(--jam);
   --color-on-color: var(--on-color);
+  --color-scrim: var(--scrim);
   --shadow-card: var(--shadow);
   --font-sans: var(--font-onest), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
@@ -69,6 +71,7 @@ body {
   font-variant-numeric: tabular-nums;
 }
 :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+[tabindex="-1"]:focus-visible { outline: none; } /* dialogs focused programmatically */
 
 /* "Canlı" pulse dot */
 .pulse { position: relative; }
@@ -78,3 +81,7 @@ body {
 }
 @keyframes ring { 0% { transform: scale(.5); opacity: .7 } 100% { transform: scale(1.6); opacity: 0 } }
 @media (prefers-reduced-motion: reduce) { *, *::after { animation: none !important; transition: none !important; } }
+
+/* New row / event highlight (mockup .ev.new) */
+@keyframes flash { from { background: var(--primary-soft) } to { background: transparent } }
+.flash > td, .flash { animation: flash 1.8s ease-out; }

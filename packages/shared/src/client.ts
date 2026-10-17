@@ -2,8 +2,14 @@ import { ApiError, type ApiErrorBody, type AuthResponse, type LoginRequest, type
 
 export type ApiMode = 'mock' | 'live';
 
+/** Mock request context: query string and `:param` path segments of the key. */
+export interface MockRequest {
+  query: URLSearchParams;
+  params: Record<string, string>;
+}
+
 /** Mock handler: return the response body for `METHOD /path`, or throw ApiError. */
-export type MockHandler = (body: unknown) => unknown;
+export type MockHandler = (body: unknown, req: MockRequest) => unknown;
 
 export interface ClientConfig {
   mode: ApiMode;
@@ -11,7 +17,7 @@ export interface ClientConfig {
   getToken: () => string | null;
   /** Called on 401 for a request that carried a token (expired / invalid). */
   onUnauthorized?: () => void;
-  /** Extra mock handlers keyed by "GET /admin/kpis" (path without /api/v1, without query). */
+  /** Extra mock handlers keyed by "GET /admin/kpis" (path without /api/v1, without query); `:name` segments match any value. */
   mocks?: Record<string, MockHandler>;
 }
 
@@ -23,6 +29,19 @@ const MOCK_PASSENGER: UserDto = { id: 3, fullName: 'Nigar Əliyeva', role: 'PASS
 
 // shortcut: mock token is "mock.<userId>", no expiry; fine for offline demo only.
 const mockToken = (u: UserDto) => `mock.${u.id}`;
+
+function findMock(mocks: Record<string, MockHandler>, key: string) {
+  if (mocks[key]) return { handler: mocks[key], params: {} };
+  const parts = key.split(/[ /]/);
+  for (const [k, handler] of Object.entries(mocks)) {
+    const kp = k.split(/[ /]/);
+    if (kp.length !== parts.length) continue;
+    const params: Record<string, string> = {};
+    if (kp.every((seg, i) => (seg.startsWith(':') ? ((params[seg.slice(1)] = decodeURIComponent(parts[i])), true) : seg === parts[i])))
+      return { handler, params };
+  }
+  return null;
+}
 
 export function createClient(cfg: ClientConfig) {
   const builtinMocks: Record<string, MockHandler> = {
@@ -44,11 +63,12 @@ export function createClient(cfg: ClientConfig) {
     const token = cfg.getToken();
     try {
       if (cfg.mode === 'mock') {
-        const key = `${method} ${path.split('?')[0]}`;
-        const handler = cfg.mocks?.[key] ?? builtinMocks[key];
-        if (!handler) throw new ApiError(404, 'NOT_FOUND', `Mock yoxdur: ${key}`);
+        const [p, qs = ''] = path.split('?');
+        const key = `${method} ${p}`;
+        const found = findMock({ ...builtinMocks, ...cfg.mocks }, key);
+        if (!found) throw new ApiError(404, 'NOT_FOUND', `Mock yoxdur: ${key}`);
         await new Promise((r) => setTimeout(r, 150)); // let loading states render
-        return handler(body) as T;
+        return found.handler(body, { query: new URLSearchParams(qs), params: found.params }) as T;
       }
 
       let res: Response;

@@ -33,6 +33,11 @@ public class AppClock {
 
     public OffsetDateTime now() { return OffsetDateTime.now(clock); }
 
+    /** DB timestamps come back in UTC; API shows Baku offset (+04:00). */
+    public static OffsetDateTime local(OffsetDateTime t) {
+        return t == null ? null : t.atZoneSameInstant(ZONE).toOffsetDateTime();
+    }
+
     /** Hour of day as decimal, e.g. 08:12 → 8.2 (used by the simulator's peak curves). */
     public double hourOfDay() {
         var t = now();

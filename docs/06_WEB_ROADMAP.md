@@ -54,13 +54,13 @@ Sidebar qrupları (mockup-dakı kimi): **Canlı** (Canlı xəritə, Hub kamerala
 
 ## WEB-2 Şikayətlər — H6–H10 · MUST
 
-- [ ] **WEB-2.1** KPI: bu gün, cavab gözləyir, operatora göndərilib, 24 saatdan çox gecikən (`/admin/reports/stats`).
-- [ ] **WEB-2.2** Alət çubuğu: axtarış (ID, bort, marşrut, mətn), status seqmenti (Hamısı, Yeni, Baxılır, Operatorda, Bağlanıb), mövzu seçimi, operator seçimi, nəticə sayı. Filtrlər URL query-də.
-- [ ] **WEB-2.3** Cədvəl (ID, vaxt, marşrut lövhəsi, bort, operator, mövzu + mətn önizləməsi, status) + səhifələmə (10). Boş vəziyyət mətni.
-- [ ] **WEB-2.4** Sətir → drawer: sitat, foto yeri, açar-dəyər siyahısı, tarixçə (timeline), düymələr: Paylaş, Baxılır et, Operatora göndər, Həll edildi (statusa görə).
-- [ ] **WEB-2.5** Paylaş modalı (Operator, YPX, İcra Hakimiyyəti, şəxsi məlumatı gizlət).
-- [ ] **WEB-2.6** `report.created` SSE → siyahının başına əlavə, sidebar nişanı +1, lentə hadisə.
-- [ ] **WEB-2.7** Qlobal axtarış `A-2042` → bu səhifə, filtrlənmiş.
+- [x] **WEB-2.1** KPI: bu gün, cavab gözləyir, operatora göndərilib, 24 saatdan çox gecikən (`/admin/reports/stats`).
+- [x] **WEB-2.2** Alət çubuğu: axtarış (ID, bort, marşrut, mətn), status seqmenti (Hamısı, Yeni, Baxılır, Operatorda, Bağlanıb), mövzu seçimi, operator seçimi, nəticə sayı. Filtrlər URL query-də.
+- [x] **WEB-2.3** Cədvəl (ID, vaxt, marşrut lövhəsi, bort, operator, mövzu + mətn önizləməsi, status) + səhifələmə (10). Boş vəziyyət mətni.
+- [x] **WEB-2.4** Sətir → drawer: sitat, foto yeri, açar-dəyər siyahısı, tarixçə (timeline), düymələr: Paylaş, Baxılır et, Operatora göndər, Həll edildi (statusa görə).
+- [x] **WEB-2.5** Paylaş modalı (Operator, YPX, İcra Hakimiyyəti, şəxsi məlumatı gizlət).
+- [x] **WEB-2.6** `report.created` SSE → siyahının başına əlavə, sidebar nişanı +1, lentə hadisə. (Lent hələ yoxdur: sətir vurğusu + toast; lent WEB-1-də `alert.created` ilə.)
+- [x] **WEB-2.7** Qlobal axtarış `A-2042` → bu səhifə, filtrlənmiş.
 
 **Qəbul:** telefondan göndərilən şikayət 2 saniyəyə cədvəldə və lentdə görünür; "Operatora göndər" basılanda status dəyişir və telefondakı status ekranı yenilənir.
 

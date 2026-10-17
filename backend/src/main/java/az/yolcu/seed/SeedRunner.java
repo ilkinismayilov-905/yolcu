@@ -177,7 +177,10 @@ public class SeedRunner implements CommandLineRunner {
             var review = created.plusSeconds(ageMin * 12);    // 20% of the age
             var forwarded = created.plusSeconds(ageMin * 24); // 40%
             var closed = created.plusSeconds(ageMin * 48);    // 80%
-            if (r.path("late").asBoolean()) forwarded = created.plusMinutes(30);
+            if (r.path("late").asBoolean()) {
+                review = created.plusMinutes(10); // keep REVIEW before FORWARDED in the timeline
+                forwarded = created.plusMinutes(30);
+            }
             boolean isForwarded = List.of("FORWARDED", "ANSWERED", "RESOLVED").contains(status);
             boolean isClosed = List.of("ANSWERED", "RESOLVED").contains(status);
             var updated = isClosed ? closed : isForwarded ? forwarded : status.equals("REVIEW") ? review : created;

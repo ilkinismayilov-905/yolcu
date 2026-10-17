@@ -91,6 +91,109 @@ export interface Place {
   lon: number;
 }
 
+// ---- 6 + 9. Reports (mobile /me/reports, admin /admin/reports) ----
+
+/** Fixed category list (contract §6). */
+export const REPORT_CATEGORIES = [
+  'Dayanacaqda saxlamadı',
+  'Kobud davranış',
+  'Təhlükəli sürüş',
+  'Telefonla danışırdı',
+  'Kondisioner işləmir',
+  'Çirkli salon',
+  'Çox uzun gözləmə',
+  'Əlçatanlıq problemi',
+  'Ödəniş problemi',
+  'Doluluq',
+] as const;
+export type ReportCategory = (typeof REPORT_CATEGORIES)[number];
+
+export type ReportStatus = 'NEW' | 'REVIEW' | 'FORWARDED' | 'ANSWERED' | 'RESOLVED';
+/** `status` filter of GET /admin/reports; CLOSED = ANSWERED + RESOLVED. */
+export type ReportStatusFilter = 'NEW' | 'REVIEW' | 'FORWARDED' | 'CLOSED';
+
+export interface ReportListItem {
+  code: string; // "A-2042"
+  createdAt: string;
+  route: string;
+  bort: string | null;
+  operator: string | null; // operator display name, e.g. "BakuBus MMC"
+  category: ReportCategory | (string & {});
+  textPreview: string;
+  status: ReportStatus;
+  /** FORWARDED and forwardedAt older than 24 h. */
+  late: boolean;
+  place: string | null;
+}
+
+export type ReportEventType = 'CREATED' | 'STATUS' | 'FORWARDED' | 'SHARED' | 'ANSWERED';
+
+export interface ReportEvent {
+  type: ReportEventType;
+  note: string | null;
+  actor: string | null;
+  createdAt: string;
+}
+
+export interface ReportDetail extends ReportListItem {
+  text: string;
+  hasPhoto: boolean;
+  /** Total coins the passenger got for this report: submit (+5) and RESOLVED (+15). */
+  coinsGiven: number;
+  answerText: string | null;
+  events: ReportEvent[];
+  /** Admin endpoint only: "Gizli". */
+  passenger?: string;
+}
+
+/** POST /me/reports */
+export interface CreateReportRequest {
+  route: string;
+  bort?: string;
+  category: ReportCategory;
+  text: string;
+  hasPhoto: boolean;
+  lat?: number;
+  lon?: number;
+}
+
+export interface CreateReportResponse extends ReportDetail {
+  coinsAwarded: number;
+}
+
+/** GET /admin/reports/stats. `newCount` drives the sidebar badge. */
+export interface ReportStats {
+  today: number;
+  open: number; // NEW + REVIEW
+  forwarded: number;
+  late: number;
+  newCount: number;
+}
+
+/** PATCH /admin/reports/{code}/status */
+export interface ReportStatusRequest {
+  status: ReportStatus;
+  note?: string;
+}
+
+/** POST /admin/reports/{code}/resolve */
+export interface ReportResolveRequest {
+  answerText: string;
+}
+
+/** OPERATOR = carrier, YPX = Dövlət Yol Polisi, CITY = Bakı Şəhər İcra Hakimiyyəti. */
+export type ReportShareTarget = 'OPERATOR' | 'YPX' | 'CITY';
+
+/** POST /admin/reports/{code}/share */
+export interface ReportShareRequest {
+  targets: ReportShareTarget[];
+  hidePersonal: boolean;
+}
+
+export interface OkResponse {
+  ok: true;
+}
+
 // ---- 11. SSE (GET /api/v1/stream?token=...), list in 02_ARCHITECTURE.md §4 ----
 
 export const STREAM_EVENTS = [
@@ -131,8 +234,8 @@ export interface StreamEventMap {
   'bus.positions': unknown;
   'hub.counts': unknown;
   'alert.created': unknown;
-  'report.created': unknown;
-  'report.updated': unknown;
+  'report.created': ReportListItem;
+  'report.updated': ReportListItem;
   'notification.created': unknown;
   'coin.updated': CoinUpdatedPayload;
   'route.updated': unknown;
