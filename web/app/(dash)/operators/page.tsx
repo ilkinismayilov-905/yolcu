@@ -116,7 +116,7 @@ function Operators() {
   return (
     <>
       <PageHeader title="Operatorlar və avtopark" desc={navItem('/operators').desc} />
-      <div className="mb-4 grid grid-cols-4 gap-4 max-[1200px]:grid-cols-2 max-[820px]:grid-cols-1">
+      <div className="mb-4 grid grid-cols-4 gap-4 max-[1200px]:grid-cols-2 max-sm:grid-cols-1">
         {ops.isError ? (
           <Panel className="col-span-full">
             <ErrorState message={loadErr('Operatorları', ops.error)} onRetry={() => void ops.refetch()} />
@@ -130,22 +130,22 @@ function Operators() {
         )}
       </div>
       <Panel flush>
-        <div className="flex flex-wrap items-center gap-2 border-b border-line px-4 py-3">
+        <div className="flex flex-wrap items-center gap-2 border-b border-line px-4 py-3 max-sm:flex-col max-sm:items-stretch">
           <input
             type="search"
             aria-label="Avtobus axtarışı"
-            className={`${SELECT} w-[240px]`}
+            className={`${SELECT} w-[240px] max-sm:w-full`}
             placeholder="Bort nömrəsi və ya marşrut"
             value={q}
             onChange={(e) => setQ(e.target.value)}
           />
           <Seg label="Status" options={STATUS_SEG} value={f.status} onChange={(status) => setF({ status })} />
-          <select aria-label="Növ" className={SELECT} value={f.type} onChange={(e) => setF({ type: e.target.value as Filters['type'] })}>
+          <select aria-label="Növ" className={`${SELECT} max-sm:w-full`} value={f.type} onChange={(e) => setF({ type: e.target.value as Filters['type'] })}>
             <option value="">Bütün növlər</option>
             <option value="ELECTRIC">Elektrik</option>
             <option value="DIESEL">Dizel</option>
           </select>
-          <span className="ml-auto text-[13px] text-ink-3">
+          <span className="ml-auto text-[13px] text-ink-3 max-sm:ml-0">
             {list.data ? `${total} avtobus göstərilir${opName ? `, ${opName}` : ''}` : ''}
           </span>
         </div>

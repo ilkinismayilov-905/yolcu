@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { UserDto } from '@yolcu/shared/api';
@@ -7,10 +8,29 @@ import { ICON, NAV } from '@/lib/nav';
 import { ROLE_LABEL } from '@/lib/api';
 import { LogoMark } from './Logo';
 
-export function Sidebar({ user, reportsBadge }: { user?: UserDto; reportsBadge?: number }) {
+/** Desktop: fixed left column. < 1024 px: off-canvas menu from the left (☰ in the topbar); Esc / scrim / page change close it. */
+export function Sidebar({ user, reportsBadge, open, onClose }: { user?: UserDto; reportsBadge?: number; open: boolean; onClose: () => void }) {
   const path = usePathname();
+  useEffect(() => {
+    if (!open) return;
+    const esc = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
+    document.addEventListener('keydown', esc);
+    return () => document.removeEventListener('keydown', esc);
+  }, [open, onClose]);
   return (
-    <aside className="flex flex-col overflow-auto border-r border-line bg-surface px-3 py-[18px] max-[820px]:hidden">
+    <>
+    <div
+      aria-hidden="true"
+      onClick={onClose}
+      className={`fixed inset-0 z-40 bg-scrim transition-opacity duration-200 lg:hidden ${open ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
+    />
+    <aside
+      id="sidebar"
+      aria-label="Menyu"
+      className={`flex flex-col overflow-auto border-r border-line bg-surface px-3 py-[18px] max-lg:fixed max-lg:inset-y-0 max-lg:left-0 max-lg:z-41 max-lg:w-[280px] max-lg:max-w-[85vw] max-lg:pt-[max(18px,env(safe-area-inset-top))] max-lg:pb-[max(18px,env(safe-area-inset-bottom))] max-lg:pl-[max(12px,env(safe-area-inset-left))] max-lg:shadow-card max-lg:transition-[translate,visibility] max-lg:duration-250 ${
+        open ? '' : 'max-lg:invisible max-lg:-translate-x-full'
+      }`}
+    >
       <div className="flex items-center gap-2.5 px-2.5 pt-0.5 pb-5">
         <LogoMark size={32} />
         <div>
@@ -28,8 +48,9 @@ export function Sidebar({ user, reportsBadge }: { user?: UserDto; reportsBadge?:
                 <Link
                   key={it.href}
                   href={it.href}
+                  onClick={onClose}
                   aria-current={on ? 'page' : undefined}
-                  className={`relative flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 ${
+                  className={`relative flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 max-lg:py-3 ${
                     on ? 'bg-primary-soft font-semibold text-primary' : 'font-medium text-ink-2 hover:bg-surface-2 hover:text-ink'
                   }`}
                 >
@@ -57,6 +78,7 @@ export function Sidebar({ user, reportsBadge }: { user?: UserDto; reportsBadge?:
       </nav>
       <Link
         href="/profile"
+        onClick={onClose}
         aria-current={path.startsWith('/profile') ? 'page' : undefined}
         className="mt-auto block rounded-b-lg border-t border-line px-2.5 pt-3 pb-1 text-xs text-ink-3 no-underline hover:bg-surface-2"
       >
@@ -64,5 +86,6 @@ export function Sidebar({ user, reportsBadge }: { user?: UserDto; reportsBadge?:
         {user ? ROLE_LABEL[user.role] : ''}
       </Link>
     </aside>
+    </>
   );
 }

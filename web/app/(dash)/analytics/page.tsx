@@ -78,7 +78,7 @@ function FlowKpis() {
   const v = (s: () => string) => (isPending ? '…' : error || !k ? '—' : s());
   const trips = (n: number) => (n >= 1e6 ? `${fmtNum(n / 1e6, 2)} mln` : fmtNum(n));
   return (
-    <div className="grid grid-cols-4 gap-4 max-[1200px]:grid-cols-2 max-[820px]:grid-cols-1">
+    <div className="grid grid-cols-4 gap-4 max-[1200px]:grid-cols-2 max-sm:gap-3">
       <Kpi label="İzlənən səfər, son 30 gün" value={v(() => trips(k!.trackedTrips30d))} sub={error ? 'Yüklənmədi. Səhifəni yeniləyin.' : k && `Razılıq verən ${fmtNum(k.consentUsers)} istifadəçi`} subTone={error ? 'bad' : undefined} />
       <Kpi label="Orta səfər müddəti" value={v(() => `${fmtNum(k!.avgTripMin)} dəq`)} sub="Qapıdan qapıya, keçidlər daxil" />
       <Kpi label="Ən uzun keçid gözləməsi" value={v(() => `${fmtNum(k!.longestTransferWaitMin)} dəq`)} sub="Avtovağzal → şəhər avtobusu" subTone="bad" />
@@ -287,24 +287,26 @@ function FcChart({ base, amp }: { base: number; amp: number }) {
   const pts = (from: number, to: number, k = 1) => vals.slice(from, to).map((v, i) => `${x(i + from)},${y(v * k)}`);
   const band = [...pts(T, N, 1.08), ...pts(T, N, 0.92).reverse()].join(' ');
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="h-[240px] w-full text-[11px]" role="img" aria-label="Fakt və proqnoz qrafiki">
-      {[0, 0.25, 0.5, 0.75, 1].map((f) => (
-        <g key={f}>
-          <line x1={p} x2={W - p} y1={y(max * f)} y2={y(max * f)} className="stroke-line" />
-          <text x={0} y={y(max * f) + 4} className="fill-ink-3">{Math.round(max * f)}k</text>
-        </g>
-      ))}
-      <polygon points={band} className="fill-primary-soft" />
-      <polyline points={pts(0, T + 1).join(' ')} fill="none" className="stroke-ink-2" strokeWidth={2.2} />
-      <polyline points={pts(T, N).join(' ')} fill="none" className="stroke-primary" strokeWidth={2.5} strokeDasharray="6 4" />
-      <line x1={x(T)} x2={x(T)} y1={p - 10} y2={H - p} className="stroke-ink-3" strokeDasharray="3 3" />
-      <text x={x(T) + 6} y={p - 2} className="fill-ink-3">Bu gün</text>
-      {vals.map((_, i) =>
-        i % 2 ? null : (
-          <text key={i} x={x(i)} y={H - 10} textAnchor="middle" className="fill-ink-3">{DAYS[(i + 4) % 7]}</text>
-        ),
-      )}
-    </svg>
+    <div className="max-sm:overflow-x-auto">{/* phone: shrink to 560 px, then scroll inside */}
+      <svg viewBox={`0 0 ${W} ${H}`} className="h-[240px] w-full text-[11px] max-lg:h-auto max-sm:min-w-[560px]" role="img" aria-label="Fakt və proqnoz qrafiki">
+        {[0, 0.25, 0.5, 0.75, 1].map((f) => (
+          <g key={f}>
+            <line x1={p} x2={W - p} y1={y(max * f)} y2={y(max * f)} className="stroke-line" />
+            <text x={0} y={y(max * f) + 4} className="fill-ink-3">{Math.round(max * f)}k</text>
+          </g>
+        ))}
+        <polygon points={band} className="fill-primary-soft" />
+        <polyline points={pts(0, T + 1).join(' ')} fill="none" className="stroke-ink-2" strokeWidth={2.2} />
+        <polyline points={pts(T, N).join(' ')} fill="none" className="stroke-primary" strokeWidth={2.5} strokeDasharray="6 4" />
+        <line x1={x(T)} x2={x(T)} y1={p - 10} y2={H - p} className="stroke-ink-3" strokeDasharray="3 3" />
+        <text x={x(T) + 6} y={p - 2} className="fill-ink-3">Bu gün</text>
+        {vals.map((_, i) =>
+          i % 2 ? null : (
+            <text key={i} x={x(i)} y={H - 10} textAnchor="middle" className="fill-ink-3">{DAYS[(i + 4) % 7]}</text>
+          ),
+        )}
+      </svg>
+    </div>
   );
 }
 
@@ -430,7 +432,7 @@ function DataUse() {
   return (
     <div className="grid grid-cols-1 gap-4">
       <Panel title="Hansı data hansı qərara gedir" meta="AYNA daxilində istifadə" actions={<DemoBadge />} flush>
-        <Table head={['Qərar', ...sources]} empty="">
+        <Table head={["Qərar", ...sources]} empty="" scroll>
           {uses.map(([u, v]) => (
             <tr key={u as string}>
               <td className={TD}><b>{u as string}</b></td>

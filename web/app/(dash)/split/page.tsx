@@ -68,7 +68,7 @@ export default function Page() {
           </div>
           <RouteCard rt="88" k={k} st={s.r88} />
         </div>
-        <div className="mt-4 grid grid-cols-2 gap-4 max-[820px]:grid-cols-1">
+        <div className="mt-4 grid grid-cols-2 gap-4 max-lg:grid-cols-1">
           <div>
             <label htmlFor="mvRange" className="mb-1.5 block text-[13px] font-medium text-ink-2">Neçə avtobus keçirilsin?</label>
             <input id="mvRange" type="range" min={0} max={3} value={k} onChange={(e) => setK(Number(e.target.value))} className="w-full accent-primary" />
@@ -137,31 +137,33 @@ function HourChart({ n88 }: { n88: number }) {
   const W = 900, H = 220, p = 34, bw = 44, max = 480;
   const y = (v: number) => H - p - (v / max) * (H - p * 2);
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="block h-[220px] w-full" role="img" aria-label="88: saatlıq tələbat və tutum" data-testid="hour-chart">
-      <g fontSize="12" fill="var(--ink-3)">
-        {[0, 120, 240, 360, 480].map((v) => (
-          <g key={v}>
-            <line x1={p} x2={W} y1={y(v)} y2={y(v)} stroke="var(--line)" />
-            <text x="0" y={y(v) + 4}>{v}</text>
-          </g>
-        ))}
-        {HOURS.map((h, i) => {
-          const x = p + 30 + i * 120;
-          const cap = (MOVED_HOURS.includes(i) ? n88 : BASE['88'].n) * CAP;
-          const dem = DEMAND_88[i];
-          return (
-            <g key={h}>
-              <rect x={x} y={y(dem)} width={bw} height={H - p - y(dem)} rx="5" fill={dem > cap ? 'var(--jam)' : 'var(--primary)'} />
-              <rect x={x + bw + 6} y={y(cap)} width={bw} height={H - p - y(cap)} rx="5" fill="var(--surface-3)" data-cap={cap} />
-              <text x={x + bw} y={H - 10} textAnchor="middle">{h}:00</text>
+    <div className="max-sm:overflow-x-auto">{/* phone: shrink to 560 px, then scroll inside */}
+      <svg viewBox={`0 0 ${W} ${H}`} className="block h-[220px] w-full max-lg:h-auto max-sm:min-w-[560px]" role="img" aria-label="88: saatlıq tələbat və tutum" data-testid="hour-chart">
+        <g fontSize="12" fill="var(--ink-3)">
+          {[0, 120, 240, 360, 480].map((v) => (
+            <g key={v}>
+              <line x1={p} x2={W} y1={y(v)} y2={y(v)} stroke="var(--line)" />
+              <text x="0" y={y(v) + 4}>{v}</text>
             </g>
-          );
-        })}
-        <rect x={W - 300} y="4" width="12" height="12" rx="3" fill="var(--primary)" />
-        <text x={W - 282} y="14">Tələbat, sərnişin/saat</text>
-        <rect x={W - 110} y="4" width="12" height="12" rx="3" fill="var(--surface-3)" />
-        <text x={W - 92} y="14">Tutum</text>
-      </g>
-    </svg>
+          ))}
+          {HOURS.map((h, i) => {
+            const x = p + 30 + i * 120;
+            const cap = (MOVED_HOURS.includes(i) ? n88 : BASE['88'].n) * CAP;
+            const dem = DEMAND_88[i];
+            return (
+              <g key={h}>
+                <rect x={x} y={y(dem)} width={bw} height={H - p - y(dem)} rx="5" fill={dem > cap ? 'var(--jam)' : 'var(--primary)'} />
+                <rect x={x + bw + 6} y={y(cap)} width={bw} height={H - p - y(cap)} rx="5" fill="var(--surface-3)" data-cap={cap} />
+                <text x={x + bw} y={H - 10} textAnchor="middle">{h}:00</text>
+              </g>
+            );
+          })}
+          <rect x={W - 300} y="4" width="12" height="12" rx="3" fill="var(--primary)" />
+          <text x={W - 282} y="14">Tələbat, sərnişin/saat</text>
+          <rect x={W - 110} y="4" width="12" height="12" rx="3" fill="var(--surface-3)" />
+          <text x={W - 92} y="14">Tutum</text>
+        </g>
+      </svg>
+    </div>
   );
 }

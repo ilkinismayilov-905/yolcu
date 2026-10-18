@@ -98,3 +98,27 @@ body {
 /* New row / event highlight (mockup .ev.new) */
 @keyframes flash { from { background: var(--primary-soft) } to { background: transparent } }
 .flash > td, .flash { animation: flash 1.8s ease-out; }
+
+/* Responsive (docs/08_DESIGN_SYSTEM.md §9). Phone = < 640 px. */
+@media (max-width: 639px) {
+  /* 16 px stops iOS Safari from zooming into focused fields; 44 px touch targets */
+  input, select, textarea { font-size: 16px; }
+  input:not([type="checkbox"], [type="radio"], [type="range"]), select { min-height: 44px; }
+
+  /* <Table>: each row is a card, cells in two columns, label above value (labels from data-label, set by Table) */
+  table.cards thead { display: none; }
+  table.cards, table.cards tbody { display: block; }
+  table.cards tbody { padding: 4px 12px 12px; }
+  table.cards tr {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 12px;
+    margin-top: 8px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface);
+  }
+  table.cards td { display: block; padding: 0; border: 0; white-space: normal; text-align: left; min-width: 0; background: none !important; }
+  /* selected row ([&>td]:bg-primary-soft on the tr) colors the whole card */
+  table.cards tr[class*="bg-primary-soft"] { border-color: var(--primary); background: var(--primary-soft); }
+  table.cards td[data-label]::before { content: attr(data-label); display: block; margin-bottom: 2px; color: var(--ink-3); font-size: 11px; }
+  table.cards td[data-label=""] { grid-column: 1 / -1; }
+  table.cards td[data-label=""]::before { display: none; }
+  table.cards td:not([data-label]) { grid-column: 1 / -1; text-align: center; }
+  table.cards tr:has(> td:not([data-label])) { display: block; border: 0; background: none; }
+}

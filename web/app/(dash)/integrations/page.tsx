@@ -13,7 +13,7 @@ export default function Page() {
       {integrations.length === 0 ? (
         <p className="m-0 text-ink-3">Hələ inteqrasiya yoxdur. Sistem qoşulanda burada görünəcək.</p>
       ) : (
-        <div className="grid grid-cols-3 gap-4 max-[1200px]:grid-cols-2 max-[820px]:grid-cols-1" data-testid="integ">
+        <div className="grid grid-cols-3 gap-4 max-[1200px]:grid-cols-2 max-sm:grid-cols-1" data-testid="integ">
           {integrations.map((i) => {
             const live = i.status === 'LIVE';
             return (

@@ -119,36 +119,36 @@ function Reports() {
           </Button>
         }
       />
-      <div className="mb-4 grid grid-cols-4 gap-4 max-[1100px]:grid-cols-2">
+      <div className="mb-4 grid grid-cols-4 gap-4 max-[1100px]:grid-cols-2 max-sm:gap-3">
         <Kpi label="Bu gün daxil olub" value={kv(s?.today)} sub="Hamısı mobil tətbiqdən" />
         <Kpi label="Cavab gözləyir" value={kv(s?.open)} sub="Yeni və baxılır statusunda" />
         <Kpi label="Operatora göndərilib" value={kv(s?.forwarded)} sub="Orta cavab 5 saat" />
         <Kpi label="24 saatdan çox gecikən" value={kv(s?.late)} sub="Operator cavab verməyib" tone="bad" />
       </div>
       <Panel flush>
-        <div className="flex flex-wrap items-center gap-2 border-b border-line px-4 py-3">
+        <div className="flex flex-wrap items-center gap-2 border-b border-line px-4 py-3 max-sm:flex-col max-sm:items-stretch">
           <input
             type="search"
             aria-label="Axtarış"
-            className={`${SELECT} w-[260px]`}
+            className={`${SELECT} w-[260px] max-sm:w-full`}
             placeholder="ID, bort, marşrut və ya mətn"
             value={q}
             onChange={(e) => setQ(e.target.value)}
           />
           <Seg label="Status" options={STATUS_SEG} value={f.status} onChange={(status) => setF({ status })} />
-          <select aria-label="Mövzu" className={SELECT} value={f.category} onChange={(e) => setF({ category: e.target.value })}>
+          <select aria-label="Mövzu" className={`${SELECT} max-sm:w-full`} value={f.category} onChange={(e) => setF({ category: e.target.value })}>
             <option value="">Bütün mövzular</option>
             {REPORT_CATEGORIES.map((c) => (
               <option key={c}>{c}</option>
             ))}
           </select>
-          <select aria-label="Operator" className={SELECT} value={f.operator} onChange={(e) => setF({ operator: e.target.value })}>
+          <select aria-label="Operator" className={`${SELECT} max-sm:w-full`} value={f.operator} onChange={(e) => setF({ operator: e.target.value })}>
             <option value="">Bütün operatorlar</option>
             {OPERATORS.map((o) => (
               <option key={o.code} value={o.code}>{o.name}</option>
             ))}
           </select>
-          <span className="ml-auto text-[13px] text-ink-3">{list.data ? `${total} şikayət` : ''}</span>
+          <span className="ml-auto text-[13px] text-ink-3 max-sm:ml-0">{list.data ? `${total} şikayət` : ''}</span>
         </div>
         <Table
           head={['ID', 'Vaxt', 'Marşrut', 'Bort', 'Operator', 'Mövzu', 'Status']}

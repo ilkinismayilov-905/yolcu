@@ -48,12 +48,12 @@ export function Drawer({ open, onClose, meta, title, extra, footer, children }: 
         tabIndex={-1}
         inert={!open}
         onKeyDown={onEsc(onClose)}
-        className={`fixed inset-y-0 right-0 z-41 flex w-[min(460px,96vw)] flex-col border-l border-line bg-surface outline-0 transition-transform duration-250 ease-in-out ${
+        className={`fixed inset-y-0 right-0 z-41 flex w-[min(460px,96vw)] flex-col max-sm:w-full max-sm:border-l-0 border-l border-line bg-surface outline-0 transition-transform duration-250 ease-in-out ${
           open ? '' : 'translate-x-full'
         }`}
       >
-        <div className="flex items-start gap-2.5 border-b border-line px-5 py-[18px]">
-          <div className="flex-1">
+        <div className="flex items-start gap-2.5 border-b border-line px-5 py-[18px] max-sm:px-4 max-sm:pt-[max(14px,env(safe-area-inset-top))] max-sm:pb-3.5">
+          <div className="min-w-0 flex-1">
             {meta && <div className="text-[13px] text-ink-3">{meta}</div>}
             <h3 id={id} className="m-0 text-[17px] font-semibold">{title}</h3>
             {extra && <div className="mt-1.5">{extra}</div>}
@@ -61,14 +61,14 @@ export function Drawer({ open, onClose, meta, title, extra, footer, children }: 
           <button
             onClick={onClose}
             aria-label="Bağla"
-            className="grid size-[38px] cursor-pointer place-items-center rounded-[10px] border border-line bg-surface text-ink-2"
+            className="grid size-[38px] flex-none cursor-pointer place-items-center rounded-[10px] border border-line bg-surface text-ink-2 max-sm:size-11"
           >
             ✕
           </button>
         </div>
         {/* minmax(0,1fr): grid items may shrink below their min-content, so truncated rows don't widen the drawer */}
-        <div className="grid flex-1 grid-cols-[minmax(0,1fr)] content-start gap-4 overflow-auto p-5">{children}</div>
-        {footer && <div className="flex justify-end gap-2 border-t border-line px-5 py-3.5">{footer}</div>}
+        <div className="grid flex-1 grid-cols-[minmax(0,1fr)] content-start gap-4 overflow-auto p-5 max-sm:p-4">{children}</div>
+        {footer && <div className="flex justify-end gap-2 border-t border-line px-5 py-3.5 max-sm:flex-wrap max-sm:px-4 max-sm:pb-[max(12px,env(safe-area-inset-bottom))] max-sm:[&>*]:flex-1">{footer}</div>}
       </div>
     </>
   );
@@ -91,7 +91,7 @@ export function Modal({ open, onClose, title, sub, footer, children }: {
         tabIndex={-1}
         inert={!open}
         onKeyDown={onEsc(onClose)}
-        className={`fixed top-1/2 left-1/2 z-43 w-[min(460px,92vw)] -translate-x-1/2 rounded-2xl border border-line bg-surface outline-0 transition duration-200 ${
+        className={`fixed top-1/2 left-1/2 z-43 w-[min(460px,92vw)] -translate-x-1/2 rounded-2xl border border-line bg-surface outline-0 transition duration-200 max-sm:inset-0 max-sm:flex max-sm:w-full max-sm:translate-x-0 max-sm:translate-y-0 max-sm:flex-col max-sm:rounded-none max-sm:border-0 max-sm:pt-[env(safe-area-inset-top)] ${
           open ? '-translate-y-1/2 opacity-100' : 'pointer-events-none -translate-y-[48%] opacity-0'
         }`}
       >
@@ -99,8 +99,8 @@ export function Modal({ open, onClose, title, sub, footer, children }: {
           <h3 id={id} className="m-0 mb-1 text-[17px] font-semibold">{title}</h3>
           {sub && <div className="text-[13px] text-ink-2">{sub}</div>}
         </div>
-        <div className="px-5 py-2">{children}</div>
-        {footer && <div className="flex justify-end gap-2 px-5 py-3.5">{footer}</div>}
+        <div className="px-5 py-2 max-sm:flex-1 max-sm:overflow-auto">{children}</div>
+        {footer && <div className="flex justify-end gap-2 px-5 py-3.5 max-sm:border-t max-sm:border-line max-sm:flex-wrap max-sm:px-4 max-sm:pb-[max(12px,env(safe-area-inset-bottom))] max-sm:[&>*]:flex-1">{footer}</div>}
       </div>
     </>
   );

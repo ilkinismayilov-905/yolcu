@@ -62,13 +62,14 @@ export default function Page() {
       <Kpis />
       <div className="grid grid-cols-[minmax(0,1fr)_360px] gap-4 max-[1200px]:grid-cols-1">
         {/* theme-light: the basemap stays light in dark mode, so overlays use light tokens too */}
-        <div className="theme-light relative h-[calc(100vh-290px)] min-h-[500px] overflow-hidden rounded-[14px] border border-line bg-surface-2 text-ink">
+        <div className="theme-light relative h-[calc(100vh-290px)] min-h-[500px] overflow-hidden max-sm:h-[60dvh] max-sm:min-h-[320px] rounded-[14px] border border-line bg-surface-2 text-ink">
           <LiveMap
             layers={layers}
             onBusClick={(route) => router.push(`/occupancy?route=${encodeURIComponent(route)}`)}
             onProposalClick={(p) => (setPropId(p.id), setPropOpen(true))}
           />
-          <div className="absolute top-3 left-3 flex max-w-[calc(100%-64px)] flex-wrap gap-1.5">
+          {/* phone: one row that scrolls sideways */}
+          <div className="absolute top-3 left-3 flex max-w-[calc(100%-64px)] flex-wrap gap-1.5 max-sm:flex-nowrap max-sm:overflow-x-auto max-sm:pb-1 max-sm:[scrollbar-width:none]">
             {LAYERS.map(([k, label]) => (
               <Toggle key={k} on={layers[k]} onChange={(v) => setLayers((s) => ({ ...s, [k]: v }))} className="shadow-card">
                 {label}
@@ -127,7 +128,7 @@ function Kpis() {
   const speedDown = k ? k.avgSpeedKmh < k.avgSpeedYesterday : false;
   const top = [...(useHubs().data ?? [])].sort((a, b) => b.count - a.count).slice(0, 2).map((h) => h.name);
   return (
-    <div className="mb-4 grid grid-cols-4 gap-4 max-[1200px]:grid-cols-2 max-[820px]:grid-cols-1">
+    <div className="mb-4 grid grid-cols-4 gap-4 max-[1200px]:grid-cols-2 max-sm:gap-3">
       <Kpi label="Orta hərəkət sürəti" value={v(k ? `${fmtNum(k.avgSpeedKmh)} km/s` : '')} sub={error ? 'Yüklənmədi. Səhifəni yeniləyin.' : k && `Dünən bu saatda ${fmtNum(k.avgSpeedYesterday)} km/s idi`} subTone={speedDown ? 'bad' : undefined} />
       <Kpi label="Hub-larda gözləyən" value={v(k ? fmtNum(k.waitingAtHubs) : '')} sub={top.length ? `Ən sıx: ${top.join(' və ')}` : undefined} />
       <Kpi label="Avtobuslarda orta doluluq" value={v(k ? `${fmtNum(k.avgOccupancy)}%` : '')} sub={k && `${fmtNum(k.overfullBuses)} avtobus 90%-dən çox doludur`} subTone={k && k.overfullBuses > 0 ? 'bad' : undefined} />
@@ -185,7 +186,9 @@ function FeedItem({ a, isNew }: { a: Alert; isNew: boolean }) {
   );
 }
 
+/** Phone: collapsed behind a "Legend" button; tablet and desktop: always open. */
 function Legend({ layers }: { layers: Record<LayerKey, boolean> }) {
+  const [open, setOpen] = useState(false);
   const sw = (c: string) => <i className={`h-1 w-4 rounded-sm ${c}`} />;
   const bx = (c: string, r = 'rounded-[3px]') => <i className={`h-2.5 w-3.5 ${r} ${c}`} />;
   const items: [boolean, ReactNode, string][] = [
@@ -199,7 +202,17 @@ function Legend({ layers }: { layers: Record<LayerKey, boolean> }) {
     [layers.bike, sw('bg-live'), 'Velo zolağı və parkinq'],
   ];
   return (
-    <div className="absolute bottom-[30px] left-3 flex max-w-[calc(100%-120px)] flex-wrap gap-4 rounded-xl border border-line bg-surface px-3 py-2.5 text-xs shadow-card">
+    <div className="absolute bottom-[30px] left-3 flex max-w-[calc(100%-120px)] flex-col items-start gap-1.5">
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-controls="map-legend"
+        onClick={() => setOpen(!open)}
+        className="min-h-11 cursor-pointer rounded-[20px] border border-line bg-surface px-3.5 text-[13px] font-medium text-ink-2 shadow-card sm:hidden"
+      >
+        Legend {open ? '▾' : '▸'}
+      </button>
+    <div id="map-legend" className={`flex flex-wrap gap-4 rounded-xl border border-line bg-surface px-3 py-2.5 text-xs shadow-card max-sm:gap-x-3 max-sm:gap-y-1.5 ${open ? '' : 'max-sm:hidden'}`}>
       {items
         .filter(([on]) => on)
         .map(([, icon, label]) => (
@@ -208,6 +221,7 @@ function Legend({ layers }: { layers: Record<LayerKey, boolean> }) {
             {label}
           </span>
         ))}
+    </div>
     </div>
   );
 }

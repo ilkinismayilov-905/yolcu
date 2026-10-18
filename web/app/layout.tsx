@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Onest } from 'next/font/google';
 import { Providers } from './providers';
 import './globals.css';
@@ -13,6 +13,9 @@ export const metadata: Metadata = {
   applicationName: 'Yolçu',
   openGraph: { title: 'Yolçu — AYNA idarəetmə mərkəzi', description: 'AYNA üçün vahid nəqliyyat platforması', siteName: 'Yolçu', locale: 'az_AZ', type: 'website' },
 };
+
+// viewport-fit=cover: content may run under the iPhone notch; shell paddings use env(safe-area-inset-*).
+export const viewport: Viewport = { width: 'device-width', initialScale: 1, viewportFit: 'cover' };
 
 // Apply saved theme before paint; without a saved choice the system preference applies (CSS media query).
 const themeInit = `try{var t=localStorage.getItem('yolcu.theme');if(t)document.documentElement.dataset.theme=t}catch(e){}`;

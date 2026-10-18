@@ -132,6 +132,47 @@ Kodda yalnız `web/components/Logo.tsx` istifadə olunur: `LogoMark` (nişan) v�
 
 **Ad:** UI-da məhsul adı **Yolçu**, coin-in adı **Yolçu Coin** (başlıq və izahlarda tam ad; sıx cədvəl xanalarında rəqəmin yanında qısa "coin" qala bilər, məs. "+5 coin"). Kod identifikatorları, fayl/qovluq adları, URL və e-poçtlar ASCII: `yolcu`. Coin ikonu: sarı dairədə "Y".
 
-## 9. Mənbələr
+## 9. Responsiv qaydalar
+
+Desktop (≥ 1280 px) görünüşü dəyişmir: bütün responsiv qaydalar yalnız aşağı breakpoint-lərdə işləyir (`max-sm:`, `max-lg:`, `max-xl:`).
+
+| Ad | En | Tailwind | Nə dəyişir |
+|---|---|---|---|
+| Telefon | 360–639 px | `max-sm:` (< 640) | Bir sütun, kartlar, tam ekran drawer/modal, 44 px toxunma hədəfi |
+| Planşet | 640–1023 px (768) | `max-lg:` (< 1024) | Sidebar ☰ menyuya çevrilir, iki sütunlu bölmələr alt-alta |
+| Kiçik laptop | 1024–1279 px | `max-xl:` (< 1280) | Sidebar görünür; KPI 2 sütun (`max-[1200px]`), başlıq düymələri sığmasa yeni sətrə keçir |
+| Desktop | ≥ 1280 px | — | Mockup-dakı kimi |
+
+**Ümumi**
+- Səhifə heç bir endə yana sürüşmür. Yana sürüşmə yalnız elementin öz içində olur: cədvəllər (planşetdə), OD və saat matrisləri, `Seg`, xəritə qat çipləri, geniş qrafiklər (telefonda).
+- Telefonda: toxunma hədəfləri ≥ 44 px (`Button`, `Seg`, `Toggle`, input, select, menyu bəndləri, ikon düymələr). Input, select və textarea şrifti 16 px, ki iOS Safari zoom etməsin (`globals.css`).
+- `viewport`: `width=device-width, initial-scale=1, viewport-fit=cover` (`app/layout.tsx`). Çentik üçün topbar, sidebar, `main`, drawer və modal `env(safe-area-inset-*)` padding-i alır.
+- SVG qrafiklər `w-full`, `< 1024` px-də `h-auto` (konteynerlə böyüyüb kiçilir). En viewBox-u 900 olan qrafiklər telefonda 560 px-dən kiçilmir və öz içində sürüşür, yoxsa yazılar oxunmaz.
+
+**Komponentlər**
+
+| Komponent | Telefon (< 640) | Planşet (< 1024) | Laptop və desktop |
+|---|---|---|---|
+| Sidebar | ☰ ilə soldan sürüşən menyu (280 px, overlay) | eyni | Sabit sol sütun, 248 px |
+| Menyu bağlanır | Esc, kənara klik, səhifə seçimi | eyni | — |
+| Topbar | ☰, axtarış ikonu (basanda tam en açılır, Esc/blur bağlayır), "Canlı", mövzu, avatar. "Demo data" və saat gizlidir | ☰ + axtarış sahəsi (≤ 340 px, uzanır) | Axtarış 340 px |
+| `PageHeader` | Başlıq üstdə, düymələr altda tam en | Düymələr sığmasa yeni sətrə keçir | Bir sətir |
+| `Kpi` grid | 2 kiçik sütun (operator kartları və /demo: 1) | 2 sütun | 4 sütun (≤ 1200 px: 2) |
+| İki sütunlu bölmə (cədvəl + panel) | Alt-alta | Alt-alta | Yan-yana (bəziləri ≤ 1200/1100 px alt-alta) |
+| `Table` | Hər sətir kart: iki sütunda "label üstdə, dəyər altda" (`table.cards`, label = `head`, `data-label`). `scroll` prop-u cədvəli saxlayır (məs. "Datanın tətbiqi" matrisi) | Cədvəl öz içində yana sürüşür | Cədvəl |
+| Filtrlər (şikayət, avtopark) | Alt-alta, tam en | Bir sətirdə, sığmasa sarınır | Bir sətir |
+| `Seg` (tablar) | Öz içində yana sürüşür | eyni | Bir sətir |
+| `Drawer` | Tam ekran, aşağıda sabit düymələr (bərabər en) | 460 px sağdan | 460 px sağdan |
+| `Modal` | Tam ekran, gövdə sürüşür, aşağıda sabit düymələr | 460 px mərkəzdə | 460 px mərkəzdə |
+| `Button` | ≥ 44 px, mətn sığmasa sətrə keçir | — | — |
+
+**Səhifələr**
+- **Canlı xəritə:** telefonda xəritə `60dvh` (min 320 px), hadisələr lenti altda. Qat çipləri bir sətirdə yana sürüşür. Legend "Legend" düyməsi ilə açılır (planşetdən yuxarı həmişə açıqdır).
+- **Hub kameraları:** kartlar 3 → 2 (≤ 1200 px) → 1 (telefon).
+- **Analitika:** tablar `Seg` kimi sürüşür; OD və saat matrisləri öz içində sürüşür; proqnoz qrafiki telefonda 560 px-dən kiçilmir.
+- **Doluluq:** marşrut cədvəli və avtobus siyahısı `< 1024` px-də alt-alta, interval paneli tam en, interval göstəriciləri telefonda 2 sütun.
+- **Login, profil, /demo:** telefonda tam en, düymələr 44 px.
+
+## 10. Mənbələr
 
 Ölçü, rəng və davranış üçün həqiqət mənbəyi: `design/web_dashboard.html` və `design/mobile_app.html`. Onların `:root` token-ləri bu cədvəllə eynidir.

@@ -58,13 +58,13 @@ export default function Page() {
         title="Yolçu Coin proqramı"
         desc="Sərnişinlər səfərdən sonra rəy və sorğu cavabı üçün Yolçu Coin qazanır. Yolçu Coin real pul deyil: partnyor bank vasitəsilə manata çevrilir və ya gediş haqqına xərclənir."
       />
-      <div className="mb-4 grid grid-cols-4 gap-4 max-[1200px]:grid-cols-2 max-[820px]:grid-cols-1">
+      <div className="mb-4 grid grid-cols-4 gap-4 max-[1200px]:grid-cols-2 max-sm:gap-3">
         <Kpi label="Bu gün qazanılan" value={s ? fmtNum(s.earnedToday) : dash} sub={s ? `Yolçu Coin, ${fmtNum(s.earnedTodayUsers)} istifadəçi` : summary.isError ? 'Yüklənmədi. Səhifəni yeniləyin.' : 'Yolçu Coin'} subTone={summary.isError ? 'bad' : undefined} />
         <Kpi label="Dövriyyədə" value={s ? big(s.inCirculation) : dash} sub="Yolçu Coin" />
         <Kpi label="Bu ay manata çevrilən" value={s ? `${azn(s.convertedThisMonthAzn)} ₼` : dash} sub="Partnyor bank vasitəsilə" />
         <Kpi label="Məzənnə" value={s ? `${fmtNum(s.rate)} = 1 ₼` : dash} sub="Bank müqaviləsinə görə dəyişə bilər" />
       </div>
-      <div className="grid grid-cols-2 items-start gap-4 max-[820px]:grid-cols-1">
+      <div className="grid grid-cols-2 items-start gap-4 max-lg:grid-cols-1">
         <Panel title="Yolçu Coin qaydaları" meta="Hesablama serverdə aparılır" flush>
           <Table
             head={['Hərəkət', 'Coin', 'Limit']}

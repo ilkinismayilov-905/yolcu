@@ -73,7 +73,7 @@ function Hubs() {
       />
 
       {hubs.isPending ? (
-        <div role="status" aria-label="Yüklənir" className="grid grid-cols-3 gap-4 max-[1200px]:grid-cols-2 max-[820px]:grid-cols-1">
+        <div role="status" aria-label="Yüklənir" className="grid grid-cols-3 gap-4 max-[1200px]:grid-cols-2 max-sm:grid-cols-1">
           {[0, 1, 2].map((i) => <Skeleton key={i} className="h-[268px] rounded-[14px]" />)}
         </div>
       ) : hubs.isError ? (
@@ -83,7 +83,7 @@ function Hubs() {
       ) : cams.length === 0 ? (
         <Panel><p className="m-0 text-center text-ink-2">{list.length ? 'Bu filtrə uyğun kamera yoxdur. Filtri dəyişin.' : 'Hələ kamera yoxdur. Kamera datası gələndə burada görünəcək.'}</p></Panel>
       ) : (
-        <div className="grid grid-cols-3 gap-4 max-[1200px]:grid-cols-2 max-[820px]:grid-cols-1">
+        <div className="grid grid-cols-3 gap-4 max-[1200px]:grid-cols-2 max-sm:grid-cols-1">
           {cams.map((h) => <CamCard key={h.id} h={h} />)}
         </div>
       )}

@@ -10,7 +10,7 @@ import { LogoMark } from './Logo';
 
 const initials = (name = '') => name.split(/\s+/).map((w) => w[0]).slice(0, 2).join('').toUpperCase();
 
-const ITEM = 'flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left font-medium text-ink outline-offset-[-2px] hover:bg-surface-2 focus-visible:bg-surface-2';
+const ITEM = 'flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 max-sm:py-3 text-left font-medium text-ink outline-offset-[-2px] hover:bg-surface-2 focus-visible:bg-surface-2';
 
 /** Topbar avatar + dropdown menu (WAI-ARIA menu button pattern). */
 export function AvatarMenu({ user, onLogout }: { user?: UserDto; onLogout: () => void }) {
@@ -72,7 +72,7 @@ export function AvatarMenu({ user, onLogout }: { user?: UserDto; onLogout: () =>
         aria-label={`Profil menyusu${user ? `: ${user.fullName}` : ''}`}
         onClick={() => setOpen((o) => !o)}
         onKeyDown={onBtnKey}
-        className="grid size-9 cursor-pointer place-items-center rounded-full bg-primary-soft text-[13px] font-bold text-primary"
+        className="grid size-9 max-sm:size-11 cursor-pointer place-items-center rounded-full bg-primary-soft text-[13px] font-bold text-primary"
       >
         {initials(user?.fullName)}
       </button>
@@ -83,7 +83,7 @@ export function AvatarMenu({ user, onLogout }: { user?: UserDto; onLogout: () =>
           role="menu"
           aria-label="Profil"
           onKeyDown={onMenuKey}
-          className="absolute top-[calc(100%+8px)] right-0 z-30 w-[280px] rounded-[14px] border border-line bg-surface p-1.5 shadow-card"
+          className="absolute top-[calc(100%+8px)] right-0 z-30 w-[280px] max-w-[calc(100vw-24px)] rounded-[14px] border border-line bg-surface p-1.5 shadow-card"
         >
           <div className="flex items-center gap-2.5 border-b border-line px-2.5 pt-1.5 pb-3 mb-1.5">
             <span className="grid size-9 flex-none place-items-center rounded-full bg-primary-soft text-[13px] font-bold text-primary">{initials(user?.fullName)}</span>

@@ -1,4 +1,4 @@
-import type { ComponentProps, ReactNode } from 'react';
+import { useLayoutEffect, useRef, type ComponentProps, type ReactNode } from 'react';
 import { ApiError } from '@yolcu/shared/api';
 
 type ButtonVariant = 'default' | 'p' | 'q';
@@ -17,7 +17,7 @@ export function Button({
   const size = sm ? 'h-[30px] px-2.5 text-[13px] rounded-lg' : 'h-9 px-3.5 rounded-[9px]';
   return (
     <button
-      className={`inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap border font-semibold disabled:cursor-not-allowed disabled:opacity-50 ${v} ${size} ${className}`}
+      className={`inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap border font-semibold disabled:cursor-not-allowed disabled:opacity-50 max-sm:min-h-11 max-sm:whitespace-normal ${v} ${size} ${className}`}
       {...props}
     />
   );
@@ -29,7 +29,7 @@ export function Panel({ title, meta, actions, flush, children, className = '' }:
   return (
     <div className={`rounded-[14px] border border-line bg-surface shadow-card ${className}`}>
       {title !== undefined && (
-        <div className="flex items-center gap-2.5 border-b border-line px-4 py-3.5">
+        <div className="flex items-center gap-2.5 border-b border-line px-4 py-3.5 max-sm:flex-wrap">
           <h2 className="m-0 text-[15px] font-semibold">{title}</h2>
           {meta && <span className="text-xs text-ink-3">{meta}</span>}
           {actions && <div className="ml-auto flex items-center gap-2">{actions}</div>}
@@ -58,25 +58,25 @@ export function Status({ kind = 'neutral', children }: { kind?: StatusKind; chil
 
 export function PageHeader({ title, desc, actions }: { title: string; desc?: string; actions?: ReactNode }) {
   return (
-    <div className="mb-[18px] flex items-end gap-4">
-      <div>
+    <div className="mb-[18px] flex items-end gap-4 max-xl:flex-wrap max-sm:flex-col max-sm:flex-nowrap max-sm:items-stretch max-sm:gap-3">
+      <div className="min-w-0">
         <h1 className="m-0 mb-0.5 text-[22px] font-bold tracking-[-.01em]">{title}</h1>
         {desc && <p className="m-0 max-w-[70ch] text-ink-2">{desc}</p>}
       </div>
-      {actions && <div className="ml-auto flex items-center gap-2">{actions}</div>}
+      {actions && <div className="ml-auto flex items-center gap-2 max-sm:ml-0 max-sm:min-w-0 max-sm:flex-wrap max-sm:[&>button]:flex-1">{actions}</div>}
     </div>
   );
 }
 
 export function Kpi({ label, value, sub, tone, subTone }: { label: string; value: ReactNode; sub?: ReactNode; tone?: 'bad' | 'ok'; subTone?: 'bad' | 'ok' }) {
   return (
-    <div className="rounded-[14px] border border-line bg-surface px-4 py-3.5 shadow-card">
+    <div className="min-w-0 rounded-[14px] border border-line bg-surface px-4 py-3.5 shadow-card max-sm:px-3 max-sm:py-3">
       <div className="text-[13px] text-ink-2">{label}</div>
       {/* '…' = still loading (pages pass it before data arrives) */}
       {value === '…' ? (
         <Skeleton className="my-[9px] h-[21px] w-20" />
       ) : (
-        <div className={`my-0.5 text-[26px] font-bold tracking-[-.02em] ${tone === 'bad' ? 'text-bad' : tone === 'ok' ? 'text-ok' : ''}`}>{value}</div>
+        <div className={`my-0.5 text-[26px] font-bold tracking-[-.02em] max-sm:text-[22px] ${tone === 'bad' ? 'text-bad' : tone === 'ok' ? 'text-ok' : ''}`}>{value}</div>
       )}
       {sub && <div className={`text-xs ${subTone === 'bad' ? 'text-bad' : subTone === 'ok' ? 'text-ok' : 'text-ink-3'}`}>{sub}</div>}
     </div>
@@ -87,14 +87,14 @@ export function Seg<T extends string>({ options, value, onChange, label }: {
   options: readonly (readonly [T, string])[]; value: T; onChange: (v: T) => void; label?: string;
 }) {
   return (
-    <div role="group" aria-label={label} className="inline-flex gap-0.5 rounded-[10px] border border-line bg-surface-2 p-[3px]">
+    <div role="group" aria-label={label} className="inline-flex max-w-full gap-0.5 overflow-x-auto rounded-[10px] border border-line bg-surface-2 p-[3px] [scrollbar-width:none]">
       {options.map(([k, l]) => (
         <button
           key={k}
           type="button"
           aria-pressed={k === value}
           onClick={() => onChange(k)}
-          className={`cursor-pointer rounded-[7px] px-3 py-1.5 text-[13px] ${
+          className={`shrink-0 cursor-pointer whitespace-nowrap rounded-[7px] px-3 py-1.5 text-[13px] max-sm:min-h-10 ${
             k === value ? 'bg-surface font-semibold text-ink shadow-card' : 'font-medium text-ink-2 hover:text-ink'
           }`}
         >
@@ -154,14 +154,22 @@ export function ErrorState({ message, onRetry, className = '' }: { message: stri
   );
 }
 
-/** Table with header and loading (skeleton) / error / empty rows. Rows: <tr><td className={TD}>. */
-export function Table({ head, loading, error, onRetry, empty, isEmpty, children }: {
-  head: string[]; loading?: boolean; error?: string | null; onRetry?: () => void; empty: ReactNode; isEmpty?: boolean; children?: ReactNode;
+/** Table with header and loading (skeleton) / error / empty rows. Rows: <tr><td className={TD}>.
+ *  Phone (< 640 px): each row becomes a card, cells labelled from `head` (globals.css .cards); `scroll` keeps the table and scrolls it sideways. */
+export function Table({ head, loading, error, onRetry, empty, isEmpty, scroll, children }: {
+  head: string[]; loading?: boolean; error?: string | null; onRetry?: () => void; empty: ReactNode; isEmpty?: boolean; scroll?: boolean; children?: ReactNode;
 }) {
+  const ref = useRef<HTMLTableElement>(null);
+  // Card labels: rows are page markup, so the header names are attached after render (no deps: rows change with every render).
+  useLayoutEffect(() => {
+    ref.current?.querySelectorAll('tbody > tr').forEach((tr) => {
+      if (tr.children.length === head.length) [...tr.children].forEach((td, i) => td.setAttribute('data-label', head[i]));
+    });
+  });
   const msg = loading ? null : error ? <ErrorState message={error} onRetry={onRetry} /> : isEmpty ? empty : null;
   return (
     <div className="overflow-x-auto">
-      <table className="w-full border-collapse" aria-busy={loading || undefined}>
+      <table ref={ref} className={`w-full border-collapse ${scroll ? '' : 'cards'}`} aria-busy={loading || undefined}>
         <thead>
           <tr>
             {head.map((h, i) => (
@@ -196,7 +204,7 @@ export const TR_CLICK = 'cursor-pointer hover:[&>td]:bg-surface-2 focus-visible:
 
 export function Pager({ page, pages, onPage, extra }: { page: number; pages: number; onPage: (p: number) => void; extra?: ReactNode }) {
   return (
-    <div className="flex items-center gap-2 border-t border-line px-4 py-2.5 text-[13px] text-ink-2">
+    <div className="flex items-center gap-2 border-t border-line px-4 py-2.5 text-[13px] text-ink-2 max-sm:flex-wrap">
       <span>Səhifə {page + 1} / {pages}</span>
       <span className="flex-1" />
       {extra}
@@ -213,7 +221,7 @@ export function Toggle({ on, onChange, children, className = '' }: { on: boolean
       type="button"
       aria-pressed={on}
       onClick={() => onChange(!on)}
-      className={`inline-flex cursor-pointer items-center gap-2 rounded-[20px] border bg-surface py-[5px] pr-3 pl-2 text-[13px] font-medium ${
+      className={`inline-flex shrink-0 cursor-pointer items-center gap-2 whitespace-nowrap rounded-[20px] border bg-surface py-[5px] pr-3 pl-2 text-[13px] font-medium max-sm:min-h-11 ${
         on ? 'border-primary text-ink' : 'border-line text-ink-2'
       } ${className}`}
     >

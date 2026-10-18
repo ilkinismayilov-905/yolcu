@@ -99,14 +99,14 @@ function Occupancy() {
         }
       />
 
-      <div className="mb-4 grid grid-cols-4 gap-4 max-[1200px]:grid-cols-2 max-[820px]:grid-cols-1">
+      <div className="mb-4 grid grid-cols-4 gap-4 max-[1200px]:grid-cols-2 max-sm:gap-3">
         <Kpi label="Orta doluluq, pik saat" value={avgOcc === null ? dash : `${avgOcc}%`} sub="08:00–09:30" />
         <Kpi label="90%-dən çox dolu avtobus" value={kpis.data ? fmtNum(kpis.data.overfullBuses) : kpis.isError ? '—' : '…'} sub={top.length ? `Ən çox ${topText}` : undefined} subTone="bad" />
         <Kpi label="Topa yığılma" value={bunching.data ? bunching.data.length : bunching.isError ? '—' : '…'} sub="Eyni marşrutda 3 dəqiqədən yaxın" />
         <Kpi label="Tövsiyələr tətbiq olunarsa" value={satGain === null ? dash : Math.abs(satGain) < 0.05 ? '0' : signed(satGain)} tone={satGain !== null && satGain >= 0.05 ? 'ok' : undefined} sub="Şəbəkə üzrə orta məmnunluq artımı" />
       </div>
 
-      <div className="grid grid-cols-2 gap-4 max-[820px]:grid-cols-1">
+      <div className="grid grid-cols-2 gap-4 max-lg:grid-cols-1">
         <Panel title="Marşrutlar" meta="Sətri seçin" flush className="[&_td]:px-3 [&_th]:px-3">
           <Table
             head={['Marşrut', 'Avtobus', 'Doluluq', 'İnterval', 'Tövsiyə', 'Məmnunluq']}
@@ -124,7 +124,7 @@ function Occupancy() {
         {sel ? <BusList route={sel.route} /> : <Panel title="Xətdəki avtobuslar">{routes.isPending ? <SkeletonLines /> : <p className="m-0 text-ink-3">{routes.isError ? 'Marşrutlar yüklənmədi.' : list.length ? 'Marşrut seçin' : 'Xətdə marşrut yoxdur.'}</p>}</Panel>}
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-4 max-[820px]:grid-cols-1">
+      <div className="mt-4 grid grid-cols-2 gap-4 max-lg:grid-cols-1">
         {sel ? <IntervalPanel key={sel.route} r={sel} /> : <Panel title="İnterval">{routes.isPending ? <SkeletonLines /> : <p className="m-0 text-ink-3">{routes.isError ? 'Marşrutlar yüklənmədi.' : list.length ? 'Marşrut seçin' : 'Xətdə marşrut yoxdur.'}</p>}</Panel>}
         <BunchingPanel q={bunching} route={sel?.route} />
       </div>
@@ -261,7 +261,7 @@ function IntervalPanel({ r }: { r: RouteOccupancy }) {
         <span>Hazırda <b className="text-ink-2">{r.intervalMin}</b> dəq</span>
         <span>{IV_MAX} dəq</span>
       </div>
-      <div className="mt-3.5 grid grid-cols-4 gap-3 [&_b]:block [&_b]:text-xl [&_b]:font-bold [&_b]:tracking-[-.01em] [&_span]:text-xs [&_span]:text-ink-3" data-testid="iv-stats">
+      <div className="mt-3.5 grid grid-cols-4 gap-3 max-sm:grid-cols-2 [&_b]:block [&_b]:text-xl [&_b]:font-bold [&_b]:tracking-[-.01em] [&_span]:text-xs [&_span]:text-ink-3" data-testid="iv-stats">
         <div><b className={TEXT[occTone(c.occupancy)]}>{c.occupancy}%</b><span>Gözlənilən doluluq</span></div>
         <div><b>{f1(c.waitMin)} dəq</b><span>Orta gözləmə</span></div>
         <div><b>{c.busesNeeded}</b><span>Lazım olan avtobus</span></div>
@@ -319,7 +319,7 @@ function BunchingPanel({ q, route }: { q: UseQueryResult<BunchingCase[]>; route?
   );
   return (
     <Panel title={`Topa yığılma: ${b.route}`} actions={<Status kind="warn">İki avtobus arası {b.gapMin} dəq</Status>}>
-      <svg viewBox="0 0 600 92" className="block h-[92px] w-full" role="img" aria-label={`${b.front.bort} və ${b.back.bort} arası ${b.gapMin} dəq`}>
+      <svg viewBox="0 0 600 92" className="block h-[92px] w-full max-lg:h-auto" role="img" aria-label={`${b.front.bort} və ${b.back.bort} arası ${b.gapMin} dəq`}>
         <line x1="46" y1="46" x2="554" y2="46" strokeWidth="5" strokeLinecap="round" opacity=".45" className="stroke-bus-e" />
         {[46, 130, 214, 300, 386, 470, 554].map((x, i) => (
           <g key={x}>
@@ -351,21 +351,23 @@ function SatChart() {
   const H = 190, p = 28, bw = 84;
   return (
     <Panel title="Doluluq və məmnunluq" meta="Son 30 gün, 48 min rəy" actions={<DemoBadge />} className="mt-4">
-      <svg viewBox="0 0 900 190" className="block h-[190px] w-full" role="img" aria-label="Doluluq aralığına görə orta rəy">
-        <g fontSize="12" className="fill-ink-3">
-          {SAT_BANDS.map(([label, v], i) => {
-            const x = p + 52 + i * 136, h = (v / 5) * (H - p * 2);
-            const fill = v >= 4.3 ? 'fill-fluid' : v >= 3.8 ? 'fill-slow' : 'fill-jam';
-            return (
-              <g key={label}>
-                <rect x={x} y={H - p - h} width={bw} height={h} rx="6" opacity=".85" className={fill} />
-                <text x={x + bw / 2} y={H - p - h - 6} textAnchor="middle" fontWeight="700" className="fill-ink">{f1(v)}</text>
-                <text x={x + bw / 2} y={H - 8} textAnchor="middle">{label}</text>
-              </g>
-            );
-          })}
-        </g>
-      </svg>
+      <div className="max-sm:overflow-x-auto">{/* phone: shrink to 560 px, then scroll inside */}
+        <svg viewBox="0 0 900 190" className="block h-[190px] w-full max-lg:h-auto max-sm:min-w-[560px]" role="img" aria-label="Doluluq aralığına görə orta rəy">
+          <g fontSize="12" className="fill-ink-3">
+            {SAT_BANDS.map(([label, v], i) => {
+              const x = p + 52 + i * 136, h = (v / 5) * (H - p * 2);
+              const fill = v >= 4.3 ? 'fill-fluid' : v >= 3.8 ? 'fill-slow' : 'fill-jam';
+              return (
+                <g key={label}>
+                  <rect x={x} y={H - p - h} width={bw} height={h} rx="6" opacity=".85" className={fill} />
+                  <text x={x + bw / 2} y={H - p - h - 6} textAnchor="middle" fontWeight="700" className="fill-ink">{f1(v)}</text>
+                  <text x={x + bw / 2} y={H - 8} textAnchor="middle">{label}</text>
+                </g>
+              );
+            })}
+          </g>
+        </svg>
+      </div>
       <p className="mt-1.5 mb-0 text-xs text-ink-2">Avtobus 85%-dən çox dolu olanda orta rəy 3,5-ə düşür. AI doluluğu 65–75% aralığında saxlamağa çalışır.</p>
     </Panel>
   );

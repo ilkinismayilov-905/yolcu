@@ -82,7 +82,7 @@ function Scenarios() {
     onError: (e) => toast(errText(e)),
   });
   return (
-    <div className="grid grid-cols-4 gap-4 max-[1200px]:grid-cols-2 max-[820px]:grid-cols-1">
+    <div className="grid grid-cols-4 gap-4 max-[1200px]:grid-cols-2 max-sm:grid-cols-1">
       {SCENARIOS.map(([k, title, desc, [href, where]]) => (
         <div key={k} className="flex flex-col gap-3 rounded-[14px] border border-line bg-surface p-4 shadow-card">
           <button

@@ -292,7 +292,7 @@ function NewSurvey({ onCreated }: { onCreated: (s: SurveyListItem) => void }) {
             </div>
           </div>
           {create.error && <p role="alert" className="m-0 text-[13px] text-bad">{errText(create.error)}</p>}
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Button type="submit" variant="p" disabled={busy}>Sorğunu göndər</Button>
             <Button type="button" variant="q" disabled={busy} onClick={submit(false)}>Qaralama kimi saxla</Button>
           </div>
