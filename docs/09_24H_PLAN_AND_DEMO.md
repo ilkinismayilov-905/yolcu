@@ -45,7 +45,7 @@ Hər kəs öz qovluğunda ayrıca Claude Code sessiyası işlədir. Müqavilə d
 
 ## 4. Demo ssenarisi (4 dəqiqə, mobilsiz web versiyası)
 
-Bir laptop: `./run.sh` → **http://localhost:8080**, `dispatcher@yolcu.az` / `demo123`. Mobil tətbiqin rolunu `/demo` paneli oynayır (ikinci tabda açıq saxlayın: **http://localhost:8080/demo/**). Başlamazdan əvvəl `/demo` → **Hamısını sıfırla**.
+Bir laptop: `./run.sh` → **http://localhost:8080**, `dispatcher@yolcu.az` / `demoyolcu123`. Mobil tətbiqin rolunu `/demo` paneli oynayır (ikinci tabda açıq saxlayın: **http://localhost:8080/demo/**). Başlamazdan əvvəl `/demo` → **Hamısını sıfırla**.
 
 | Vaxt | Ekran | Nə edirik | Nə deyirik (bir cümlə) |
 |---|---|---|---|

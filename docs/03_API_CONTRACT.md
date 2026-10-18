@@ -37,7 +37,7 @@ Baza URL: `/api/v1`. Bütün cavablar JSON, sahə adları `camelCase`, vaxt ISO-
 
 ## 1. Auth
 
-**POST** `/auth/login` — `{ "email": "dispatcher@yolcu.az", "password": "demo123" }`
+**POST** `/auth/login` — `{ "email": "dispatcher@yolcu.az", "password": "demoyolcu123" }`
 **POST** `/auth/demo-login` — body yoxdur, passenger tokeni qaytarır
 
 ```json
@@ -46,7 +46,7 @@ Baza URL: `/api/v1`. Bütün cavablar JSON, sahə adları `camelCase`, vaxt ISO-
 `User.email` demo sərnişində `null`-dır. Yanlış email/şifrə → `401 UNAUTHORIZED`.
 
 **GET** `/me` → `User`
-**POST** `/me/password` — `{ "currentPassword": "demo123", "newPassword": "demo1234" }` → `{ "ok": true }`. `newPassword` 6–100 simvol. Hazırkı şifrə yanlışdırsa, yeni şifrə qısadırsa və ya hazırkı ilə eynidirsə → `400 VALIDATION`. Köhnə tokenlər etibarlı qalır.
+**POST** `/me/password` — `{ "currentPassword": "demoyolcu123", "newPassword": "demoyolcu1234" }` → `{ "ok": true }`. `newPassword` 6–100 simvol. Hazırkı şifrə yanlışdırsa, yeni şifrə qısadırsa və ya hazırkı ilə eynidirsə → `400 VALIDATION`. Köhnə tokenlər etibarlı qalır.
 
 ## 2. Geo və yerlər (açıq)
 

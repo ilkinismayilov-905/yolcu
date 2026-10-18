@@ -9,9 +9,9 @@ yolcu:
     clock-start: "08:12"         # demo saatı bu saatdan başlayır, real vaxtla irəliləyir
     auto-advance-reports: false  # true: dashboard-da adam yoxdursa şikayət öz-özünə irəliləyir
     bank-delay-seconds: 60
-    password: ${DEMO_PASSWORD:demo123}  # dispatcher@ / admin@yolcu.az; used by the seed
+    password: ${DEMO_PASSWORD:demoyolcu123}  # dispatcher@ / admin@yolcu.az; used by the seed
     admin-only: false            # true: /api/v1/demo/** needs ADMIN (default: DISPATCHER or ADMIN)
-    sync-password: false         # true: on startup reset demo accounts' hash to yolcu.demo.password if it differs
+    sync-password: true          # on startup reset demo accounts' hash to yolcu.demo.password if it differs (demo login shown on /login)
 spring:
   datasource:
     url: jdbc:postgresql://localhost:${DB_PORT:5432}/yolcu

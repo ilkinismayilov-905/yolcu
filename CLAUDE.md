@@ -1,5 +1,5 @@
 > **Məhsul adı (UI): Yolçu. Kodda: yolcu** — Java paketi `az.yolcu`, DB `yolcu`, property prefiksi `yolcu.*`,
-> demo hesablar `dispatcher@yolcu.az` / `admin@yolcu.az` (şifrə `demo123`). Coin-in UI adı: **Yolçu Coin** (API sahə adları dəyişmir: `coinBalance`, `coinReward`…).
+> demo hesablar `dispatcher@yolcu.az` / `admin@yolcu.az` (şifrə `demoyolcu123`). Coin-in UI adı: **Yolçu Coin** (API sahə adları dəyişmir: `coinBalance`, `coinReward`…).
 > İstifadəçinin gördüyü mətnlərdə həmişə "Yolçu"; identifikator, fayl/qovluq, URL, e-poçt ASCII qalır.
 
 # CLAUDE.md — Yolçu (Claude Code üçün əsas təlimat)

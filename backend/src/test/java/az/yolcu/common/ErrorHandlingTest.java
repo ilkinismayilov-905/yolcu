@@ -29,7 +29,7 @@ class ErrorHandlingTest {
     @BeforeEach
     void tokens() throws Exception {
         var d = mvc.perform(post("/api/v1/auth/login").contentType(MediaType.APPLICATION_JSON)
-                .content("{\"email\":\"dispatcher@yolcu.az\",\"password\":\"demo123\"}")).andReturn().getResponse().getContentAsString();
+                .content("{\"email\":\"dispatcher@yolcu.az\",\"password\":\"demoyolcu123\"}")).andReturn().getResponse().getContentAsString();
         dispatcher = "Bearer " + JsonPath.read(d, "$.token");
         var p = mvc.perform(post("/api/v1/auth/demo-login")).andReturn().getResponse().getContentAsString();
         passenger = "Bearer " + JsonPath.read(p, "$.token");

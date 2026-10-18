@@ -49,7 +49,7 @@ class AuthFlowTest {
     @Test
     void dispatcherLogin() throws Exception {
         mvc.perform(post("/api/v1/auth/login").contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"email\":\"dispatcher@yolcu.az\",\"password\":\"demo123\"}"))
+                        .content("{\"email\":\"dispatcher@yolcu.az\",\"password\":\"demoyolcu123\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").value(startsWith("ey")))
                 .andExpect(jsonPath("$.user.role").value("DISPATCHER"));
@@ -81,31 +81,31 @@ class AuthFlowTest {
     }
 
     @Test
-    @Transactional // rolls back so the seed password stays demo123 for other tests
+    @Transactional // rolls back so the seed password stays demoyolcu123 for other tests
     void changePasswordFlow() throws Exception {
-        var token = dispatcherToken("demo123");
-        changePassword(token, "wrong", "demo1234")
+        var token = dispatcherToken("demoyolcu123");
+        changePassword(token, "wrong", "demoyolcu1234")
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error.code").value("VALIDATION"))
                 .andExpect(jsonPath("$.error.message").value("Hazırkı şifrə yanlışdır"));
-        changePassword(token, "demo123", "abc")
+        changePassword(token, "demoyolcu123", "abc")
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error.code").value("VALIDATION"));
-        changePassword(token, "demo123", "demo123")
+        changePassword(token, "demoyolcu123", "demoyolcu123")
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error.message").value("Yeni şifrə hazırkı ilə eyni ola bilməz"));
-        changePassword(token, "demo123", "demo1234")
+        changePassword(token, "demoyolcu123", "demoyolcu1234")
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.ok").value(true));
-        dispatcherToken("demo1234");
+        dispatcherToken("demoyolcu1234");
         mvc.perform(post("/api/v1/auth/login").contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"email\":\"dispatcher@yolcu.az\",\"password\":\"demo123\"}"))
+                        .content("{\"email\":\"dispatcher@yolcu.az\",\"password\":\"demoyolcu123\"}"))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     void changePasswordWithoutTokenIs401() throws Exception {
-        changePassword(null, "demo123", "demo1234")
+        changePassword(null, "demoyolcu123", "demoyolcu1234")
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.error.code").value("UNAUTHORIZED"));
     }

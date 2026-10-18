@@ -6,7 +6,7 @@ Bir Docker image: Next.js web (statik export) + Spring Boot API **eyni portda**,
 
 1. Repo GitHub-dadır (`main`), kökdə `render.yaml` və `Dockerfile` var.
 2. [dashboard.render.com](https://dashboard.render.com) → **New** → **Blueprint** → repo-nu seçin → Render `render.yaml`-ı oxuyur: **yolcu-db** (Postgres, free, Frankfurt) və **yolcu** (Docker web service, free, Frankfurt).
-3. Render `sync: false` dəyişənləri soruşur: **DEMO_PASSWORD** — demo hesablarının (`dispatcher@yolcu.az`, `admin@yolcu.az`) şifrəsi. Güclü bir şifrə yazın (`demo123` yox).
+3. `DEMO_PASSWORD` `render.yaml`-da **demoyolcu123** kimi yazılıb (login səhifəsində münsiflər üçün göstərilir) — heç nə soruşulmur. Dəyişmək istəsəniz: dashboard → **yolcu** → Environment.
 4. **Apply** → Render əvvəlcə bazanı, sonra image-i qurur (ilk build ~8–12 dəq: Node, Maven, JRE image-ləri və asılılıqlar). Flyway sxemi, `SeedRunner` demo datanı ilk açılışda yazır.
 5. Deploy bitəndə: `https://yolcu.onrender.com` (ad tutulubsa Render başqa alt domen verir — dashboard-da görünür).
 6. Yeni versiya: `main`-ə push → Render avtomatik yenidən qurur (Auto-Deploy).
@@ -18,7 +18,7 @@ Bir Docker image: Next.js web (statik export) + Spring Boot API **eyni portda**,
 | `SPRING_PROFILES_ACTIVE` | `prod` | bəli | `prod` profilini açır |
 | `DATABASE_URL` | `fromDatabase: yolcu-db / connectionString` | bəli | `postgresql://user:pass@host[:port]/db` → tətbiq özü JDBC URL, istifadəçi və şifrəyə çevirir |
 | `JWT_SECRET` | `generateValue: true` | bəli | JWT imzası; yoxdursa və ya 32 baytdan qısadırsa tətbiq **başlamır** |
-| `DEMO_PASSWORD` | `sync: false` (siz yazırsınız) | bəli | Demo hesablarının şifrəsi; dəyişdirib yenidən deploy etsəniz, açılışda yenilənir |
+| `DEMO_PASSWORD` | `demoyolcu123` (login səhifəsində göstərilir) | bəli | Demo hesablarının şifrəsi; dəyişdirib yenidən deploy etsəniz, açılışda yenilənir |
 | `DEMO_ENABLED` | `true` | yox (prod default `false`) | `/demo` paneli və `/api/v1/demo/**` — prod-da **yalnız ADMIN** (`admin@yolcu.az`) |
 | `SWAGGER_ENABLED` | `false` | yox (prod default `false`) | `true` → `/swagger-ui.html` və `/v3/api-docs` açılır |
 | `PORT` | Render özü verir | — | Spring `server.port=${PORT:8080}` |
@@ -66,7 +66,7 @@ docker build -t yolcu .
 docker run --rm --memory=512m -p 8090:8080 \
   -e SPRING_PROFILES_ACTIVE=prod \
   -e DATABASE_URL=postgresql://yolcu:yolcu@host.docker.internal:5433/yolcu \
-  -e JWT_SECRET=$(openssl rand -base64 32) -e DEMO_PASSWORD=demo123 -e DEMO_ENABLED=true \
+  -e JWT_SECRET=$(openssl rand -base64 32) -e DEMO_PASSWORD=demoyolcu123 -e DEMO_ENABLED=true \
   yolcu
 # http://localhost:8090 , http://localhost:8090/api/v1/health
 ```

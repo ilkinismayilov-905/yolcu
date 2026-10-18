@@ -14,7 +14,7 @@ export default function LoginPage() {
   const router = useRouter();
   const qc = useQueryClient();
   const [email, setEmail] = useState('dispatcher@yolcu.az');
-  const [password, setPassword] = useState('demo123');
+  const [password, setPassword] = useState('demoyolcu123');
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -70,9 +70,15 @@ export default function LoginPage() {
         <Button variant="p" type="submit" disabled={busy} className="h-10">
           {busy ? 'Yoxlanılır…' : 'Daxil ol'}
         </Button>
-        <p className="m-0 text-xs text-ink-3">
-          Demo hesablar: dispatcher@yolcu.az və admin@yolcu.az, şifrə demo123{API_MODE === 'mock' ? '. Mock rejim: backend lazım deyil.' : '.'}
-        </p>
+        <div className="grid gap-1 rounded-[10px] border border-line bg-surface-2 px-3 py-2.5 text-xs text-ink-2">
+          <b className="text-ink">Demo giriş (münsiflər üçün)</b>
+          <span>Dispetçer: dispatcher@yolcu.az</span>
+          <span>Admin (demo paneli): admin@yolcu.az</span>
+          <span>
+            Şifrə: <b className="text-ink">demoyolcu123</b>
+            {API_MODE === 'mock' ? ' · Mock rejim: backend lazım deyil.' : ''}
+          </span>
+        </div>
       </form>
     </main>
   );

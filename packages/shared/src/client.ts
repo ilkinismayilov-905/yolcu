@@ -50,7 +50,7 @@ export function createClient(cfg: ClientConfig) {
     'POST /auth/login': (body) => {
       const { email, password } = body as LoginRequest;
       const user = MOCK_USERS[email?.trim().toLowerCase()];
-      if (!user || password !== 'demo123') throw new ApiError(401, 'UNAUTHORIZED', 'Email və ya şifrə yanlışdır');
+      if (!user || password !== 'demoyolcu123') throw new ApiError(401, 'UNAUTHORIZED', 'Email və ya şifrə yanlışdır');
       return { token: mockToken(user), user } satisfies AuthResponse;
     },
     'POST /auth/demo-login': () => ({ token: mockToken(MOCK_PASSENGER), user: MOCK_PASSENGER }) satisfies AuthResponse,
@@ -59,9 +59,9 @@ export function createClient(cfg: ClientConfig) {
       if (!user) throw new ApiError(401, 'UNAUTHORIZED', 'Giriş tələb olunur');
       return user;
     },
-    // shortcut: mock never changes the password (login stays demo123), only checks the current one.
+    // shortcut: mock never changes the password (login stays demoyolcu123), only checks the current one.
     'POST /me/password': (body) => {
-      if ((body as ChangePasswordRequest).currentPassword !== 'demo123') throw new ApiError(400, 'VALIDATION', 'Hazırkı şifrə yanlışdır');
+      if ((body as ChangePasswordRequest).currentPassword !== 'demoyolcu123') throw new ApiError(400, 'VALIDATION', 'Hazırkı şifrə yanlışdır');
       return { ok: true } satisfies OkResponse;
     },
   };

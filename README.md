@@ -43,7 +43,7 @@ Açılacaq URL-lər:
 
 | URL | Nə |
 |---|---|
-| http://localhost:8080 | Dashboard (`dispatcher@yolcu.az` / `demo123`) |
+| http://localhost:8080 | Dashboard (`dispatcher@yolcu.az` / `demoyolcu123`) |
 | http://localhost:8080/demo/ | Demo paneli: ssenari düymələri və **Hamısını sıfırla** (sidebar-da yoxdur) |
 | http://localhost:8080/swagger-ui.html | API sənədi |
 
