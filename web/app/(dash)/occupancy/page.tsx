@@ -5,7 +5,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useMutation, useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query';
 import type { AutoModeRequest, BunchingCase, IntervalRequest, OccupancyBus, OkResponse, RouteOccupancy } from '@yolcu/shared/api';
 import { simulate } from '@yolcu/shared/headway';
-import { Bar, Button, DemoBadge, Kpi, PageHeader, Panel, Plate, Status, Switch, Table, TD, TR_CLICK, fmtNum, type StatusKind } from '@/components/ui';
+import { Bar, Button, DemoBadge, ErrorState, Kpi, SkeletonLines, loadErr, PageHeader, Panel, Plate, Status, Switch, Table, TD, TR_CLICK, fmtNum, type StatusKind } from '@/components/ui';
 import { useToast } from '@/components/Toast';
 import { api } from '@/lib/api';
 import { useKpis } from '@/lib/live';
@@ -46,7 +46,7 @@ function Occupancy() {
   const path = usePathname();
 
   // route.updated only fires on interval changes; occupancy itself drifts with the sim, so poll too
-  const routes = useQuery({ queryKey: occKeys.routes, queryFn: () => api.get<RouteOccupancy[]>('/admin/occupancy/routes'), refetchInterval: 5000 });
+  const routes = useQuery({ queryKey: occKeys.routes, queryFn: () => api.get<RouteOccupancy[]>('/admin/occupancy/routes'), refetchInterval: (q) => (q.state.data ? 5000 : false) }); // no data yet: stop polling so the error state stays (retry button / SSE hello refetch)
   const bunching = useQuery({ queryKey: occKeys.bunching, queryFn: () => api.get<BunchingCase[]>('/admin/occupancy/bunching'), refetchInterval: 30_000 });
   const kpis = useKpis();
 
@@ -90,9 +90,12 @@ function Occupancy() {
         title="Avtobus doluluğu"
         desc={navItem('/occupancy').desc}
         actions={
+          <>
+          <DemoBadge />
           <Switch on={auto} disabled={routes.isPending || autoMut.isPending} onChange={(v) => autoMut.mutate(v)}>
             Avtomatik tənzimləmə
           </Switch>
+          </>
         }
       />
 
@@ -108,21 +111,21 @@ function Occupancy() {
           <Table
             head={['Marşrut', 'Avtobus', 'Doluluq', 'İnterval', 'Tövsiyə', 'Məmnunluq']}
             loading={routes.isPending}
-            error={routes.isError ? errText(routes.error) : null}
+            error={routes.isError && !routes.data ? loadErr('Marşrutları', routes.error) : null}
             onRetry={() => void routes.refetch()}
             isEmpty={list.length === 0}
-            empty="Marşrut yoxdur"
+            empty="Xətdə marşrut yoxdur. Simulyator işə düşəndə burada görünəcək."
           >
             {list.map((r) => (
               <RouteRow key={r.route} r={r} selected={r.route === sel?.route} onSelect={() => select(r.route)} />
             ))}
           </Table>
         </Panel>
-        {sel ? <BusList route={sel.route} /> : <Panel title="Xətdəki avtobuslar"><p className="m-0 text-ink-3">{routes.isPending ? 'Yüklənir…' : 'Marşrut seçin'}</p></Panel>}
+        {sel ? <BusList route={sel.route} /> : <Panel title="Xətdəki avtobuslar">{routes.isPending ? <SkeletonLines /> : <p className="m-0 text-ink-3">{routes.isError ? 'Marşrutlar yüklənmədi.' : list.length ? 'Marşrut seçin' : 'Xətdə marşrut yoxdur.'}</p>}</Panel>}
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-4 max-[820px]:grid-cols-1">
-        {sel ? <IntervalPanel key={sel.route} r={sel} /> : <Panel title="İnterval"><p className="m-0 text-ink-3">{routes.isPending ? 'Yüklənir…' : 'Marşrut seçin'}</p></Panel>}
+        {sel ? <IntervalPanel key={sel.route} r={sel} /> : <Panel title="İnterval">{routes.isPending ? <SkeletonLines /> : <p className="m-0 text-ink-3">{routes.isError ? 'Marşrutlar yüklənmədi.' : list.length ? 'Marşrut seçin' : 'Xətdə marşrut yoxdur.'}</p>}</Panel>}
         <BunchingPanel q={bunching} route={sel?.route} />
       </div>
 
@@ -168,18 +171,15 @@ function RouteRow({ r, selected, onSelect }: { r: RouteOccupancy; selected: bool
 
 function BusList({ route }: { route: string }) {
   // shortcut: polled every 3 s instead of merging bus.positions (no per-bus `near`/passengers in that event).
-  const q = useQuery({ queryKey: occKeys.buses(route), queryFn: () => api.get<OccupancyBus[]>(`/admin/occupancy/routes/${encodeURIComponent(route)}/buses`), refetchInterval: 3000 });
+  const q = useQuery({ queryKey: occKeys.buses(route), queryFn: () => api.get<OccupancyBus[]>(`/admin/occupancy/routes/${encodeURIComponent(route)}/buses`), refetchInterval: (q) => (q.state.data ? 3000 : false) });
   return (
     <Panel title={`${route}: xətdəki avtobuslar`} meta="Hər 30 saniyə" flush>
       {q.isPending ? (
-        <p className="m-0 p-10 text-center text-ink-2">Yüklənir…</p>
-      ) : q.isError ? (
-        <p className="m-0 p-10 text-center text-ink-2">
-          <span className="text-bad">{errText(q.error)}</span>
-          <Button sm className="ml-3" onClick={() => void q.refetch()}>Yenidən cəhd et</Button>
-        </p>
+        <SkeletonLines rows={5} className="p-4" />
+      ) : !q.data ? (
+        <ErrorState className="p-10" message={loadErr('Avtobusları', q.error)} onRetry={() => void q.refetch()} />
       ) : q.data.length === 0 ? (
-        <p className="m-0 p-10 text-center text-ink-2">Xətdə avtobus yoxdur</p>
+        <p className="m-0 p-10 text-center text-ink-2">Bu marşrutda xətdə avtobus yoxdur. Başqa marşrut seçin.</p>
       ) : (
         q.data.map((b, i) => {
           const o = b.capacity ? b.occupancy / b.capacity : 0;
@@ -301,9 +301,9 @@ function BunchingPanel({ q, route }: { q: UseQueryResult<BunchingCase[]>; route?
     return (
       <Panel title="Topa yığılma">
         {q.isPending ? (
-          <p className="m-0 text-ink-2">Yüklənir…</p>
+          <SkeletonLines />
         ) : q.isError ? (
-          <p className="m-0 text-ink-2"><span className="text-bad">{errText(q.error)}</span><Button sm className="ml-3" onClick={() => void q.refetch()}>Yenidən cəhd et</Button></p>
+          <ErrorState message={loadErr('Topa yığılma xəbərdarlıqlarını', q.error)} onRetry={() => void q.refetch()} />
         ) : (
           <p className="m-0 text-ink-3">Hazırda topa yığılma yoxdur</p>
         )}

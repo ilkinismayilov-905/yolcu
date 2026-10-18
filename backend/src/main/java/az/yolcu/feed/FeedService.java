@@ -1,5 +1,6 @@
 package az.yolcu.feed;
 
+import az.yolcu.common.ApiException;
 import az.yolcu.common.AppClock;
 import az.yolcu.feed.dto.AlertDto;
 import az.yolcu.feed.dto.Kpis;
@@ -68,8 +69,8 @@ public class FeedService {
     // By id, not createdAt: the demo clock restarts at 08:12 on every boot, so createdAt can run backwards across restarts
     @Transactional(readOnly = true)
     public List<AlertDto> feed(int limit) {
-        int n = Math.max(1, Math.min(limit, MAX_LIMIT));
-        return alerts.findAll(PageRequest.of(0, n, Sort.by(Sort.Order.desc("id"))))
+        if (limit < 1 || limit > MAX_LIMIT) throw ApiException.validation("limit: 1–" + MAX_LIMIT);
+        return alerts.findAll(PageRequest.of(0, limit, Sort.by(Sort.Order.desc("id"))))
                 .map(AlertDto::of).getContent();
     }
 

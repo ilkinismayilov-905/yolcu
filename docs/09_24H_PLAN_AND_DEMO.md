@@ -43,24 +43,25 @@ Hər kəs öz qovluğunda ayrıca Claude Code sessiyası işlədir. Müqavilə d
 - Proyektora web (1920 × 1080), telefon ekranı kamera və ya ekran yayımı ilə.
 - Demo-dan 5 dəqiqə əvvəl: `/demo/reset`.
 
-## 4. Demo ssenarisi (4 dəqiqə)
+## 4. Demo ssenarisi (4 dəqiqə, mobilsiz web versiyası)
 
-| Vaxt | Kim | Nə edir | Nə görünür |
+Bir laptop: `./run.sh` → **http://localhost:8080**, `dispatcher@yolcu.az` / `demo123`. Mobil tətbiqin rolunu `/demo` paneli oynayır (ikinci tabda açıq saxlayın: **http://localhost:8080/demo/**). Başlamazdan əvvəl `/demo` → **Hamısını sıfırla**.
+
+| Vaxt | Ekran | Nə edirik | Nə deyirik (bir cümlə) |
 |---|---|---|---|
-| 0:00 | Danışan | Problem: "Keçid nöqtələri görünmür: sərnişin yolu, AYNA boşluğu görmür" | Slayd |
-| 0:20 | Telefon | Xəritə: Koroğlu tıxacı banneri, "Velo və skuter" qatı açılır | Velo zolaqları, skuterlər |
-| 0:35 | Telefon | "Sizin üçün: İş günləri bu saatda Nərimanova gedirsiniz" → Yola düş | Tətbiq yolu özü təklif edir |
-| 0:50 | Telefon | Dayanacağa yol → Naviqasiyanı başla → Ödə (coin) | Piyada yol, "88 6 dəq", coin −60 |
-| 1:10 | Telefon | Səfər: doluluq kartı. 10 saniyə sonra avtomatik düşmə → rəy → +5 coin | "Düşdüyünüz aşkarlandı" |
-| 1:30 | Telefon | Şikayət: "Dayanacaqda saxlamadı" → göndər | — |
-| 1:35 | Dashboard | Şikayət lentdə və cədvəldə görünür → aç → "Operatora göndər" | Telefonda status canlı dəyişir |
-| 2:00 | Dashboard | Avtobus doluluğu: 88 92% → AI 12 → 8 dəq → tətbiq et | Doluluq düşür, məmnunluq +0,7 |
-| 2:25 | Dashboard | Canlı xəritə → "Süni tıxac yarat" | Fətəli Xan Xoyski pr. qırmızı, "Yeni hub təklifi" drawer-i |
-| 2:50 | Dashboard | Data analitika: OD matrisi → Ödənişli yollar (Yusif Səfərov, 1 ₼) → Datanın tətbiqi | Qərar və gəlir modeli |
-| 3:20 | Dashboard | Sorğular → yeni sorğu göndər | Telefonda bildiriş düşür |
-| 3:35 | Danışan | Bağlanış: "Bir data qatı, iki ekran, hər siqnal qərara çevrilir" + real/simulyasiya fərqi | Slayd |
+| 0:00 | `/map` | Canlı xəritəni göstəririk: real OSM, avtobuslar, hub-lar, lent | "Bu, Bakının real xəritəsidir: avtobuslar real marşrutlarla gedir, hub-larda kameralar insanları sayır." |
+| 0:20 | `/map` | **Süni tıxac yarat (demo)** | "Fətəli Xan Xoyski prospektində tıxac yaranır, sistem bunu bir neçə saniyəyə tutur." |
+| 0:30 | `/map` | "Yeni hub təklifi" drawer-i → **Plana əlavə et** | "Sistem Gənclik metrosunun yanında yeni hub təklif edir: səbəbi, nə qurulmalı və təsiri ilə." |
+| 0:50 | `/occupancy` | 88 seçili, slayder 8 dəq → **İntervalı tətbiq et** | "88 doludur; AI intervalı 12-dən 8 dəqiqəyə endirməyi təklif edir, tətbiq edirik və doluluq düşür." |
+| 1:15 | `/demo` → `/reports` | **Yeni şikayət** → cədvəlin başında görünür | "Sərnişin mobil tətbiqdən şikayət göndərir, dispetçer onu dərhal görür." |
+| 1:30 | `/reports` | Şikayəti aç → **Operatora göndər** → **Həll edildi** | "Bir kliklə operatora göndəririk, sərnişin hər addımda bildiriş alır." |
+| 1:55 | `/surveys` | **Yeni sorğu** → göndər → **Demo: 50 cavab əlavə et** | "Sorğu bildiriş kimi gedir, cavablar canlı faizlərə çevrilir." |
+| 2:20 | `/analytics` | 4 tab: Axın və matris → Proqnoz → Ödənişli yollar → Datanın tətbiqi | "Toplanan data OD matrisinə, proqnoza, ödənişli yol ssenarisinə və qərarlara çevrilir." |
+| 3:10 | `/demo` → `/coins` | **Yolçu Coin çevirmə sorğusu** → "Gözləyir", 60 san sonra "Tamamlandı" | "Sərnişin rəy və sorğu üçün Yolçu Coin qazanır və onu partnyor bank vasitəsilə manata çevirir." |
+| 3:40 | — | Bağlanış | "Bir data qatı, bir dashboard: hər siqnal qərara çevrilir; xəritə və koordinatlar real, sərnişin axını simulyasiyadır." |
+| sonda | `/demo` | **Hamısını sıfırla** | (səssiz — növbəti göstəriş üçün) |
 
-**Ehtiyat:** hər addım `/demo` panelindəki düymə ilə də işə salına bilər (`new-report`, `overload-88`, `artificial-jam`, `stadium`).
+**Ehtiyat:** hər addım `/demo` panelindəki düymə ilə də işə salına bilər (`artificial-jam`, `new-report`, `overload-88`, `bunching`, `crowd-28may`, `ganja-arrival`, `stadium`, `rain`, `coin-conversion`). Sıfırlama: `/demo` → **Hamısını sıfırla** (və ya `POST /api/v1/demo/reset`).
 
 ## 5. Risklər və ehtiyat planlar
 

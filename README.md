@@ -1,4 +1,4 @@
-# Yolcu — AYNA üçün vahid nəqliyyat platforması
+# Yolçu — AYNA üçün vahid nəqliyyat platforması
 
 Web dashboard (Next.js) + mobil tətbiq (React Native, Expo) + backend (Java Spring Boot). 1 günlük hakaton üçün Claude Code ilə qurulur.
 
@@ -26,6 +26,30 @@ Yolcu/
 │   └── mobile_app.html              Mobil üçün kliklə işləyən vizual mənbə
 └── mocks/                           Seed və FAKE hissələr üçün JSON-lar
 ```
+
+## Demo-nu necə işə salmaq
+
+Tələb: Docker, Java 21, Maven, Node.js (pnpm lazım deyil — `npx pnpm@9.15.9` avtomatik işləyir).
+
+```bash
+./run.sh                      # Postgres + web build + API, hamısı bir prosesdə
+DB_PORT=5433 ./run.sh         # lokal Postgres 5432-ni tutursa
+```
+
+- **İlk işə salma:** cache-lər doludursa ~20 saniyə (ölçülüb: 18 s — Docker, `pnpm install`, web export, Spring başlanğıcı). Təmiz maşında (boş pnpm/Maven cache, yavaş internet) asılılıqların yüklənməsinə görə **~5 dəqiqə** (ölçülüb: 309 s). Demo-dan əvvəl bir dəfə işə salın.
+- Ayrıca jar: `mvn -B -ntp -f backend/pom.xml -Pweb clean package` → `java -jar backend/target/backend-0.0.1.jar` (repo kökündən; web + API eyni portda, default 8080, `--server.port=…` ilə dəyişir).
+
+Açılacaq URL-lər:
+
+| URL | Nə |
+|---|---|
+| http://localhost:8080 | Dashboard (`dispatcher@yolcu.az` / `demo123`) |
+| http://localhost:8080/demo/ | Demo paneli: ssenari düymələri və **Hamısını sıfırla** (sidebar-da yoxdur) |
+| http://localhost:8080/swagger-ui.html | API sənədi |
+
+**Sıfırlama:** hər göstərişdən əvvəl və sonra `/demo` → **Hamısını sıfırla** (və ya `curl -X POST -H "Authorization: Bearer <token>" http://localhost:8080/api/v1/demo/reset`). Simulyatoru, intervalları, hub təkliflərini, demo sərnişinin bugünkü şikayət/səfər/Yolçu Coin dəyişikliklərini, demo çevirmələrini, bu demo sessiyasında (bu gün 08:12-dən sonra) yaradılan sorğuları və lent hadisələrini başlanğıca qaytarır; sxemi və seed-i silmir. Diqqət: real istifadədə bu gün yaradılmış sorğular da silinir — reset yalnız demo üçündür.
+
+Demo ssenarisi (4 dəqiqə): `docs/09_24H_PLAN_AND_DEMO.md` §4. İnkişaf rejimi (`pnpm dev`, hot reload): `CLAUDE.md` §7.
 
 ## Necə başlamaq
 

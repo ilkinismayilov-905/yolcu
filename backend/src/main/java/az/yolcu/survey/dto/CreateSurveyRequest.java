@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
 public record CreateSurveyRequest(
@@ -15,6 +16,7 @@ public record CreateSurveyRequest(
         @NotEmpty @Size(max = 10) List<@Valid @NotNull Question> questions,
         boolean publish) {
 
+    @Schema(name = "NewSurveyQuestion") // distinct OpenAPI names: three nested Question records
     public record Question(@NotBlank @Size(max = 500) String text,
                            @NotNull @Size(min = 2, max = 10) List<@NotBlank @Size(max = 80) String> options) {}
 }

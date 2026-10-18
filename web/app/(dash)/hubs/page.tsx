@@ -4,7 +4,7 @@ import { Suspense, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { AdminHub, CrowdLevel, OkResponse } from '@yolcu/shared/api';
-import { Bar, Button, PageHeader, Panel, Seg, Table, TD } from '@/components/ui';
+import { Bar, Button, DemoBadge, ErrorState, PageHeader, Panel, Seg, Skeleton, Table, TD, loadErr } from '@/components/ui';
 import { useToast } from '@/components/Toast';
 import { api } from '@/lib/api';
 import { liveKeys, useAdminHubs } from '@/lib/live';
@@ -69,20 +69,19 @@ function Hubs() {
       <PageHeader
         title="Hub kameraları"
         desc={navItem('/hubs').desc}
-        actions={<Seg options={FILTERS} value={filter} onChange={setFilter} label="Kamera filtri" />}
+        actions={<><DemoBadge /><Seg options={FILTERS} value={filter} onChange={setFilter} label="Kamera filtri" /></>}
       />
 
       {hubs.isPending ? (
-        <Panel><p className="m-0 text-center text-ink-2">Yüklənir…</p></Panel>
+        <div role="status" aria-label="Yüklənir" className="grid grid-cols-3 gap-4 max-[1200px]:grid-cols-2 max-[820px]:grid-cols-1">
+          {[0, 1, 2].map((i) => <Skeleton key={i} className="h-[268px] rounded-[14px]" />)}
+        </div>
       ) : hubs.isError ? (
         <Panel>
-          <p className="m-0 text-center text-ink-2">
-            <span className="text-bad">{errText(hubs.error)}</span>
-            <Button sm className="ml-3" onClick={() => void hubs.refetch()}>Yenidən cəhd et</Button>
-          </p>
+          <ErrorState message={loadErr('Kameraları', hubs.error)} onRetry={() => void hubs.refetch()} />
         </Panel>
       ) : cams.length === 0 ? (
-        <Panel><p className="m-0 text-center text-ink-2">Bu filtrə uyğun kamera yoxdur. Filtri dəyişin.</p></Panel>
+        <Panel><p className="m-0 text-center text-ink-2">{list.length ? 'Bu filtrə uyğun kamera yoxdur. Filtri dəyişin.' : 'Hələ kamera yoxdur. Kamera datası gələndə burada görünəcək.'}</p></Panel>
       ) : (
         <div className="grid grid-cols-3 gap-4 max-[1200px]:grid-cols-2 max-[820px]:grid-cols-1">
           {cams.map((h) => <CamCard key={h.id} h={h} />)}
@@ -93,10 +92,10 @@ function Hubs() {
         <Table
           head={['Hub', 'İndi', 'Doluluq', '15 dəq sonra', 'Tövsiyə', '']}
           loading={hubs.isPending}
-          error={hubs.isError ? errText(hubs.error) : null}
+          error={hubs.isError ? loadErr('Hub-ları', hubs.error) : null}
           onRetry={() => void hubs.refetch()}
           isEmpty={rows.length === 0}
-          empty="Hub yoxdur"
+          empty="Hələ hub yoxdur. Kamera datası gələndə burada görünəcək."
         >
           {rows.map((h) => <HubRow key={h.id} h={h} />)}
         </Table>
@@ -205,7 +204,7 @@ function HubRow({ h }: { h: AdminHub }) {
       <td className={TD}>
         {h.forecast15} nəfər <span className={up ? 'text-bad' : 'text-ok'}>{up ? '↑' : '↓'}</span>
       </td>
-      <td className={`${TD} text-xs whitespace-normal text-ink-2`}>{h.recommendation || 'Dəyişiklik lazım deyil'}</td>
+      <td className={`${TD} text-xs whitespace-normal! text-ink-2`}>{h.recommendation || 'Dəyişiklik lazım deyil'}</td>
       <td className={TD}>
         {h.recommendation && (
           <Button sm disabled={applied === h.recommendation || apply.isPending} onClick={() => h.recommendation && apply.mutate(h.recommendation)}>

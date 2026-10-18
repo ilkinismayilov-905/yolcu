@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import type { BiletimArrival, CrowdLevel } from '@yolcu/shared/api';
-import { Button, DemoBadge, Note, PageHeader, Panel, Plate, Status, Table, TD, type StatusKind } from '@/components/ui';
+import { Button, DemoBadge, Note, SkeletonLines, loadErr, PageHeader, Panel, Plate, Status, Table, TD, type StatusKind } from '@/components/ui';
 import { useToast } from '@/components/Toast';
 import { api } from '@/lib/api';
 import { navItem } from '@/lib/nav';
@@ -12,7 +12,6 @@ import { useStream } from '@/lib/stream';
 
 const arrivalsKey = ['admin', 'biletim', 'arrivals'] as const;
 const LEVEL: Record<CrowdLevel, StatusKind> = { HIGH: 'bad', MEDIUM: 'warn', LOW: 'ok' };
-const errText = (e: unknown) => (e instanceof Error ? e.message : 'Xəta baş verdi');
 
 // FAKE express plan (docs/01_SCOPE): calibrated on the mockup case, 228 tickets → M1 8 dəq, H1 12 dəq.
 const REF_TICKETS = 228;
@@ -40,14 +39,14 @@ export default function Page() {
       <PageHeader title="Avtovağzal və Biletim.az" desc={navItem('/terminal').desc} actions={<SyncStatus at={q.dataUpdatedAt} error={q.isError} />} />
 
       <div className="grid grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] items-start gap-4 max-[1200px]:grid-cols-1">
-        <Panel title="Gələn şəhərlərarası reyslər" meta="Növbəti 3 saat" flush>
+        <Panel title="Gələn şəhərlərarası reyslər" meta="Növbəti 3 saat" actions={<DemoBadge />} flush>
           <Table
             head={['Gəliş', 'Haradan', 'Satılmış bilet', 'Vəziyyət', 'Şəhərə keçid']}
             loading={q.isPending}
-            error={q.isError && !q.data ? errText(q.error) : null}
+            error={q.isError && !q.data ? loadErr('Biletim.az gəlişlərini', q.error) : null}
             onRetry={() => void q.refetch()}
             isEmpty={list.length === 0}
-            empty="Növbəti 3 saatda gələn reys yoxdur"
+            empty="Növbəti 3 saatda gələn reys yoxdur. Biletim.az yeni reys göndərəndə burada görünəcək."
           >
             {list.map((a, i) => (
               <tr key={`${a.plate}-${a.time}`}>
@@ -74,7 +73,7 @@ export default function Page() {
                       Sadə hesab: {REF_TICKETS} bilet üçün M1 8 dəq, H1 12 dəq; bilet artdıqca interval mütənasib qısalır (6–15 dəq). Əlavə avtobus = bilet ÷ {PAX_PER_BUS}, yuxarı yuvarlaqlaşdırılır.
                     </span>
                   </>
-                ) : q.isPending ? 'Yüklənir…' : 'Gəliş yoxdur, tövsiyə hesablanmır.'}
+                ) : q.isPending ? <SkeletonLines rows={2} className="w-60" /> : 'Gəliş yoxdur, tövsiyə hesablanmır.'}
               </Note>
               <div className="flex flex-wrap gap-2">
                 <Button variant="p" disabled={!list.length} onClick={() => toast('M1 və H1 üçün plan yaradıldı və operatora göndərildi')}>Planı təsdiqlə</Button>
@@ -123,13 +122,13 @@ const FLOW = [60, 140, 210, 320, 410, 380, 300, 240, 190, 150];
 const FLOW_LAB = ['07:00', '07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30'];
 
 function FlowChart() {
-  const W = 900, H = 200, p = 28;
+  const W = 500, H = 200, p = 28; // ~1:1 scale in the 1440 px side column, so 12 px labels stay readable
   const pts = FLOW.map((v, i) => [p + (i * (W - p * 2)) / (FLOW.length - 1), H - p - (v / 450) * (H - p * 2)] as const);
   const line = pts.map((q) => q.join(' ')).join(' L');
   const y3 = H - p - (360 / 450) * (H - p * 2);
   return (
     <Panel title="Avtovağzaldan çıxan axın" meta="30 dəqiqəlik" actions={<DemoBadge />}>
-      <svg viewBox={`0 0 ${W} ${H}`} className="block h-[180px] w-full" role="img" aria-label="Avtovağzaldan çıxan sərnişin axını, 07:00–11:30">
+      <svg viewBox={`0 0 ${W} ${H}`} className="block h-auto w-full" role="img" aria-label="Avtovağzaldan çıxan sərnişin axını, 07:00–11:30">
         <g fontSize="12" className="fill-ink-3">
           <path d={`M${line} L${pts[pts.length - 1][0]} ${H - p} L${pts[0][0]} ${H - p} Z`} opacity=".1" className="fill-primary" />
           <path d={`M${line}`} fill="none" strokeWidth="2.5" className="stroke-primary" />

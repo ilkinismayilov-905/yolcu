@@ -129,11 +129,11 @@ Sidebar qrupları (mockup-dakı kimi): **Canlı** (Canlı xəritə, Hub kamerala
 
 ## WEB-11 Cilalama — H18–H20 · MUST
 
-- [ ] **WEB-11.1** Hər cədvəldə boş, yüklənir (skeleton) və xəta vəziyyətləri; xəta mətni "nə oldu + nə etmək olar".
-- [ ] **WEB-11.2** Tünd rejimi bütün səhifələrdə yoxla.
-- [ ] **WEB-11.3** 1440 × 900 və 1920 × 1080 (proyektor) ekranlarda yoxla.
-- [ ] **WEB-11.4** `Esc` drawer və modalı bağlayır; fokus görünür.
-- [ ] **WEB-11.5** SIM data olan hər səhifədə "Demo data" nişanı.
+- [x] **WEB-11.1** Hər cədvəldə boş, yüklənir (skeleton) və xəta vəziyyətləri; xəta mətni "nə oldu + nə etmək olar".
+- [x] **WEB-11.2** Tünd rejimi bütün səhifələrdə yoxla.
+- [x] **WEB-11.3** 1440 × 900 və 1920 × 1080 (proyektor) ekranlarda yoxla.
+- [x] **WEB-11.4** `Esc` drawer və modalı bağlayır; fokus görünür.
+- [x] **WEB-11.5** SIM data olan hər səhifədə "Demo data" nişanı.
 
 ## Claude Code üçün nümunə tapşırıq
 

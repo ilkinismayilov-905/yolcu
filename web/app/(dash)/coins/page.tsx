@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { CoinConversion, CoinConversionStatus, CoinRule, CoinSummary, PageResponse } from '@yolcu/shared/api';
-import { CoinIcon, Kpi, PageHeader, Pager, Panel, Status, Table, TD, fmtNum, type StatusKind } from '@/components/ui';
+import { CoinIcon, Kpi, loadErr, PageHeader, Pager, Panel, Status, Table, TD, fmtNum, type StatusKind } from '@/components/ui';
 import { api } from '@/lib/api';
 import { useStream } from '@/lib/stream';
 
@@ -15,7 +15,6 @@ const keys = {
   rules: ['admin', 'coins', 'rules'] as const,
   conv: ['admin', 'coins', 'conversions'] as const,
 };
-const errText = (e: unknown) => (e instanceof Error ? e.message : 'Xəta baş verdi');
 /** "12400.00" → "12 400", "5.50" → "5,50". */
 const azn = (s: string) => {
   const n = Number(s);
@@ -60,7 +59,7 @@ export default function Page() {
         desc="Sərnişinlər səfərdən sonra rəy və sorğu cavabı üçün Yolçu Coin qazanır. Yolçu Coin real pul deyil: partnyor bank vasitəsilə manata çevrilir və ya gediş haqqına xərclənir."
       />
       <div className="mb-4 grid grid-cols-4 gap-4 max-[1200px]:grid-cols-2 max-[820px]:grid-cols-1">
-        <Kpi label="Bu gün qazanılan" value={s ? fmtNum(s.earnedToday) : dash} sub={s ? `Yolçu Coin, ${fmtNum(s.earnedTodayUsers)} istifadəçi` : summary.isError ? errText(summary.error) : 'Yolçu Coin'} subTone={summary.isError ? 'bad' : undefined} />
+        <Kpi label="Bu gün qazanılan" value={s ? fmtNum(s.earnedToday) : dash} sub={s ? `Yolçu Coin, ${fmtNum(s.earnedTodayUsers)} istifadəçi` : summary.isError ? 'Yüklənmədi. Səhifəni yeniləyin.' : 'Yolçu Coin'} subTone={summary.isError ? 'bad' : undefined} />
         <Kpi label="Dövriyyədə" value={s ? big(s.inCirculation) : dash} sub="Yolçu Coin" />
         <Kpi label="Bu ay manata çevrilən" value={s ? `${azn(s.convertedThisMonthAzn)} ₼` : dash} sub="Partnyor bank vasitəsilə" />
         <Kpi label="Məzənnə" value={s ? `${fmtNum(s.rate)} = 1 ₼` : dash} sub="Bank müqaviləsinə görə dəyişə bilər" />
@@ -70,10 +69,10 @@ export default function Page() {
           <Table
             head={['Hərəkət', 'Coin', 'Limit']}
             loading={rules.isPending}
-            error={rules.isError ? errText(rules.error) : null}
+            error={rules.isError ? loadErr('Qaydaları', rules.error) : null}
             onRetry={() => void rules.refetch()}
             isEmpty={rules.data?.length === 0}
-            empty="Qayda yoxdur"
+            empty="Hələ qayda yoxdur. Qaydalar serverdə təyin olunanda burada görünəcək."
           >
             {rules.data?.map((r) => {
               const neg = /^[−-]/.test(r.amount);
@@ -83,7 +82,7 @@ export default function Page() {
                   <td className={TD}>
                     {neg ? <b className="text-bad">{r.amount}</b> : <><CoinIcon /> <b>{r.amount.replace(/^\+/, '')}</b></>}
                   </td>
-                  <td className={`${TD} whitespace-normal text-ink-2`}>{r.limit}</td>
+                  <td className={`${TD} whitespace-normal! text-ink-2`}>{r.limit}</td>
                 </tr>
               );
             })}
@@ -93,10 +92,10 @@ export default function Page() {
           <Table
             head={['İstifadəçi', 'Coin', 'Məbləğ', 'Kart', 'Status']}
             loading={conv.isPending}
-            error={conv.isError ? errText(conv.error) : null}
+            error={conv.isError ? loadErr('Çevirmə sorğularını', conv.error) : null}
             onRetry={() => void conv.refetch()}
             isEmpty={conv.data?.items.length === 0}
-            empty="Çevirmə sorğusu yoxdur"
+            empty="Hələ çevirmə sorğusu yoxdur. Sərnişin Yolçu Coin-i manata çevirəndə burada görünəcək."
           >
             {conv.data?.items.map((c) => {
               const [label, kind] = ST[c.status] ?? [c.status, 'neutral'];

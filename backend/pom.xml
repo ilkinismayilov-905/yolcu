@@ -114,6 +114,23 @@
             <id>web</id>
             <build>
                 <plugins>
+                    <!-- drop the previous web export before copying the new one (only target/classes/static) -->
+                    <plugin>
+                        <artifactId>maven-clean-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>clean-web-static</id>
+                                <phase>initialize</phase>
+                                <goals><goal>clean</goal></goals>
+                                <configuration>
+                                    <excludeDefaultDirectories>true</excludeDefaultDirectories>
+                                    <filesets>
+                                        <fileset><directory>${project.build.outputDirectory}/static</directory></fileset>
+                                    </filesets>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>

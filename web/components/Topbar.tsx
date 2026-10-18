@@ -28,12 +28,13 @@ export function Topbar({ user, onLogout }: { user?: UserDto; onLogout: () => voi
 
   return (
     <header className="flex h-[60px] items-center gap-3 border-b border-line bg-surface px-6">
-      <label className="flex h-[38px] w-[340px] items-center gap-2 rounded-[10px] border border-line bg-surface-2 px-3 text-ink-3 max-[820px]:hidden">
+      <label className="flex h-[38px] w-[340px] items-center gap-2 rounded-[10px] border border-line bg-surface-2 px-3 text-ink-3 focus-within:border-primary has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-offset-2 has-[input:focus-visible]:outline-primary max-[820px]:hidden">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
           <circle cx="11" cy="11" r="7" />
           <path d="M20 20l-3.5-3.5" />
         </svg>
         <input
+          aria-label="Qlobal axtarış"
           className="flex-1 border-0 bg-transparent text-ink outline-0"
           placeholder="Bort nömrəsi, marşrut və ya şikayət ID"
           onKeyDown={async (e) => {
@@ -44,7 +45,7 @@ export function Topbar({ user, onLogout }: { user?: UserDto; onLogout: () => voi
               const r = await api.get<SearchResult>(`/admin/search?q=${encodeURIComponent(v)}`);
               if (r.type === 'BUS') router.push(`/operators?q=${encodeURIComponent(r.ref)}`);
               else if (r.type === 'REPORT') router.push(`/reports?q=${encodeURIComponent(r.ref)}`);
-              else toast('Heç nə tapılmadı');
+              else toast('Heç nə tapılmadı. Bort nömrəsini, marşrutu və ya şikayət ID-ni yoxlayın.');
             } catch (err) {
               toast(err instanceof Error ? err.message : 'Xəta baş verdi');
             }

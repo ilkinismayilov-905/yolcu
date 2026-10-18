@@ -8,7 +8,7 @@ import { api, API_MODE, getToken, setToken } from '@/lib/api';
 import { Button } from '@/components/ui';
 import { LogoFull } from '@/components/Logo';
 
-const inputCls = 'h-10 rounded-[9px] border border-line bg-surface px-3 text-ink outline-0 focus:border-primary';
+const inputCls = 'h-10 rounded-[9px] border border-line bg-surface px-3 text-ink focus:border-primary';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -36,7 +36,11 @@ export default function LoginPage() {
       qc.setQueryData(['me'], res.user);
       router.replace('/map');
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Daxil olmaq olmadı. Bir az sonra yenidən cəhd edin.');
+      setError(
+        err instanceof ApiError && err.status === 401
+          ? 'Email və ya şifrə yanlışdır. Yoxlayın və yenidən daxil olun.'
+          : err instanceof ApiError ? err.message : 'Daxil olmaq olmadı. Bir az sonra yenidən cəhd edin.',
+      );
     } finally {
       setBusy(false);
     }

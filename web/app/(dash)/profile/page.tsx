@@ -7,9 +7,9 @@ import { api, ROLE_LABEL } from '@/lib/api';
 import { FEED_CATEGORIES } from '@/lib/feed';
 import { beep, setPrefs, usePrefs } from '@/lib/prefs';
 import { useToast } from '@/components/Toast';
-import { Button, PageHeader, Panel, Switch } from '@/components/ui';
+import { Button, ErrorState, PageHeader, Panel, Switch, loadErr } from '@/components/ui';
 
-const INPUT = 'h-9 w-full rounded-[9px] border border-line bg-surface px-3 text-ink outline-0 focus:border-primary read-only:bg-surface-2 read-only:text-ink-2 aria-invalid:border-bad';
+const INPUT = 'h-9 w-full rounded-[9px] border border-line bg-surface px-3 text-ink focus:border-primary read-only:bg-surface-2 read-only:text-ink-2 aria-invalid:border-bad';
 const LABEL = 'text-[13px] font-medium text-ink-2';
 const CHK = 'flex items-center gap-2.5 border-b border-line py-[9px] last:border-b-0 [&_input]:size-4 [&_input]:accent-primary';
 
@@ -36,10 +36,7 @@ function Personal() {
   return (
     <Panel title="Şəxsi məlumatlar">
       {me.error ? (
-        <div className="p-6 text-center">
-          <p className="m-0 mb-3 text-bad">{me.error.message}</p>
-          <Button sm onClick={() => me.refetch()}>Yenidən cəhd et</Button>
-        </div>
+        <ErrorState className="p-6" message={loadErr('Profili', me.error)} onRetry={() => void me.refetch()} />
       ) : (
         <div className="grid gap-3.5">
           {(

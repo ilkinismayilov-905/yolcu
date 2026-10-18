@@ -6,9 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.async.AsyncRequestNotUsableException;
@@ -31,7 +32,8 @@ public class GlobalExceptionHandler {
         return status(HttpStatus.BAD_REQUEST, "VALIDATION", msg);
     }
 
-    @ExceptionHandler({HttpMessageNotReadableException.class, MissingServletRequestParameterException.class,
+    // ServletRequestBindingException covers missing query params, headers and path variables
+    @ExceptionHandler({HttpMessageNotReadableException.class, ServletRequestBindingException.class,
             MethodArgumentTypeMismatchException.class})
     ResponseEntity<ApiError> badRequest(Exception e) {
         return status(HttpStatus.BAD_REQUEST, "VALIDATION", "Yanlış sorğu");
@@ -44,7 +46,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     ResponseEntity<ApiError> method(HttpRequestMethodNotSupportedException e) {
-        return status(HttpStatus.METHOD_NOT_ALLOWED, "VALIDATION", e.getMessage());
+        return status(HttpStatus.METHOD_NOT_ALLOWED, "VALIDATION", "Metod dəstəklənmir: " + e.getMethod());
+    }
+
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    ResponseEntity<ApiError> mediaType(HttpMediaTypeNotSupportedException e) {
+        return status(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "VALIDATION", "Content-Type application/json olmalıdır");
     }
 
     @ExceptionHandler(AccessDeniedException.class)

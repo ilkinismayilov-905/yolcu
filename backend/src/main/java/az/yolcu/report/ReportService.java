@@ -314,7 +314,7 @@ public class ReportService {
     }
 
     private static PageRequest pageable(int page, int size) {
-        if (page < 0 || size < 1 || size > 100) throw ApiException.validation("page >= 0, size 1..100");
+        PageResponse.check(page, size);
         return PageRequest.of(page, size, NEWEST);
     }
 

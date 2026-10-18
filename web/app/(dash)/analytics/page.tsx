@@ -7,7 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import type { AlightingPoint, AnalyticsKpis, OdMatrix } from '@yolcu/shared/api';
 import { tollRecommended, tollScenario, tollScore, type TollCandidate } from '@yolcu/shared/toll';
 import staticData from '../../../../mocks/analytics_static.json';
-import { Bar, Button, DemoBadge, Kpi, Note, PageHeader, Panel, Plate, Seg, Table, TD, TR_CLICK, fmtNum } from '@/components/ui';
+import { Bar, Button, DemoBadge, ErrorState, Kpi, SkeletonLines, loadErr, Note, PageHeader, Panel, Plate, Seg, Table, TD, TR_CLICK, fmtNum } from '@/components/ui';
 import { api } from '@/lib/api';
 import { navItem } from '@/lib/nav';
 
@@ -27,7 +27,6 @@ const anKeys = {
   alighting: ['admin', 'analytics', 'alighting'] as const,
 };
 
-const errText = (e: unknown) => (e instanceof Error ? e.message : 'Xəta baş verdi');
 const mix = (token: string, pct: number) => `color-mix(in srgb, var(--${token}) ${Math.round(pct)}%, transparent)`;
 
 export default function Page() {
@@ -80,7 +79,7 @@ function FlowKpis() {
   const trips = (n: number) => (n >= 1e6 ? `${fmtNum(n / 1e6, 2)} mln` : fmtNum(n));
   return (
     <div className="grid grid-cols-4 gap-4 max-[1200px]:grid-cols-2 max-[820px]:grid-cols-1">
-      <Kpi label="İzlənən səfər, son 30 gün" value={v(() => trips(k!.trackedTrips30d))} sub={error ? errText(error) : k && `Razılıq verən ${fmtNum(k.consentUsers)} istifadəçi`} subTone={error ? 'bad' : undefined} />
+      <Kpi label="İzlənən səfər, son 30 gün" value={v(() => trips(k!.trackedTrips30d))} sub={error ? 'Yüklənmədi. Səhifəni yeniləyin.' : k && `Razılıq verən ${fmtNum(k.consentUsers)} istifadəçi`} subTone={error ? 'bad' : undefined} />
       <Kpi label="Orta səfər müddəti" value={v(() => `${fmtNum(k!.avgTripMin)} dəq`)} sub="Qapıdan qapıya, keçidlər daxil" />
       <Kpi label="Ən uzun keçid gözləməsi" value={v(() => `${fmtNum(k!.longestTransferWaitMin)} dəq`)} sub="Avtovağzal → şəhər avtobusu" subTone="bad" />
       <Kpi label="Proaktiv təklif qəbulu" value={v(() => `${fmtNum(k!.suggestionAcceptance)}%`)} sub="Tətbiq yolu özü təklif edəndə" subTone="ok" />
@@ -89,20 +88,9 @@ function FlowKpis() {
 }
 
 function StateBox({ loading, error, onRetry, empty }: { loading: boolean; error: unknown; onRetry: () => void; empty?: string }) {
-  return (
-    <div className="p-10 text-center text-ink-2">
-      {loading ? (
-        'Yüklənir…'
-      ) : error ? (
-        <>
-          <span className="text-bad">{errText(error)}</span>
-          <Button sm className="ml-3" onClick={onRetry}>Yenidən cəhd et</Button>
-        </>
-      ) : (
-        empty
-      )}
-    </div>
-  );
+  if (loading) return <SkeletonLines rows={6} />;
+  if (error) return <ErrorState className="p-10" message={loadErr('Səfər matrisini', error)} onRetry={onRetry} />;
+  return <div className="p-10 text-center text-ink-2">{empty}</div>;
 }
 
 function OdPanel() {
@@ -113,7 +101,7 @@ function OdPanel() {
   return (
     <Panel title="Haradan haraya: səhər piki" meta={`${OD_FROM}–${OD_TO}, ${inK ? 'min səfər' : 'səfər'}`}>
       {!d || !d.zones.length || !d.matrix.flat().some(Boolean) ? (
-        <StateBox loading={q.isPending} error={q.error} onRetry={() => q.refetch()} empty="Bu zaman aralığında səfər yoxdur." />
+        <StateBox loading={q.isPending} error={q.error} onRetry={() => q.refetch()} empty="Bu zaman aralığında səfər yoxdur. Səfərlər izlənəndə matris dolacaq." />
       ) : (
         <div className="overflow-x-auto">
           <table className="border-separate border-spacing-[3px]">
@@ -207,13 +195,13 @@ function AlightingPanel() {
   const q = useQuery({ queryKey: anKeys.alighting, queryFn: () => api.get<AlightingPoint[]>('/admin/analytics/alighting?limit=5') });
   return (
     <Panel title="Sərnişinlər harada düşür" meta="Səfər izləmə: GPS ilə avtomatik aşkarlanan düşmə nöqtələri" flush>
-      <Table head={['Dayanacaq', 'Gündə düşən', 'Pik dəqiqə', 'Nəticə']} loading={q.isPending} error={q.error ? errText(q.error) : null} onRetry={() => q.refetch()} isEmpty={!q.data?.length} empty="Hələ düşmə nöqtəsi yoxdur.">
+      <Table head={['Dayanacaq', 'Gündə düşən', 'Pik dəqiqə', 'Nəticə']} loading={q.isPending} error={q.error ? loadErr('Düşmə nöqtələrini', q.error) : null} onRetry={() => q.refetch()} isEmpty={!q.data?.length} empty="Hələ düşmə nöqtəsi yoxdur. Sərnişinlər səfəri bitirəndə burada görünəcək.">
         {q.data?.map((a) => (
           <tr key={a.stop}>
             <td className={TD}><b>{a.stop}</b></td>
             <td className={`${TD} tabular-nums`}>{fmtNum(a.perDay)}</td>
             <td className={TD}>{a.peak}</td>
-            <td className={`${TD} whitespace-normal text-ink-2`}>{a.note}</td>
+            <td className={`${TD} whitespace-normal! text-ink-2`}>{a.note}</td>
           </tr>
         ))}
       </Table>
@@ -269,7 +257,7 @@ function Forecast() {
                 <td className={TD}><b>{h}</b></td>
                 <td className={`${TD} tabular-nums`}>{fmtNum(f)} nəfər</td>
                 <td className={`${TD} text-ink-2`}>{fmtNum(t)}</td>
-                <td className={`${TD} whitespace-normal text-[13px] text-ink-2`}>{prep}</td>
+                <td className={`${TD} whitespace-normal! text-[13px] text-ink-2`}>{prep}</td>
               </tr>
             ))}
           </Table>
@@ -440,7 +428,7 @@ function PilotRow({ plate, title, sub }: { plate: ReactNode; title: string; sub:
 function DataUse() {
   const { sources, uses } = staticData.useMatrix;
   return (
-    <div className="grid gap-4">
+    <div className="grid grid-cols-1 gap-4">
       <Panel title="Hansı data hansı qərara gedir" meta="AYNA daxilində istifadə" actions={<DemoBadge />} flush>
         <Table head={['Qərar', ...sources]} empty="">
           {uses.map(([u, v]) => (
@@ -459,10 +447,10 @@ function DataUse() {
         <Table head={['Məhsul', 'Kimə', 'Nə daxildir', 'Model', 'İllik, təxmini']} empty="">
           {staticData.dataProducts.map(([name, who, what, model, rev]) => (
             <tr key={name}>
-              <td className={`${TD} whitespace-normal`}><b>{name}</b></td>
-              <td className={`${TD} whitespace-normal text-ink-2`}>{who}</td>
-              <td className={`${TD} whitespace-normal text-[13px] text-ink-2`}>{what}</td>
-              <td className={TD}>{model}</td>
+              <td className={`${TD} whitespace-normal!`}><b>{name}</b></td>
+              <td className={`${TD} whitespace-normal! text-ink-2`}>{who}</td>
+              <td className={`${TD} whitespace-normal! text-[13px] text-ink-2`}>{what}</td>
+              <td className={`${TD} whitespace-normal!`}>{model}</td>
               <td className={`${TD} tabular-nums`}>{rev}</td>
             </tr>
           ))}

@@ -1,5 +1,6 @@
 package az.yolcu.geo;
 
+import az.yolcu.common.ApiException;
 import az.yolcu.geo.dto.NearbyStop;
 import az.yolcu.geo.dto.Place;
 import java.time.Duration;
@@ -40,6 +41,7 @@ public class GeoController {
     @GetMapping("/stops")
     public List<NearbyStop> stops(@RequestParam double lat, @RequestParam double lon,
                                   @RequestParam(defaultValue = "600") double radius) {
+        if (!(radius >= 1 && radius <= 5000)) throw ApiException.validation("radius: 1–5000 m olmalıdır");
         return stops.near(lat, lon, radius);
     }
 

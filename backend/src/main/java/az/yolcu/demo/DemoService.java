@@ -22,6 +22,7 @@ import az.yolcu.user.Role;
 import az.yolcu.user.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -210,6 +211,21 @@ public class DemoService {
             d.merge("notifications", jdbc.update("delete from notifications where user_id = ? and created_at >= ?", demoConv, today), Integer::sum);
             jdbc.update("update users set coin_balance = (select coalesce(sum(amount), 0) from coin_tx where user_id = ?) where id = ?", demoConv, demoConv);
             alerts += jdbc.update("delete from alerts where category = 'AI' and title like ?", HubProposalService.ALERT_PREFIX + "%");
+            // Everything the demo session wrote since today's clock start (08:12): seeds are older (alerts 07:50–08:11, surveys past days)
+            var session = sessionStart(today);
+            alerts += jdbc.update("delete from alerts where created_at >= ?", session);
+            var surveyIds = jdbc.queryForList("select id from surveys where created_at >= ?", Long.class, session);
+            int answers = 0, questions = 0, surveyNotifs = 0;
+            for (var id : surveyIds) {
+                answers += jdbc.update("delete from survey_answers where survey_id = ?", id);
+                questions += jdbc.update("delete from survey_questions where survey_id = ?", id);
+                surveyNotifs += jdbc.update("delete from notifications where target = ?", "survey:" + id);
+                jdbc.update("delete from surveys where id = ?", id);
+            }
+            d.merge("survey_answers", answers, Integer::sum);
+            d.put("survey_questions", questions);
+            d.merge("notifications", surveyNotifs, Integer::sum);
+            d.put("surveys", surveyIds.size());
             d.put("alerts", alerts);
             d.put("hub_proposals", jdbc.update("delete from hub_proposals"));
             jdbc.update("update users set coin_balance = ? where id = ?", DEMO_BALANCE, uid);
@@ -228,6 +244,12 @@ public class DemoService {
         events.publishEvent(StreamEvent.toUser(uid, "coin.updated", Map.of("balance", DEMO_BALANCE)));
         log.info("Demo reset: deleted {}", deleted);
         return new ResetResult(true, "reset", "Simulyator və demo data başlanğıc vəziyyətinə qaytarıldı", DEMO_BALANCE, deleted);
+    }
+
+    /** Today's demo-clock start (e.g. 08:12 Baku); midnight if not configured. */
+    private OffsetDateTime sessionStart(OffsetDateTime today) {
+        var start = props.demo() == null ? null : props.demo().clockStart();
+        return start == null ? today : today.plusHours(start.getHour()).plusMinutes(start.getMinute());
     }
 
     private Runnable step(int e, Runnable r) {

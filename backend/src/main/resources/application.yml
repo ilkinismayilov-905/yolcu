@@ -28,6 +28,8 @@ server:
     enabled: true
     mime-types: application/json,application/geo+json,text/html,text/css,application/javascript
     min-response-size: 2KB
+  mime-mappings:
+    webmanifest: application/manifest+json   # Next.js app/manifest.ts in the static export
 
 ---
 # Ehtiyat: ./mvnw spring-boot:run -Dspring-boot.run.arguments='--spring.profiles.active=h2'

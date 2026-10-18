@@ -118,7 +118,7 @@ public class ConversionService {
 
     @Transactional(readOnly = true)
     public PageResponse<ConversionRow> page(int page, int size) {
-        if (page < 0 || size < 1 || size > 100) throw ApiException.validation("page >= 0, size 1..100");
+        PageResponse.check(page, size);
         // by id, not createdAt: the demo clock restarts on every boot, so createdAt can run backwards across restarts
         var items = jdbc.query(SELECT + "order by c.id desc limit ? offset ?", ConversionService::map, size, (long) page * size);
         long total = jdbc.queryForObject("select count(*) from coin_conversions", Long.class);

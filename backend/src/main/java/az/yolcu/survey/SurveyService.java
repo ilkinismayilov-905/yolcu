@@ -79,7 +79,7 @@ public class SurveyService {
 
     @Transactional(readOnly = true)
     public PageResponse<SurveyListItem> list(String status, int page, int size) {
-        if (page < 0 || size < 1 || size > 100) throw ApiException.validation("page >= 0, size 1..100");
+        PageResponse.check(page, size);
         var pageable = PageRequest.of(page, size, NEWEST);
         Page<Survey> p;
         if (status == null || status.isBlank()) p = surveys.findAll(pageable);

@@ -6,7 +6,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { DemoResponse, DemoScenario } from '@yolcu/shared/api';
 import { Modal } from '@/components/Overlay';
 import { useToast } from '@/components/Toast';
-import { Button, PageHeader, Panel } from '@/components/ui';
+import { Button, PageHeader, Panel, SkeletonLines } from '@/components/ui';
 import { api } from '@/lib/api';
 
 // 03_API_CONTRACT §10. Not in the sidebar: opened by URL during the demo.
@@ -32,7 +32,7 @@ export default function Page() {
     <>
       <PageHeader title="Demo idarə paneli" desc="Demo ssenarilərini işə salın və ya hər şeyi başlanğıc vəziyyətə qaytarın." actions={role && role !== 'PASSENGER' && <ResetButton />} />
       {me.isPending ? (
-        <Panel><p className="m-0 text-ink-2">Yüklənir…</p></Panel>
+        <Panel><SkeletonLines /></Panel>
       ) : role === 'ADMIN' || role === 'DISPATCHER' ? (
         <Scenarios />
       ) : (

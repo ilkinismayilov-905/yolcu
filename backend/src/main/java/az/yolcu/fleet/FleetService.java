@@ -89,7 +89,7 @@ public class FleetService {
 
     /** Fleet table, sorted by bort. q = case-insensitive substring of bort or route. */
     public PageResponse<BusListItem> buses(String operator, String status, String type, String q, int page, int size) {
-        if (page < 0 || size < 1 || size > 100) throw ApiException.validation("page >= 0, size 1..100");
+        PageResponse.check(page, size);
         var where = new ArrayList<String>();
         var args = new ArrayList<Object>();
         if (!blank(operator)) {

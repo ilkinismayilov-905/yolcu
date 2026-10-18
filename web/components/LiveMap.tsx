@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import Map, { AttributionControl, Layer, Marker, NavigationControl, Source } from 'react-map-gl/maplibre';
 import type { ExpressionSpecification, MapLibreEvent } from 'maplibre-gl';
 import type { FeatureCollection } from 'geojson';
@@ -26,13 +26,14 @@ const UNDER_LABELS = 'waterway_line_label';
 const EMPTY: FeatureCollection = { type: 'FeatureCollection', features: [] };
 
 /** Token colors as literal strings (MapLibre paint cannot read CSS variables). */
-function useTokens() {
+function useTokens(el: RefObject<HTMLDivElement | null>) {
   const [t, setT] = useState<Record<string, string> | null>(null);
   useEffect(() => {
-    const cs = getComputedStyle(document.documentElement);
+    // read where the map renders (inside .theme-light), not on <html>
+    const cs = getComputedStyle(el.current ?? document.documentElement);
     const names = ['fluid', 'slow', 'jam', 'crowd', 'primary', 'metro', 'live', 'surface', 'ink', 'ink-2', 'on-color'];
     setT(Object.fromEntries(names.map((n) => [n, cs.getPropertyValue(`--${n}`).trim()])));
-  }, []);
+  }, [el]);
   return t;
 }
 
@@ -51,7 +52,8 @@ const vis = (on: boolean) => ({ visibility: on ? ('visible' as const) : ('none' 
 export default function LiveMap({ layers, onBusClick, onProposalClick }: {
   layers: Record<LayerKey, boolean>; onBusClick: (route: string) => void; onProposalClick: (p: HubProposal) => void;
 }) {
-  const tk = useTokens();
+  const box = useRef<HTMLDivElement>(null);
+  const tk = useTokens(box);
   const traffic = useTraffic();
   const hubs = useHubs();
   const camHubs = useAdminHubs();
@@ -84,8 +86,9 @@ export default function LiveMap({ layers, onBusClick, onProposalClick }: {
     [hubs.data],
   );
 
-  if (!tk) return <div className="size-full bg-surface-2" />;
   return (
+    <div ref={box} className="size-full bg-surface-2">
+    {tk && (
     <Map initialViewState={CENTER} mapStyle={STYLE} attributionControl={false} onLoad={localizeLabels} style={{ width: '100%', height: '100%' }}>
       <NavigationControl position="top-right" showCompass={false} />
       <AttributionControl position="bottom-right" compact={false} customAttribution="© OpenStreetMap contributors, OpenFreeMap" />
@@ -157,6 +160,8 @@ export default function LiveMap({ layers, onBusClick, onProposalClick }: {
           .map((p) => <ProposalMarker key={p.id} p={p} onClick={() => onProposalClick(p)} />)}
       {layers.buses && <Buses onClick={onBusClick} />}
     </Map>
+    )}
+    </div>
   );
 }
 

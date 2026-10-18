@@ -114,10 +114,10 @@
 
 ## BE-10 Sabitləşdirmə — H16–H20 · MUST
 
-- [ ] **BE-10.1** Bütün endpoint-ləri Swagger-dən bir dəfə keç; `03_API` ilə fərqləri düzəlt.
-- [ ] **BE-10.2** Xəta halları: boş siyahılar, səhv ID, səhv status keçidi — hamısı düzgün kodla.
+- [x] **BE-10.1** Bütün endpoint-ləri Swagger-dən bir dəfə keç; `03_API` ilə fərqləri düzəlt. _(2026-10-18: yazılmış endpoint-lər müqavilə ilə uyğundur. `/me/home`, `/trip/plan`, `/trips*`, `/me/suggestion`, `/me/trips`, `/me/patterns`, `PUT /me/settings`, `/me/notifications/{id}/read`, `read-all` hələ yoxdur: BE-5.4 və BE-6 bəndləridir.)_
+- [x] **BE-10.2** Xəta halları: boş siyahılar, səhv ID, səhv status keçidi — hamısı düzgün kodla.
 - [ ] **BE-10.3** Log: hər SSE publish (debug), hər demo trigger (info).
-- [ ] **BE-10.4** `demo` profili ilə tam ssenarini 2 dəfə keç (`09_24H_PLAN` demo ssenarisi).
+- [x] **BE-10.4** `demo` profili ilə tam ssenarini 2 dəfə keç (`09_24H_PLAN` demo ssenarisi). — 2026-10-18: `yolcu.demo.enabled` ilə, web + `/demo` paneli üzərindən 2 tam keçid (9/9 addım, hər birindən sonra reset başlanğıc vəziyyətini tam bərpa etdi).
 - [ ] **BE-10.5** Laptop LAN IP-si ilə telefondan əlçatanlıq (firewall, CORS).
 
 ## Claude Code üçün nümunə tapşırıqlar

@@ -10,7 +10,7 @@ import { LogoMark } from './Logo';
 
 const initials = (name = '') => name.split(/\s+/).map((w) => w[0]).slice(0, 2).join('').toUpperCase();
 
-const ITEM = 'flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left font-medium text-ink outline-0 hover:bg-surface-2 focus-visible:bg-surface-2';
+const ITEM = 'flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left font-medium text-ink outline-offset-[-2px] hover:bg-surface-2 focus-visible:bg-surface-2';
 
 /** Topbar avatar + dropdown menu (WAI-ARIA menu button pattern). */
 export function AvatarMenu({ user, onLogout }: { user?: UserDto; onLogout: () => void }) {

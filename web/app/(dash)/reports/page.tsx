@@ -14,7 +14,7 @@ import {
   type ReportStats,
   type ReportStatusFilter,
 } from '@yolcu/shared/api';
-import { Button, Kpi, PageHeader, Pager, Panel, Plate, Seg, Status, Table, TD, TR_CLICK } from '@/components/ui';
+import { Button, ErrorState, Kpi, PageHeader, Pager, Panel, Plate, Seg, SkeletonLines, Status, Table, TD, TR_CLICK, loadErr } from '@/components/ui';
 import { Drawer, Modal } from '@/components/Overlay';
 import { useToast } from '@/components/Toast';
 import { API_MODE, api } from '@/lib/api';
@@ -41,7 +41,7 @@ const STATUS_SEG = [
   ['CLOSED', 'Bağlanıb'],
 ] as const satisfies readonly (readonly [ReportStatusFilter | '', string])[];
 
-const SELECT = 'h-9 rounded-[9px] border border-line bg-surface px-3 text-ink outline-0 focus:border-primary';
+const SELECT = 'h-9 rounded-[9px] border border-line bg-surface px-3 text-ink focus:border-primary';
 const errText = (e: unknown) => (e instanceof Error ? e.message : 'Xəta baş verdi');
 
 export default function Page() {
@@ -153,7 +153,7 @@ function Reports() {
         <Table
           head={['ID', 'Vaxt', 'Marşrut', 'Bort', 'Operator', 'Mövzu', 'Status']}
           loading={list.isPending}
-          error={list.isError ? errText(list.error) : null}
+          error={list.isError ? loadErr('Şikayətləri', list.error) : null}
           onRetry={() => void list.refetch()}
           isEmpty={!list.data?.items.length}
           empty="Bu filtrə uyğun şikayət yoxdur. Filtrləri dəyişin və ya axtarışı təmizləyin."
@@ -258,11 +258,9 @@ function ReportDrawer({ item, onClose }: { item: ReportListItem | null; onClose:
         }
       >
         {detail.isError ? (
-          <div className="text-bad">
-            {errText(detail.error)} <Button sm className="ml-2" onClick={() => void detail.refetch()}>Yenidən cəhd et</Button>
-          </div>
+          <ErrorState message={loadErr('Şikayəti', detail.error)} onRetry={() => void detail.refetch()} />
         ) : !d ? (
-          <div className="text-ink-3">Yüklənir…</div>
+          <SkeletonLines rows={6} />
         ) : (
           <>
             <div className="rounded-xl border border-line bg-surface-2 px-3.5 py-3 text-[13px] text-ink">“{d.text}”</div>

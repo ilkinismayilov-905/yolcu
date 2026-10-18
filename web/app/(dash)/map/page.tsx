@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import type { Alert, DemoResponse } from '@yolcu/shared/api';
 import { HubProposalDrawer } from '@/components/HubProposalDrawer';
 import { useToast } from '@/components/Toast';
-import { Button, DemoBadge, Kpi, PageHeader, Panel, Toggle, fmtNum } from '@/components/ui';
+import { Button, DemoBadge, ErrorState, Kpi, SkeletonLines, loadErr, PageHeader, Panel, Toggle, fmtNum } from '@/components/ui';
 import type { LayerKey } from '@/components/LiveMap';
 import { FEED_CATEGORIES } from '@/lib/feed';
 import { api } from '@/lib/api';
@@ -61,7 +61,8 @@ export default function Page() {
       />
       <Kpis />
       <div className="grid grid-cols-[minmax(0,1fr)_360px] gap-4 max-[1200px]:grid-cols-1">
-        <div className="relative h-[calc(100vh-290px)] min-h-[500px] overflow-hidden rounded-[14px] border border-line bg-surface-2">
+        {/* theme-light: the basemap stays light in dark mode, so overlays use light tokens too */}
+        <div className="theme-light relative h-[calc(100vh-290px)] min-h-[500px] overflow-hidden rounded-[14px] border border-line bg-surface-2 text-ink">
           <LiveMap
             layers={layers}
             onBusClick={(route) => router.push(`/occupancy?route=${encodeURIComponent(route)}`)}
@@ -127,7 +128,7 @@ function Kpis() {
   const top = [...(useHubs().data ?? [])].sort((a, b) => b.count - a.count).slice(0, 2).map((h) => h.name);
   return (
     <div className="mb-4 grid grid-cols-4 gap-4 max-[1200px]:grid-cols-2 max-[820px]:grid-cols-1">
-      <Kpi label="Orta hərəkət sürəti" value={v(k ? `${fmtNum(k.avgSpeedKmh)} km/s` : '')} sub={error ? errText(error) : k && `Dünən bu saatda ${fmtNum(k.avgSpeedYesterday)} km/s idi`} subTone={speedDown ? 'bad' : undefined} />
+      <Kpi label="Orta hərəkət sürəti" value={v(k ? `${fmtNum(k.avgSpeedKmh)} km/s` : '')} sub={error ? 'Yüklənmədi. Səhifəni yeniləyin.' : k && `Dünən bu saatda ${fmtNum(k.avgSpeedYesterday)} km/s idi`} subTone={speedDown ? 'bad' : undefined} />
       <Kpi label="Hub-larda gözləyən" value={v(k ? fmtNum(k.waitingAtHubs) : '')} sub={top.length ? `Ən sıx: ${top.join(' və ')}` : undefined} />
       <Kpi label="Avtobuslarda orta doluluq" value={v(k ? `${fmtNum(k.avgOccupancy)}%` : '')} sub={k && `${fmtNum(k.overfullBuses)} avtobus 90%-dən çox doludur`} subTone={k && k.overfullBuses > 0 ? 'bad' : undefined} />
       <Kpi
@@ -144,13 +145,10 @@ function Feed({ fresh }: { fresh: ReadonlySet<number> }) {
   const { data, error, isPending, refetch } = useFeed();
   const { feedHidden } = usePrefs();
   const box = 'max-h-[calc(100vh-345px)] min-h-[445px] overflow-auto max-[1200px]:max-h-[420px] max-[1200px]:min-h-0';
-  if (isPending) return <div className={`${box} p-10 text-center text-ink-2`}>Yüklənir…</div>;
+  if (isPending) return <SkeletonLines rows={8} className={`${box} p-4`} />;
   if (error)
     return (
-      <div className={`${box} p-10 text-center`}>
-        <p className="m-0 mb-3 text-bad">Hadisələr yüklənmədi: {errText(error)}</p>
-        <Button sm onClick={() => refetch()}>Yenidən cəhd et</Button>
-      </div>
+      <ErrorState className={`${box} p-10`} message={loadErr('Hadisələri', error)} onRetry={() => void refetch()} />
     );
   if (!data.length) return <div className={`${box} p-10 text-center text-ink-2`}>Hələ hadisə yoxdur. Yeni hadisələr burada avtomatik görünəcək.</div>;
   const shown = data.filter((a) => !feedHidden.includes(a.category));

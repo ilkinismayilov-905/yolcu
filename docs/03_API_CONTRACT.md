@@ -26,6 +26,11 @@ Baza URL: `/api/v1`. Bütün cavablar JSON, sahə adları `camelCase`, vaxt ISO-
 | `ALREADY_DONE` | 409 | Rəy və ya sorğu artıq göndərilib |
 | `RATE_LIMIT` | 429 | Şikayət limiti |
 
+Ümumi qaydalar (BE-10):
+- Səhifələnmiş siyahılar: `page ≥ 0`, `size` 1–100 (və `page × size` int-ə sığmalıdır), əks halda `400 VALIDATION`. Boş nəticə → `200` və `{ "items": [], ..., "total": 0 }`; massiv qaytaran endpoint-lər boş olanda `[]` qaytarır, heç vaxt `404`.
+- Yanlış JSON, body yoxdur, səhv tip (`"size=abc"`, `"coins":"x"`), naməlum enum dəyəri, çatışmayan məcburi parametr → `400 VALIDATION`.
+- Dəstəklənməyən metod → `405`, `Content-Type` `application/json` deyil → `415`; hər ikisində `code: VALIDATION`, gövdə eyni `{ error }` formasındadır. Naməlum yol → `404 NOT_FOUND`. Server heç vaxt Spring-in default xəta gövdəsini qaytarmır.
+
 ---
 
 ## 1. Auth
@@ -34,8 +39,9 @@ Baza URL: `/api/v1`. Bütün cavablar JSON, sahə adları `camelCase`, vaxt ISO-
 **POST** `/auth/demo-login` — body yoxdur, passenger tokeni qaytarır
 
 ```json
-{ "token": "eyJ...", "user": { "id": 1, "fullName": "Leyla Məmmədova", "email": "dispatcher@yolcu.az", "role": "DISPATCHER", "coinBalance": 0 } }
+{ "token": "eyJ...", "user": { "id": 1, "fullName": "Leyla Məmmədova", "email": "dispatcher@yolcu.az", "role": "DISPATCHER", "coinBalance": 0, "accessibility": false, "trackingConsent": true } }
 ```
+`User.email` demo sərnişində `null`-dır. Yanlış email/şifrə → `401 UNAUTHORIZED`.
 
 **GET** `/me` → `User`
 **POST** `/me/password` — `{ "currentPassword": "demo123", "newPassword": "demo1234" }` → `{ "ok": true }`. `newPassword` 6–100 simvol. Hazırkı şifrə yanlışdırsa, yeni şifrə qısadırsa və ya hazırkı ilə eynidirsə → `400 VALIDATION`. Köhnə tokenlər etibarlı qalır.
@@ -52,7 +58,7 @@ Cavab başlıqları: `Content-Type: application/geo+json`, `Cache-Control: max-a
 [{ "id": "elmler", "name": "Elmlər dayanacağı", "lat": 40.3755, "lon": 49.8156, "routes": ["88","65"], "kind": "BUS", "accessible": true, "distanceMeters": 290 }]
 ```
 
-Məsafəyə görə sıralanır. `radius` default 600 m; `lat`/`lon` yoxdursa 400 `VALIDATION`.
+Məsafəyə görə sıralanır. `radius` default 600 m, 1–5000 m; `lat`/`lon` yoxdursa və ya `radius` aralıqdan kənardırsa 400 `VALIDATION`.
 
 **GET** `/places` → `[{ "id": "nerimanov", "name": "Nərimanov", "lat": 40.4029, "lon": 49.8711 }]`
 
@@ -159,7 +165,7 @@ Məsafəyə görə sıralanır. `radius` default 600 m; `lat`/`lon` yoxdursa 400
 ```json
 { "route": "88", "bort": "10-BB-482", "category": "Dayanacaqda saxlamadı", "text": "...", "hasPhoto": true, "lat": 40.3755, "lon": 49.8156 }
 ```
-→ `ReportDetail` + `coinsAwarded` (həmişə `0`: şikayət coin qazandırmır, sahə uyğunluq üçün qalır). Dashboard-a `report.created` SSE.
+→ `201` `ReportDetail` + `coinsAwarded` (həmişə `0`: şikayət coin qazandırmır, sahə uyğunluq üçün qalır). Dashboard-a `report.created` SSE.
 
 **GET** `/me/reports?page=0&size=20` → `{ items: ReportListItem[], page, size, total }` · **GET** `/me/reports/{code}` → `ReportDetail`
 
@@ -224,7 +230,7 @@ SSE yükləri (`02_ARCHITECTURE` §4): `bus.positions` → `/live/buses` element
 ### Dashboard
 **GET** `/admin/kpis` → `{ "avgSpeedKmh": 18, "avgSpeedYesterday": 22, "waitingAtHubs": 12480, "avgOccupancy": 74, "overfullBuses": 63, "satisfaction": 4.2, "satisfactionWeekDelta": 0.2 }`
 **GET** `/admin/feed?limit=50` → `Alert[]` · `{ "id": 1, "category": "OCC", "title": "...", "body": "...", "target": "p-occ", "createdAt": "..." }`
-`Alert.category`: `HUB | OCC | AI | BILETIM | REPORT | EVENT | WEATHER | COIN` (`COIN`: bank çevirməsi tamamlandı, `target: p-coins`). `target` — web səhifə id-si (`p-hubs`, `p-occ`, `p-split`, `p-express`, `p-reports` ...). Lent ən yenisi əvvəl, `limit` 1–200 (default 50). Yeni şikayət gələndə `REPORT` alert-i yaranır (`title`: `Yeni şikayət #A-2044: 88, <kateqoriya>`, `body`: mətn, `target`: `p-reports`) və `alert.created` SSE yayılır.
+`Alert.category`: `HUB | OCC | AI | BILETIM | REPORT | EVENT | WEATHER | COIN` (`COIN`: bank çevirməsi tamamlandı, `target: p-coins`). `target` — web səhifə id-si (`p-hubs`, `p-occ`, `p-split`, `p-express`, `p-reports` ...). Lent ən yenisi əvvəl, `limit` 1–200 (default 50), əks halda `VALIDATION`. Yeni şikayət gələndə `REPORT` alert-i yaranır (`title`: `Yeni şikayət #A-2044: 88, <kateqoriya>`, `body`: mətn, `target`: `p-reports`) və `alert.created` SSE yayılır.
 KPI mənbələri: `avgSpeedKmh` — simulyasiya avtobuslarının marşrut sürətlərinin orta qiyməti; `avgSpeedYesterday` — hələlik sabit `22`; `waitingAtHubs` — `/live/hubs` `count` cəmi; `avgOccupancy` — avtobusların orta doluluğu (%); `overfullBuses` — doluluğu > 90% olan simulyasiya avtobusları; `satisfaction` — bütün rəylərin orta balı (3 reytinqin ortası, 1 onluq); `satisfactionWeekDelta` — son 7 gün − əvvəlki 7 gün.
 
 ### Hub kameraları
@@ -290,7 +296,7 @@ Başlıqlar: `Content-Type: text/csv;charset=UTF-8` · `Content-Disposition: att
 **PATCH** `/admin/reports/{code}/status` — `{ "status": "REVIEW", "note": "" }` → `ReportDetail`
 **POST** `/admin/reports/{code}/forward` → `ReportDetail` (status `FORWARDED`, sərnişinə bildiriş)
 **POST** `/admin/reports/{code}/resolve` — `{ "answerText": "Sürücü ilə izahat işi aparıldı" }` → `ReportDetail` (coin verilmir; bildiriş: `#A-2042: təşəkkür edirik! Rəyiniz xidməti yaxşılaşdırmağa kömək edir`)
-**POST** `/admin/reports/{code}/share` — `{ "targets": ["OPERATOR","YPX"], "hidePersonal": true }` → `{ "ok": true }` · `targets`: `OPERATOR`, `YPX` (Dövlət Yol Polisi), `CITY` (Bakı Şəhər İcra Hakimiyyəti)
+**POST** `/admin/reports/{code}/share` — `{ "targets": ["OPERATOR","YPX"], "hidePersonal": true }` → `{ "ok": true }` · `targets` (boş olmayan): `OPERATOR`, `YPX` (Dövlət Yol Polisi), `CITY` (Bakı Şəhər İcra Hakimiyyəti); başqa dəyər → `VALIDATION`
 
 Status keçidləri: `NEW → REVIEW → FORWARDED → ANSWERED/RESOLVED`. `NEW`-dən birbaşa `FORWARDED` də olar. Səhv keçid → `VALIDATION`.
 `late` = `FORWARDED` və `forwardedAt` 24 saatdan köhnədir (seed-də bir neçəsi belədir).
@@ -391,7 +397,7 @@ Ssenari detalları (BE-9.5):
 **POST** `/demo/surveys/{id}/simulate-answers?count=50` (DISPATCHER və ya ADMIN; `count` 1–500, default 50; yalnız `ACTIVE` sorğu, əks halda `VALIDATION`) → `{ "created": 50, "survey": SurveyListItem }`
 Bu sorğunu hələ cavablamamış sintetik sərnişinlər (`users.synthetic = true`) seçilir, çatmayan qədəri yenisi yaradılır (sonrakı sorğularda təkrar istifadə olunur). Variantlar sualın seed paylanmasına görə çəkili təsadüfi seçilir. Sintetik sərnişinlərə coin verilmir, bildiriş getmir. Batch-dən sonra bir dəfə `survey.updated`.
 
-**POST** `/demo/reset` → simulyatoru və demo datanı başlanğıc vəziyyətə qaytarır (DB-də demo sərnişinin bu günkü şikayət, səfər, coin dəyişiklikləri silinir).
+**POST** `/demo/reset` → simulyatoru və demo datanı başlanğıc vəziyyətə qaytarır (DB-də demo sərnişinin bu günkü şikayət, səfər, coin dəyişiklikləri silinir). **Demo sessiyası (BE-10):** bugünkü demo saatı başlanğıcından (`yolcu.demo.clock-start`, 08:12) sonra yaradılan bütün sorğular (+ sualları, cavabları, `survey:{id}` bildirişləri) və bütün lent alertləri də silinir; seed alertləri (07:50–08:11) və seed sorğuları (keçmiş günlər) qalır. Nəticə: `deleted` içində `surveys`, `survey_questions`, `survey_answers`, `alerts`.
 → `{ "ok": true, "scenario": "reset", "message": "...", "coinBalance": 245, "deleted": { "report_events": 2, "reports": 2, "reviews": 0, "trips": 0, "coin_tx": 2, "coin_conversions": 0, "notifications": 1, "survey_answers": 0, "alerts": 3, "hub_proposals": 1 } }`
 Bir tranzaksiyada: demo sərnişinin **bu günkü** (demo saatının günü) `reports` + `report_events`, onların `REPORT` alert-ləri, `reviews` (bu gün yazılan və ya bu günkü səfərə), `trips`, `coin_tx`, `coin_conversions`, `notifications`, `survey_answers` silinir, `coin_balance = 245`; Rauf Həsənlinin (coin-conversion trigger-i) bu günkü `coin_conversions`, `coin_tx`, `notifications` sətirləri də silinir (sayları `deleted`-də eyni açarlara əlavə olunur), balansı = ledger cəmi; gözləyən çevirmə ləğv olunur (bank job sətri tapmır). `COIN` alert-ləri lentdə qalır; bütün `hub_proposals` və onların `AI` alert-ləri silinir; `route_config` interval/avtobus sayı `mocks/route_config.json`-a, `auto_mode = false`. Yaddaşda: tıxac override-ları və JAM müddətləri, hub boost-u, Biletim demo gəlişi, avtobus düzülüşü (88 demo topa yığılması daxil) və doluluq bazası başlanğıc vəziyyətə. Sərnişinə `coin.updated {balance: 245}`. Sxem silinmir, seed yenidən işləmir, digər istifadəçilərin datası və keçmiş günlərin seed sətirləri qalır; trigger-lərin `EVENT/WEATHER/HUB/OCC/BILETIM` alert-ləri lentdə qalır.
 

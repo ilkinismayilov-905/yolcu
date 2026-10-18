@@ -1,7 +1,8 @@
 @import "tailwindcss";
 
 /* Design tokens: docs/08_DESIGN_SYSTEM.md §1 (= design/web_dashboard.html :root). The only place with hex colors. */
-:root {
+/* .theme-light: light island in dark mode, e.g. the live map (light positron basemap, 08_DESIGN_SYSTEM §5). */
+:root, .theme-light {
   color-scheme: light;
   --bg: #F4F6F9; --surface: #FFFFFF; --surface-2: #F2F5F8; --surface-3: #E9EEF4; --line: #E3E8EF;
   --ink: #0E1A2B; --ink-2: #536274; --ink-3: #8796A8;

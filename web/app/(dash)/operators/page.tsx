@@ -4,7 +4,7 @@ import { Suspense, useEffect, useRef, useState, type ReactNode } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import type { BusDetail, BusType, FleetBus, FleetBusStatus, OperatorStats, PageResponse } from '@yolcu/shared/api';
-import { Bar, Button, PageHeader, Pager, Panel, Plate, Seg, Status, Table, TD, TR_CLICK, fmtNum, type StatusKind } from '@/components/ui';
+import { Bar, Button, ErrorState, PageHeader, Skeleton, SkeletonLines, loadErr, Pager, Panel, Plate, Seg, Status, Table, TD, TR_CLICK, fmtNum, type StatusKind } from '@/components/ui';
 import { Drawer } from '@/components/Overlay';
 import { api } from '@/lib/api';
 import { navItem } from '@/lib/nav';
@@ -20,8 +20,7 @@ const STATUS_SEG = [
 const FST: Record<FleetBusStatus, [string, StatusKind]> = { LINE: ['Xətdə', 'ok'], DEPOT: ['Depoda', 'neutral'], REPAIR: ['Təmirdə', 'warn'] };
 const TYPE: Record<BusType, string> = { ELECTRIC: 'Elektrik', DIESEL: 'Dizel' };
 
-const SELECT = 'h-9 rounded-[9px] border border-line bg-surface px-3 text-ink outline-0 focus:border-primary';
-const errText = (e: unknown) => (e instanceof Error ? e.message : 'Xəta baş verdi');
+const SELECT = 'h-9 rounded-[9px] border border-line bg-surface px-3 text-ink focus:border-primary';
 const occColor = (o: number) => (o > 85 ? 'bg-jam' : o > 65 ? 'bg-slow' : 'bg-fluid');
 const punctKind = (p: number): StatusKind => (p >= 85 ? 'ok' : p >= 75 ? 'warn' : 'bad');
 const rating = (r: number | null) => (r == null ? '—' : `★ ${fmtNum(r, 1)}`);
@@ -120,13 +119,12 @@ function Operators() {
       <div className="mb-4 grid grid-cols-4 gap-4 max-[1200px]:grid-cols-2 max-[820px]:grid-cols-1">
         {ops.isError ? (
           <Panel className="col-span-full">
-            <span className="text-bad">{errText(ops.error)}</span>
-            <Button sm className="ml-3" onClick={() => void ops.refetch()}>Yenidən cəhd et</Button>
+            <ErrorState message={loadErr('Operatorları', ops.error)} onRetry={() => void ops.refetch()} />
           </Panel>
         ) : !ops.data ? (
-          <Panel className="col-span-full text-ink-3">Yüklənir…</Panel>
+          [0, 1, 2, 3].map((i) => <Skeleton key={i} className="h-[150px] rounded-[14px]" />)
         ) : !ops.data.length ? (
-          <Panel className="col-span-full text-ink-3">Operator yoxdur.</Panel>
+          <Panel className="col-span-full text-ink-3">Hələ operator yoxdur. Operatorlar seed-dən yüklənəndə burada görünəcək.</Panel>
         ) : (
           ops.data.map((o) => <OperatorCard key={o.code} o={o} on={f.operator === o.code} onClick={() => toggleOp(o.code)} />)
         )}
@@ -154,7 +152,7 @@ function Operators() {
         <Table
           head={['Bort', 'Operator', 'Marşrut', 'Növ və model', 'Status', 'Doluluq', 'Sürücü rəyi']}
           loading={list.isPending}
-          error={list.isError ? errText(list.error) : null}
+          error={list.isError ? loadErr('Avtobusları', list.error) : null}
           onRetry={() => void list.refetch()}
           isEmpty={!list.data?.items.length}
           empty="Avtobus tapılmadı. Bort nömrəsini yoxlayın və ya filtrləri sıfırlayın."
@@ -254,11 +252,9 @@ function BusDrawer({ bort, onClose }: { bort: string | null; onClose: () => void
   return (
     <Drawer open={!!bort} onClose={onClose} meta={d?.operator ?? ' '} title={last ?? ''} extra={d && <Status kind={kind}>{label}</Status>}>
       {detail.isError ? (
-        <div className="text-bad">
-          {errText(detail.error)} <Button sm className="ml-2" onClick={() => void detail.refetch()}>Yenidən cəhd et</Button>
-        </div>
+        <ErrorState message={loadErr('Avtobusu', detail.error)} onRetry={() => void detail.refetch()} />
       ) : !d ? (
-        <div className="text-ink-3">Yüklənir…</div>
+        <SkeletonLines rows={6} />
       ) : (
         <>
           <dl className="m-0 grid grid-cols-[130px_1fr] gap-x-3 gap-y-2 text-[13px] [&_dd]:m-0 [&_dd]:font-medium [&_dt]:text-ink-3">

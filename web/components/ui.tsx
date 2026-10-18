@@ -1,4 +1,5 @@
 import type { ComponentProps, ReactNode } from 'react';
+import { ApiError } from '@yolcu/shared/api';
 
 type ButtonVariant = 'default' | 'p' | 'q';
 
@@ -71,7 +72,12 @@ export function Kpi({ label, value, sub, tone, subTone }: { label: string; value
   return (
     <div className="rounded-[14px] border border-line bg-surface px-4 py-3.5 shadow-card">
       <div className="text-[13px] text-ink-2">{label}</div>
-      <div className={`my-0.5 text-[26px] font-bold tracking-[-.02em] ${tone === 'bad' ? 'text-bad' : tone === 'ok' ? 'text-ok' : ''}`}>{value}</div>
+      {/* '…' = still loading (pages pass it before data arrives) */}
+      {value === '…' ? (
+        <Skeleton className="my-[9px] h-[21px] w-20" />
+      ) : (
+        <div className={`my-0.5 text-[26px] font-bold tracking-[-.02em] ${tone === 'bad' ? 'text-bad' : tone === 'ok' ? 'text-ok' : ''}`}>{value}</div>
+      )}
       {sub && <div className={`text-xs ${subTone === 'bad' ? 'text-bad' : subTone === 'ok' ? 'text-ok' : 'text-ink-3'}`}>{sub}</div>}
     </div>
   );
@@ -120,32 +126,59 @@ export function Bar({ value, color = 'bg-primary', label }: { value: number; col
   );
 }
 
-/** Table with header and loading / error / empty rows. Rows: <tr><td className={TD}>. */
+/** Skeleton bar (loading placeholder). */
+export function Skeleton({ className = 'h-3.5 w-full' }: { className?: string }) {
+  return <span aria-hidden="true" className={`block animate-pulse rounded-md bg-surface-3 ${className}`} />;
+}
+
+/** Loading placeholder for panels and lists: `rows` skeleton lines. */
+export function SkeletonLines({ rows = 3, className = '' }: { rows?: number; className?: string }) {
+  return (
+    <div role="status" aria-label="Yüklənir" className={`grid gap-2.5 ${className}`}>
+      {Array.from({ length: rows }, (_, i) => <Skeleton key={i} className={`h-3.5 ${i % 3 === 2 ? 'w-3/5' : i % 2 ? 'w-4/5' : 'w-full'}`} />)}
+    </div>
+  );
+}
+
+/** Load error text, 08_DESIGN_SYSTEM §6 "nə oldu + nə etmək olar": loadErr('Şikayətləri', e). */
+export const loadErr = (what: string, e?: unknown) =>
+  `${what} yükləmək olmadı${e instanceof ApiError && e.status > 0 ? ` (${e.message})` : ''}. İnterneti yoxlayın və «Yenidən cəhd et» düyməsini basın.`;
+
+/** Load error with a retry button. */
+export function ErrorState({ message, onRetry, className = '' }: { message: string; onRetry?: () => void; className?: string }) {
+  return (
+    <div role="alert" className={`flex flex-col items-center gap-3 text-center ${className}`}>
+      <p className="m-0 max-w-[60ch] text-bad">{message}</p>
+      {onRetry && <Button sm onClick={onRetry}>Yenidən cəhd et</Button>}
+    </div>
+  );
+}
+
+/** Table with header and loading (skeleton) / error / empty rows. Rows: <tr><td className={TD}>. */
 export function Table({ head, loading, error, onRetry, empty, isEmpty, children }: {
   head: string[]; loading?: boolean; error?: string | null; onRetry?: () => void; empty: ReactNode; isEmpty?: boolean; children?: ReactNode;
 }) {
-  const msg = loading ? (
-    'Yüklənir…'
-  ) : error ? (
-    <>
-      <span className="text-bad">{error}</span>
-      {onRetry && <Button sm className="ml-3" onClick={onRetry}>Yenidən cəhd et</Button>}
-    </>
-  ) : isEmpty ? (
-    empty
-  ) : null;
+  const msg = loading ? null : error ? <ErrorState message={error} onRetry={onRetry} /> : isEmpty ? empty : null;
   return (
     <div className="overflow-x-auto">
-      <table className="w-full border-collapse">
+      <table className="w-full border-collapse" aria-busy={loading || undefined}>
         <thead>
           <tr>
-            {head.map((h) => (
-              <th key={h} className="whitespace-nowrap border-b border-line bg-surface px-4 py-2.5 text-left text-xs font-medium text-ink-3">{h}</th>
+            {head.map((h, i) => (
+              <th key={h || i} className="whitespace-nowrap border-b border-line bg-surface px-4 py-2.5 text-left text-xs font-medium text-ink-3">{h}</th>
             ))}
           </tr>
         </thead>
         <tbody className="[&_tr:last-child>td]:border-b-0">
-          {msg ? (
+          {loading ? (
+            Array.from({ length: 5 }, (_, r) => (
+              <tr key={r}>
+                {head.map((h, i) => (
+                  <td key={h || i} className={TD}><Skeleton className={`h-3.5 ${i === 0 ? 'w-16' : 'w-[70%] min-w-8'}`} /></td>
+                ))}
+              </tr>
+            ))
+          ) : msg ? (
             <tr>
               <td colSpan={head.length} className="p-10 text-center text-ink-2">{msg}</td>
             </tr>
@@ -157,6 +190,7 @@ export function Table({ head, loading, error, onRetry, empty, isEmpty, children 
     </div>
   );
 }
+// Cells that may wrap use whitespace-normal! (plain whitespace-normal loses to TD's nowrap in the CSS order).
 export const TD = 'whitespace-nowrap border-b border-line px-4 py-[11px] align-middle';
 export const TR_CLICK = 'cursor-pointer hover:[&>td]:bg-surface-2 focus-visible:[&>td]:bg-surface-2';
 

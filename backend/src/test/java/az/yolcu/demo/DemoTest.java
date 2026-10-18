@@ -20,6 +20,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -174,6 +175,12 @@ class DemoTest {
         trigger("stadium");
         trigger("artificial-jam");
         steps.forEach(Runnable::run);
+        // a survey created during the demo session (published → notifications) must go too; the 7 seeded alerts stay
+        mvc.perform(post("/api/v1/admin/surveys").header("Authorization", auth()).contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"title\":\"Demo sorğu\",\"audience\":\"ALL\",\"coinReward\":5,\"publish\":true,"
+                                + "\"questions\":[{\"text\":\"Lazımdır?\",\"options\":[\"Bəli\",\"Xeyr\"]}]}"))
+                .andExpect(status().isCreated());
+        long surveysBefore = count("select count(*) from surveys where title <> 'Demo sorğu'");
         jdbc.update("update route_config set interval_min = 8, auto_mode = true where route = '88'");
         jdbc.update("update users set coin_balance = 9 where id = ?", nigar);
 
@@ -193,6 +200,10 @@ class DemoTest {
         assertThat(count("select count(*) from notifications where user_id <> ? and target = 'event:stadium'", nigar)).isPositive();
         assertThat(count("select count(*) from hub_proposals")).isZero();
         assertThat(count("select count(*) from alerts where title like 'Yeni hub təklifi:%' or title like 'Yeni şikayət #%'")).isZero();
+        assertThat(count("select count(*) from surveys where title = 'Demo sorğu'")).isZero();
+        assertThat(count("select count(*) from surveys")).isEqualTo(surveysBefore);
+        assertThat(count("select count(*) from notifications where type = 'SURVEY' and title = 'Demo sorğu'")).isZero();
+        assertThat(count("select count(*) from alerts where id <= 7")).isEqualTo(7); // seeded feed survives
         assertThat(count("select interval_min from route_config where route = '88'")).isEqualTo(12);
         assertThat(count("select count(*) from route_config where auto_mode = true")).isZero();
         assertThat(level()).isEqualTo("FREE");

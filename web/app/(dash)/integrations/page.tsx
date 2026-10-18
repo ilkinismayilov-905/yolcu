@@ -2,16 +2,16 @@
 
 import integrations from '../../../../mocks/integrations.json';
 import { useToast } from '@/components/Toast';
-import { Button, PageHeader } from '@/components/ui';
+import { Button, DemoBadge, PageHeader } from '@/components/ui';
 
 // FAKE (01_SCOPE): static list from mocks/integrations.json (Biletim.az first), no backend.
 export default function Page() {
   const toast = useToast();
   return (
     <>
-      <PageHeader title="İnteqrasiyalar" desc="Yolçunun məlumat aldığı və ya göndərdiyi sistemlər. Demo-da simulyasiya olunanlar ayrıca qeyd edilib." />
+      <PageHeader title="İnteqrasiyalar" desc="Yolçunun məlumat aldığı və ya göndərdiyi sistemlər. Demo-da simulyasiya olunanlar ayrıca qeyd edilib." actions={<DemoBadge />} />
       {integrations.length === 0 ? (
-        <p className="m-0 text-ink-3">İnteqrasiya yoxdur</p>
+        <p className="m-0 text-ink-3">Hələ inteqrasiya yoxdur. Sistem qoşulanda burada görünəcək.</p>
       ) : (
         <div className="grid grid-cols-3 gap-4 max-[1200px]:grid-cols-2 max-[820px]:grid-cols-1" data-testid="integ">
           {integrations.map((i) => {

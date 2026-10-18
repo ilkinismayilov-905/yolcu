@@ -1,6 +1,5 @@
 package az.yolcu.notification;
 
-import az.yolcu.common.ApiException;
 import az.yolcu.common.AppClock;
 import az.yolcu.common.PageResponse;
 import az.yolcu.notification.dto.NotificationDto;
@@ -50,7 +49,7 @@ public class NotificationService {
 
     @Transactional(readOnly = true)
     public PageResponse<NotificationDto> mine(long userId, int page, int size) {
-        if (page < 0 || size < 1 || size > 100) throw ApiException.validation("page >= 0, size 1..100");
+        PageResponse.check(page, size);
         var sort = Sort.by(Sort.Order.desc("createdAt"), Sort.Order.desc("id"));
         return PageResponse.of(repo.findByUserId(userId, PageRequest.of(page, size, sort)), NotificationDto::of);
     }

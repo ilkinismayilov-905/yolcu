@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from 'react';
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { CreateSurveyRequest, PageResponse, SurveyAudience, SurveyListItem, SurveyResults, SurveyStatus } from '@yolcu/shared/api';
-import { Bar, Button, CoinIcon, PageHeader, Pager, Panel, Seg, Status, Table, TD, TR_CLICK, fmtNum } from '@/components/ui';
+import { Bar, Button, CoinIcon, ErrorState, SkeletonLines, loadErr, PageHeader, Pager, Panel, Seg, Status, Table, TD, TR_CLICK, fmtNum } from '@/components/ui';
 import { useToast } from '@/components/Toast';
 import { api } from '@/lib/api';
 import { navItem } from '@/lib/nav';
@@ -15,7 +15,7 @@ const TABS = [['list', 'Bütün sorğular'], ['new', 'Yeni sorğu']] as const;
 const FILTER = [['', 'Hamısı'], ['ACTIVE', 'Aktiv'], ['CLOSED', 'Bitib'], ['DRAFT', 'Qaralama']] as const satisfies readonly (readonly [SurveyStatus | '', string])[];
 const REWARD_SEG = REWARDS.map((r) => [r, `${r} coin`] as const);
 
-const INPUT = 'w-full rounded-[9px] border border-line bg-surface px-3 text-ink outline-0 focus:border-primary aria-invalid:border-bad';
+const INPUT = 'w-full rounded-[9px] border border-line bg-surface px-3 text-ink focus:border-primary aria-invalid:border-bad';
 const LABEL = 'text-[13px] font-medium text-ink-2';
 const errText = (e: unknown) => (e instanceof Error ? e.message : 'Xəta baş verdi');
 
@@ -89,10 +89,10 @@ function SurveyList({ status, page, sel, onStatus, onPage, onSelect }: {
         <Table
           head={['Sorğu', 'Status', 'Auditoriya', 'Cavab', 'Mükafat']}
           loading={list.isPending}
-          error={list.isError ? errText(list.error) : null}
+          error={list.isError ? loadErr('Sorğuları', list.error) : null}
           onRetry={() => void list.refetch()}
           isEmpty={!items.length}
-          empty="Bu filtrə uyğun sorğu yoxdur."
+          empty="Bu filtrə uyğun sorğu yoxdur. Filtri dəyişin və ya «Yeni sorğu» bölməsində sorğu yaradın."
         >
           {items.map((s) => {
             const [label, kind] = SURVEY_STATUS[s.status];
@@ -146,7 +146,7 @@ function ResultsPanel({ survey, loadingList }: { survey: SurveyListItem | null; 
   if (!survey)
     return (
       <Panel title="Nəticələr">
-        <div className="text-ink-3">{loadingList ? 'Yüklənir…' : 'Nəticələri görmək üçün sorğu seçin.'}</div>
+        {loadingList ? <SkeletonLines rows={5} /> : <div className="text-ink-3">Nəticələri görmək üçün sorğu seçin.</div>}
       </Panel>
     );
 
@@ -162,11 +162,9 @@ function ResultsPanel({ survey, loadingList }: { survey: SurveyListItem | null; 
           </Button>
         </div>
       ) : results.isError ? (
-        <div className="text-bad">
-          {errText(results.error)} <Button sm className="ml-2" onClick={() => void results.refetch()}>Yenidən cəhd et</Button>
-        </div>
+        <ErrorState message={loadErr('Nəticələri', results.error)} onRetry={() => void results.refetch()} />
       ) : !r ? (
-        <div className="text-ink-3">Yüklənir…</div>
+        <SkeletonLines rows={5} />
       ) : (
         <div className="grid gap-2.5">
           {r.questions.map((q, qi) => (
