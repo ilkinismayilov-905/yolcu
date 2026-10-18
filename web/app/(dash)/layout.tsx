@@ -46,7 +46,8 @@ export default function DashLayout({ children }: { children: ReactNode }) {
   return (
     <StreamProvider>
       <ReportStream />
-      <div className="grid h-dvh grid-cols-[248px_1fr] max-lg:grid-cols-1">
+      {/* one row of minmax(0,1fr): the row stays viewport-high, so only main scrolls (topbar and sidebar stay put) */}
+      <div className="grid h-dvh grid-cols-[248px_1fr] grid-rows-[minmax(0,1fr)] max-lg:grid-cols-1">
         <Sidebar user={me.data} reportsBadge={stats.data?.newCount} open={nav} onClose={() => setNav(false)} />
         <div className="flex min-w-0 flex-col">
           <Topbar user={me.data} onLogout={logout} onMenu={() => setNav(true)} />
