@@ -34,10 +34,11 @@ Baza URL: `/api/v1`. Bütün cavablar JSON, sahə adları `camelCase`, vaxt ISO-
 **POST** `/auth/demo-login` — body yoxdur, passenger tokeni qaytarır
 
 ```json
-{ "token": "eyJ...", "user": { "id": 1, "fullName": "Leyla Məmmədova", "role": "DISPATCHER", "coinBalance": 0 } }
+{ "token": "eyJ...", "user": { "id": 1, "fullName": "Leyla Məmmədova", "email": "dispatcher@yolcu.az", "role": "DISPATCHER", "coinBalance": 0 } }
 ```
 
 **GET** `/me` → `User`
+**POST** `/me/password` — `{ "currentPassword": "demo123", "newPassword": "demo1234" }` → `{ "ok": true }`. `newPassword` 6–100 simvol. Hazırkı şifrə yanlışdırsa, yeni şifrə qısadırsa və ya hazırkı ilə eynidirsə → `400 VALIDATION`. Köhnə tokenlər etibarlı qalır.
 
 ## 2. Geo və yerlər (açıq)
 

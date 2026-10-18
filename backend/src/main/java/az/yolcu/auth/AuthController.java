@@ -1,9 +1,11 @@
 package az.yolcu.auth;
 
 import az.yolcu.auth.dto.AuthResponse;
+import az.yolcu.auth.dto.ChangePasswordRequest;
 import az.yolcu.auth.dto.LoginRequest;
 import az.yolcu.auth.dto.UserDto;
 import jakarta.validation.Valid;
+import java.util.Map;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,5 +35,11 @@ public class AuthController {
     @GetMapping("/me")
     public UserDto me(@AuthenticationPrincipal Long userId) {
         return auth.me(userId);
+    }
+
+    @PostMapping("/me/password")
+    public Map<String, Boolean> changePassword(@AuthenticationPrincipal Long userId, @Valid @RequestBody ChangePasswordRequest req) {
+        auth.changePassword(userId, req);
+        return Map.of("ok", true);
     }
 }

@@ -4,9 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { UserDto } from '@yolcu/shared/api';
 import { ICON, NAV } from '@/lib/nav';
-import { logout } from '@/lib/api';
-
-const ROLE_LABEL: Record<UserDto['role'], string> = { DISPATCHER: 'Dispetçer', ADMIN: 'Administrator', PASSENGER: 'Sərnişin' };
+import { ROLE_LABEL } from '@/lib/api';
 
 export function Sidebar({ user, reportsBadge }: { user?: UserDto; reportsBadge?: number }) {
   const path = usePathname();
@@ -61,13 +59,14 @@ export function Sidebar({ user, reportsBadge }: { user?: UserDto; reportsBadge?:
           </div>
         ))}
       </nav>
-      <div className="mt-auto border-t border-line px-2.5 pt-3 text-xs text-ink-3">
+      <Link
+        href="/profile"
+        aria-current={path.startsWith('/profile') ? 'page' : undefined}
+        className="mt-auto block rounded-b-lg border-t border-line px-2.5 pt-3 pb-1 text-xs text-ink-3 no-underline hover:bg-surface-2"
+      >
         <b className="block font-semibold text-ink">{user?.fullName ?? '…'}</b>
-        {user ? `${ROLE_LABEL[user.role]}, növbə 07:00–15:00` : ''}
-        <button onClick={logout} className="mt-2 block cursor-pointer font-medium text-ink-2 hover:text-ink">
-          Çıxış
-        </button>
-      </div>
+        {user ? ROLE_LABEL[user.role] : ''}
+      </Link>
     </aside>
   );
 }

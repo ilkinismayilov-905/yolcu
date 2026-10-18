@@ -1,4 +1,5 @@
 import { createClient, type ApiMode } from '@yolcu/shared/client';
+import type { Role } from '@yolcu/shared/api';
 import { liveMocks } from './mocks/live';
 import { occupancyMocks } from './mocks/occupancy';
 import { reportMocks } from './mocks/reports';
@@ -11,8 +12,13 @@ const TOKEN_KEY = 'yolcu.token';
 export const getToken = () => (typeof window === 'undefined' ? null : localStorage.getItem(TOKEN_KEY));
 export const setToken = (t: string) => localStorage.setItem(TOKEN_KEY, t);
 
+export const clearToken = () => localStorage.removeItem(TOKEN_KEY);
+
+export const ROLE_LABEL: Record<Role, string> = { DISPATCHER: 'Dispetçer', ADMIN: 'Admin', PASSENGER: 'Sərnişin' };
+
+/** 401 fallback: full reload to /login drops the SSE connection and the query cache. The UI "Çıxış" uses useLogout. */
 export function logout() {
-  localStorage.removeItem(TOKEN_KEY);
+  clearToken();
   window.location.replace('/login');
 }
 

@@ -53,4 +53,6 @@ public class User {
     public boolean isAccessibility() { return accessibility; }
     public boolean isTrackingConsent() { return trackingConsent; }
     public OffsetDateTime getCreatedAt() { return createdAt; }
+
+    public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
 }

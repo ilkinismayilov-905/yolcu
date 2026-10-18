@@ -7,7 +7,8 @@ import { useRouter } from 'next/navigation';
 import type { Alert } from '@yolcu/shared/api';
 import { Button, DemoBadge, Kpi, PageHeader, Panel, Toggle, fmtNum } from '@/components/ui';
 import type { LayerKey } from '@/components/LiveMap';
-import { useFeed, useHubs, useKpis, useLiveStream } from '@/lib/live';
+import { FEED_CATEGORIES, useFeed, useHubs, useKpis, useLiveStream } from '@/lib/live';
+import { usePrefs } from '@/lib/prefs';
 import { navItem } from '@/lib/nav';
 import { clockTime } from '@/lib/reports';
 
@@ -25,16 +26,7 @@ const LAYERS: [LayerKey, string, boolean][] = [
   ['bike', 'Velo', false],
 ];
 
-// Feed categories (mockup CAT): label + token text color.
-const CAT: Record<string, [string, string]> = {
-  HUB: ['Hub kamerası', 'text-crowd'],
-  OCC: ['Doluluq', 'text-bad'],
-  AI: ['AI tövsiyəsi', 'text-primary'],
-  BILETIM: ['Biletim.az', 'text-ok'],
-  REPORT: ['Şikayət', 'text-warn'],
-  EVENT: ['Tədbir', 'text-ink-2'],
-  WEATHER: ['Hava', 'text-ink-2'],
-};
+const CAT = FEED_CATEGORIES;
 
 // Alert.target is a mockup page id ("p-occ"); our routes differ for a few.
 const TARGET: Record<string, string> = { 'p-occ': '/occupancy', 'p-express': '/terminal', 'p-integ': '/integrations' };
@@ -96,6 +88,7 @@ function Kpis() {
 
 function Feed({ fresh }: { fresh: ReadonlySet<number> }) {
   const { data, error, isPending, refetch } = useFeed();
+  const { feedHidden } = usePrefs();
   const box = 'max-h-[calc(100vh-345px)] min-h-[445px] overflow-auto max-[1200px]:max-h-[420px] max-[1200px]:min-h-0';
   if (isPending) return <div className={`${box} p-10 text-center text-ink-2`}>Yüklənir…</div>;
   if (error)
@@ -106,9 +99,16 @@ function Feed({ fresh }: { fresh: ReadonlySet<number> }) {
       </div>
     );
   if (!data.length) return <div className={`${box} p-10 text-center text-ink-2`}>Hələ hadisə yoxdur. Yeni hadisələr burada avtomatik görünəcək.</div>;
+  const shown = data.filter((a) => !feedHidden.includes(a.category));
+  if (!shown.length)
+    return (
+      <div className={`${box} p-10 text-center text-ink-2`}>
+        Seçilmiş kateqoriyalarda hadisə yoxdur. Kateqoriyaları <Link href="/profile" className="text-primary">profildə</Link> dəyişin.
+      </div>
+    );
   return (
     <div className={box}>
-      {data.map((a) => (
+      {shown.map((a) => (
         <FeedItem key={a.id} a={a} isNew={fresh.has(a.id)} />
       ))}
     </div>

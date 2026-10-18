@@ -1,4 +1,4 @@
-import { ApiError, type ApiErrorBody, type AuthResponse, type LoginRequest, type UserDto } from './api';
+import { ApiError, type ApiErrorBody, type AuthResponse, type ChangePasswordRequest, type OkResponse, type LoginRequest, type UserDto } from './api';
 
 export type ApiMode = 'mock' | 'live';
 
@@ -24,10 +24,10 @@ export interface ClientConfig {
 const NETWORK_MSG = 'Serverə qoşulmaq olmadı. İnterneti və ya serverin işlədiyini yoxlayın.';
 
 const MOCK_USERS: Record<string, UserDto> = {
-  'dispatcher@yolcu.az': { id: 1, fullName: 'Leyla Məmmədova', role: 'DISPATCHER', coinBalance: 0, accessibility: false, trackingConsent: false },
-  'admin@yolcu.az': { id: 2, fullName: 'Admin', role: 'ADMIN', coinBalance: 0, accessibility: false, trackingConsent: false },
+  'dispatcher@yolcu.az': { id: 1, fullName: 'Leyla Məmmədova', email: 'dispatcher@yolcu.az', role: 'DISPATCHER', coinBalance: 0, accessibility: false, trackingConsent: false },
+  'admin@yolcu.az': { id: 2, fullName: 'Admin', email: 'admin@yolcu.az', role: 'ADMIN', coinBalance: 0, accessibility: false, trackingConsent: false },
 };
-const MOCK_PASSENGER: UserDto = { id: 3, fullName: 'Nigar Əliyeva', role: 'PASSENGER', coinBalance: 245, accessibility: false, trackingConsent: true };
+const MOCK_PASSENGER: UserDto = { id: 3, fullName: 'Nigar Əliyeva', email: null, role: 'PASSENGER', coinBalance: 245, accessibility: false, trackingConsent: true };
 
 // shortcut: mock token is "mock.<userId>", no expiry; fine for offline demo only.
 const mockToken = (u: UserDto) => `mock.${u.id}`;
@@ -58,6 +58,11 @@ export function createClient(cfg: ClientConfig) {
       const user = [...Object.values(MOCK_USERS), MOCK_PASSENGER].find((u) => mockToken(u) === cfg.getToken());
       if (!user) throw new ApiError(401, 'UNAUTHORIZED', 'Giriş tələb olunur');
       return user;
+    },
+    // shortcut: mock never changes the password (login stays demo123), only checks the current one.
+    'POST /me/password': (body) => {
+      if ((body as ChangePasswordRequest).currentPassword !== 'demo123') throw new ApiError(400, 'VALIDATION', 'Hazırkı şifrə yanlışdır');
+      return { ok: true } satisfies OkResponse;
     },
   };
 

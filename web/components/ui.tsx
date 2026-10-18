@@ -190,6 +190,15 @@ export function Toggle({ on, onChange, children, className = '' }: { on: boolean
   );
 }
 
+/** Visual switch track (no role); for items that carry their own role, e.g. menuitemcheckbox. */
+export function SwitchTrack({ on }: { on: boolean }) {
+  return (
+    <span aria-hidden="true" className={`relative h-[22px] w-[38px] shrink-0 rounded-xl transition-colors ${on ? 'bg-primary' : 'bg-surface-3'}`}>
+      <span className={`absolute top-[3px] left-[3px] size-4 rounded-full bg-on-color shadow-card transition-transform ${on ? 'translate-x-4' : ''}`} />
+    </span>
+  );
+}
+
 /** On/off switch with its label (mockup .switch), e.g. auto mode. */
 export function Switch({ on, onChange, children, disabled }: { on: boolean; onChange: (v: boolean) => void; children: ReactNode; disabled?: boolean }) {
   return (
@@ -201,9 +210,7 @@ export function Switch({ on, onChange, children, disabled }: { on: boolean; onCh
       onClick={() => onChange(!on)}
       className="inline-flex cursor-pointer items-center gap-2.5 font-semibold disabled:cursor-not-allowed disabled:opacity-50"
     >
-      <span className={`relative h-[22px] w-[38px] shrink-0 rounded-xl transition-colors ${on ? 'bg-primary' : 'bg-surface-3'}`}>
-        <span className={`absolute top-[3px] left-[3px] size-4 rounded-full bg-on-color shadow-card transition-transform ${on ? 'translate-x-4' : ''}`} />
-      </span>
+      <SwitchTrack on={on} />
       {children}
     </button>
   );

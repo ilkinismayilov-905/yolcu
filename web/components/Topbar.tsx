@@ -5,17 +5,13 @@ import { useRouter } from 'next/navigation';
 import type { UserDto } from '@yolcu/shared/api';
 import { DemoBadge } from './ui';
 import { useStream } from '@/lib/stream';
+import { setDark, useDark } from '@/lib/prefs';
+import { AvatarMenu } from './AvatarMenu';
 
 const hhmm = () => new Date().toLocaleTimeString('az-AZ', { hour: '2-digit', minute: '2-digit', hour12: false });
 
-function toggleTheme() {
-  const r = document.documentElement;
-  const dark = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
-  r.dataset.theme = dark ? 'light' : 'dark';
-  localStorage.setItem('yolcu.theme', r.dataset.theme);
-}
-
-export function Topbar({ user }: { user?: UserDto }) {
+export function Topbar({ user, onLogout }: { user?: UserDto; onLogout: () => void }) {
+  const dark = useDark();
   const router = useRouter();
   const { status } = useStream();
   const [clock, setClock] = useState('');
@@ -25,7 +21,6 @@ export function Topbar({ user }: { user?: UserDto }) {
     return () => clearInterval(t);
   }, []);
 
-  const initials = user?.fullName.split(/\s+/).map((w) => w[0]).slice(0, 2).join('').toUpperCase() ?? '';
   const live = status === 'open';
 
   return (
@@ -54,7 +49,8 @@ export function Topbar({ user }: { user?: UserDto }) {
         {live ? 'Canlı' : 'Qoşulur'}, <span>{clock}</span>
       </div>
       <button
-        onClick={toggleTheme}
+        onClick={() => setDark(!dark)}
+        aria-pressed={dark}
         className="grid size-[38px] cursor-pointer place-items-center rounded-[10px] border border-line bg-surface text-ink-2"
         aria-label="Mövzunu dəyiş"
       >
@@ -62,9 +58,7 @@ export function Topbar({ user }: { user?: UserDto }) {
           <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
         </svg>
       </button>
-      <div className="grid size-9 place-items-center rounded-full bg-primary-soft text-[13px] font-bold text-primary" title={user?.fullName}>
-        {initials}
-      </div>
+      <AvatarMenu user={user} onLogout={onLogout} />
     </header>
   );
 }

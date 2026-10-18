@@ -47,10 +47,21 @@ export interface LoginRequest {
 export interface UserDto {
   id: number;
   fullName: string;
+  email: string | null;
   role: Role;
   coinBalance: number;
   accessibility: boolean;
   trackingConsent: boolean;
+}
+
+/** POST /me/password → OkResponse; wrong current password → 400 VALIDATION. */
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}
+
+export interface OkResponse {
+  ok: true;
 }
 
 export interface AuthResponse {

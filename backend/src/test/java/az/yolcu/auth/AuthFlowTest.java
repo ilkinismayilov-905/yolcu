@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -63,5 +64,49 @@ class AuthFlowTest {
         mvc.perform(post("/api/v1/auth/login").contentType(MediaType.APPLICATION_JSON).content("{\"email\":\"\"}"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error.code").value("VALIDATION"));
+    }
+
+    private String dispatcherToken(String password) throws Exception {
+        var body = mvc.perform(post("/api/v1/auth/login").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"dispatcher@yolcu.az\",\"password\":\"" + password + "\"}"))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        return JsonPath.read(body, "$.token");
+    }
+
+    private org.springframework.test.web.servlet.ResultActions changePassword(String token, String current, String next) throws Exception {
+        var req = post("/api/v1/me/password").contentType(MediaType.APPLICATION_JSON)
+                .content("{\"currentPassword\":\"" + current + "\",\"newPassword\":\"" + next + "\"}");
+        return mvc.perform(token == null ? req : req.header("Authorization", "Bearer " + token));
+    }
+
+    @Test
+    @Transactional // rolls back so the seed password stays demo123 for other tests
+    void changePasswordFlow() throws Exception {
+        var token = dispatcherToken("demo123");
+        changePassword(token, "wrong", "demo1234")
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error.code").value("VALIDATION"))
+                .andExpect(jsonPath("$.error.message").value("Hazırkı şifrə yanlışdır"));
+        changePassword(token, "demo123", "abc")
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error.code").value("VALIDATION"));
+        changePassword(token, "demo123", "demo123")
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error.message").value("Yeni şifrə hazırkı ilə eyni ola bilməz"));
+        changePassword(token, "demo123", "demo1234")
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.ok").value(true));
+        dispatcherToken("demo1234");
+        mvc.perform(post("/api/v1/auth/login").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"dispatcher@yolcu.az\",\"password\":\"demo123\"}"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void changePasswordWithoutTokenIs401() throws Exception {
+        changePassword(null, "demo123", "demo1234")
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.error.code").value("UNAUTHORIZED"));
     }
 }

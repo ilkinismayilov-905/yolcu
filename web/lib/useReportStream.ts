@@ -1,19 +1,23 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import type { PageResponse, ReportListItem, ReportStats } from '@yolcu/shared/api';
 import { useToast } from '@/components/Toast';
+import { beep, getPrefs } from './prefs';
 import { useStream } from './stream';
 import { matchesFilters, replaceInLists, reportKeys, type ReportFilters } from './reports';
 
 /**
  * Dashboard-wide SSE wiring for reports (mounted in the dash layout so the sidebar badge updates on every page).
- * report.created: prepend to first-page lists whose filters match, bump stats locally, toast; other lists refetch.
+ * report.created: prepend to first-page lists whose filters match, bump stats locally, toast (+ beep / desktop
+ * notification per lib/prefs); other lists refetch.
  * report.updated: replace the item in cached lists and the detail, refetch stats.
  */
 export function useReportStream() {
   const qc = useQueryClient();
   const toast = useToast();
+  const router = useRouter();
   useStream({
     'report.created': (item) => {
       for (const q of qc.getQueryCache().findAll({ queryKey: reportKeys.lists })) {
@@ -37,6 +41,16 @@ export function useReportStream() {
         },
       );
       toast(`Yeni şikayət: ${item.route}${item.bort ? `, bort ${item.bort}` : ''}`);
+      const prefs = getPrefs();
+      if (prefs.sound) beep();
+      if (prefs.notify && typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+        const n = new Notification(`Yeni şikayət #${item.code}`, { body: `${item.route} · ${item.category}`, tag: item.code });
+        n.onclick = () => {
+          window.focus();
+          router.push(`/reports?q=${encodeURIComponent(item.code)}`);
+          n.close();
+        };
+      }
     },
     'report.updated': (item) => {
       replaceInLists(qc, item);

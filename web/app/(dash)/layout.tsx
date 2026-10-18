@@ -2,8 +2,8 @@
 
 import { useEffect, useState, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
-import { api, getToken } from '@/lib/api';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { api, clearToken, getToken } from '@/lib/api';
 import { StreamProvider } from '@/lib/stream';
 import { Sidebar } from '@/components/Sidebar';
 import { Topbar } from '@/components/Topbar';
@@ -18,6 +18,7 @@ function ReportStream() {
 
 export default function DashLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
+  const qc = useQueryClient();
   const [authed, setAuthed] = useState(false);
   useEffect(() => {
     if (getToken()) setAuthed(true);
@@ -29,6 +30,14 @@ export default function DashLayout({ children }: { children: ReactNode }) {
   // Sidebar Şikayətlər badge = reports in status NEW (mockup #navRep); SSE keeps it current.
   const stats = useQuery({ queryKey: reportKeys.stats, queryFn: () => api.get<ReportStats>('/admin/reports/stats'), enabled: authed });
 
+  // authed=false unmounts StreamProvider (closes the EventSource); replace() keeps the dashboard out of Back history.
+  const logout = () => {
+    clearToken();
+    setAuthed(false);
+    qc.clear();
+    router.replace('/login');
+  };
+
   if (!authed) return null;
   return (
     <StreamProvider>
@@ -36,7 +45,7 @@ export default function DashLayout({ children }: { children: ReactNode }) {
       <div className="grid h-screen grid-cols-[248px_1fr] max-[820px]:grid-cols-1">
         <Sidebar user={me.data} reportsBadge={stats.data?.newCount} />
         <div className="flex min-w-0 flex-col">
-          <Topbar user={me.data} />
+          <Topbar user={me.data} onLogout={logout} />
           <main className="flex-1 overflow-auto p-6">
             <div className="mx-auto max-w-[1440px]">{children}</div>
           </main>

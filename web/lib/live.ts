@@ -17,6 +17,17 @@ export const liveKeys = {
 
 export const FEED_LIMIT = 50;
 
+// Feed categories (mockup CAT): label + token text color.
+export const FEED_CATEGORIES: Record<string, [string, string]> = {
+  HUB: ['Hub kamerası', 'text-crowd'],
+  OCC: ['Doluluq', 'text-bad'],
+  AI: ['AI tövsiyəsi', 'text-primary'],
+  BILETIM: ['Biletim.az', 'text-ok'],
+  REPORT: ['Şikayət', 'text-warn'],
+  EVENT: ['Tədbir', 'text-ink-2'],
+  WEATHER: ['Hava', 'text-ink-2'],
+};
+
 // Positions/counts arrive by SSE; the REST call only seeds the first frame.
 export const useBuses = () => useQuery({ queryKey: liveKeys.buses, queryFn: () => api.get<LiveBus[]>('/live/buses'), staleTime: Infinity });
 export const useHubs = () => useQuery({ queryKey: liveKeys.hubs, queryFn: () => api.get<LiveHub[]>('/live/hubs'), staleTime: Infinity });

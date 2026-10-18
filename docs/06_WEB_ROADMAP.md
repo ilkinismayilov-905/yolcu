@@ -37,6 +37,7 @@ Sidebar qrupları (mockup-dakı kimi): **Canlı** (Canlı xəritə, Hub kamerala
 - [x] **WEB-0.5** `/login` (email, şifrə, xəta mesajı), token `localStorage`-da, 401-də login-ə yönləndir.
 - [x] **WEB-0.6** `packages/shared` qoşulur: `api.ts` tipləri, `client.ts` (`NEXT_PUBLIC_API_MODE=mock|live`), `headway.ts`, `toll.ts`.
 - [x] **WEB-0.7** `useStream` hook (EventSource, yenidən qoşulma, "Bağlantı bərpa olunur" zolağı) + `StreamProvider` (hadisəni TanStack Query cache-inə yazır).
+- [x] **WEB-0.8** Profil və avatar menyusu: topbar avatar menyusu (ad, rol, email, Profil, Tünd rejim, Yeni şikayət səsi, Çıxış), `/profile` (şəxsi məlumatlar, şifrəni dəyiş `POST /me/password`, səs, brauzer bildirişləri, lent kateqoriyaları), ayarlar `lib/prefs.ts`-də.
 
 **Qəbul:** dispetçer daxil olur, bütün 11 səhifəyə sidebar ilə keçir (boş olsa da), mövzu dəyişir, mock rejimdə də işləyir.
 

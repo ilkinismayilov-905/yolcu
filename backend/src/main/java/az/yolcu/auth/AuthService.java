@@ -1,6 +1,7 @@
 package az.yolcu.auth;
 
 import az.yolcu.auth.dto.AuthResponse;
+import az.yolcu.auth.dto.ChangePasswordRequest;
 import az.yolcu.auth.dto.LoginRequest;
 import az.yolcu.auth.dto.UserDto;
 import az.yolcu.common.ApiException;
@@ -41,6 +42,16 @@ public class AuthService {
     public UserDto me(long userId) {
         return users.findById(userId).map(UserDto::of)
                 .orElseThrow(() -> ApiException.unauthorized("İstifadəçi tapılmadı"));
+    }
+
+    @Transactional
+    public void changePassword(long userId, ChangePasswordRequest req) {
+        var user = users.findById(userId).orElseThrow(() -> ApiException.unauthorized("İstifadəçi tapılmadı"));
+        if (user.getPasswordHash() == null || !encoder.matches(req.currentPassword(), user.getPasswordHash()))
+            throw ApiException.validation("Hazırkı şifrə yanlışdır");
+        if (req.newPassword().equals(req.currentPassword()))
+            throw ApiException.validation("Yeni şifrə hazırkı ilə eyni ola bilməz");
+        user.setPasswordHash(encoder.encode(req.newPassword()));
     }
 
     private AuthResponse issue(User u) {
