@@ -67,6 +67,14 @@ Bakıda sərnişin keçid nöqtələrində (metro ↔ avtobus, avtovağzal ↔ �
 | <img src="docs/screenshots/reports.png" alt="Şikayətlər və drawer"> <br> **Şikayətlər** — real vaxtda lent, tarixçə, operatora göndərmə | <img src="docs/screenshots/analytics-od.png" alt="OD matrisi və düşmə nöqtələri"> <br> **Analitika** — OD matrisi, düşmə nöqtələri, proqnoz |
 | <img src="docs/screenshots/hubs.png" alt="Hub kameraları"> <br> **Hub kameraları** — sıxlıq, proqnoz, tövsiyə | <img src="docs/screenshots/map-dark.png" alt="Tünd rejim"> <br> **Tünd rejim** — bütün səhifələrdə |
 
+### 📱 Telefonda
+
+Dashboard responsivdir: telefon (360–430 px), planşet (768 px) və laptopda işləyir. Qaydalar: [`08_DESIGN_SYSTEM` §9](docs/08_DESIGN_SYSTEM.md#9-responsiv-qaydalar).
+
+| <img src="docs/screenshots/mobile-map.png" alt="Telefonda canlı xəritə" width="200"> | <img src="docs/screenshots/mobile-menu.png" alt="Telefonda ☰ menyu" width="200"> | <img src="docs/screenshots/mobile-occupancy.png" alt="Telefonda doluluq: cədvəl kart görünüşündə" width="200"> | <img src="docs/screenshots/mobile-report.png" alt="Telefonda şikayət drawer-i tam ekran" width="200"> | <img src="docs/screenshots/mobile-map-dark.png" alt="Telefonda tünd rejim" width="200"> |
+|:---:|:---:|:---:|:---:|:---:|
+| **Xəritə** — 60% hündürlük, legend yığılır | **☰ Menyu** — soldan, Esc / kənara klik bağlayır | **Doluluq** — cədvəl sətirləri kart olur | **Şikayət** — drawer tam ekran, düymələr aşağıda | **Tünd rejim** |
+
 ## 🎯 Nə real, nə simulyasiyadır
 
 Münsiflərə dürüst: hər funksiya üç etiketdən birini daşıyır ([tam siyahı](docs/01_SCOPE_REAL_SIM_FAKE.md)).
@@ -235,4 +243,5 @@ yolcu/
 ## 🛣️ Status
 
 - ✅ Web dashboard və backend: bütün dilimlər (S0–S11) hazırdır, demo `v1.0-demo` tag-ındadır
+- ✅ Web dashboard responsivdir: telefon, planşet, laptop (açıq və tünd rejim)
 - 🔜 Mobil tətbiq (Expo): dizayn ([`design/mobile_app.html`](design/mobile_app.html)) və [roadmap](docs/07_MOBILE_ROADMAP.md) hazırdır; mobil endpoint-lərin bir hissəsi (`/me/home`, `/trip/plan`, `/trips`) hələ yazılmayıb — demo-da sərnişinin rolunu `/demo` paneli oynayır
