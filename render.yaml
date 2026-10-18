@@ -1,0 +1,33 @@
+# Render Blueprint: free Postgres + one Docker web service (web dashboard + API on one port).
+# Deploy steps: docs/11_DEPLOY.md
+databases:
+  - name: yolcu-db
+    plan: free
+    region: frankfurt
+    databaseName: yolcu
+    user: yolcu
+
+services:
+  - type: web
+    name: yolcu
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: DATABASE_URL
+        fromDatabase:
+          name: yolcu-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DEMO_PASSWORD
+        sync: false
+      - key: DEMO_ENABLED
+        value: "true"
+      - key: SWAGGER_ENABLED
+        value: "false"

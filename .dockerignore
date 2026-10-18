@@ -1,0 +1,14 @@
+**/node_modules
+**/.next
+web/out
+backend/target
+data/raw
+data/tiles
+.git
+.playwright-cli
+graft
+.ignore
+*.log
+web/.env.local
+.env
+backend/src/main/resources/static

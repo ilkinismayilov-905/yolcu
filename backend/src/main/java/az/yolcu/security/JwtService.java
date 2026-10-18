@@ -20,7 +20,10 @@ public class JwtService {
     private final SecretKey key;
 
     public JwtService(YolcuProperties props) {
-        this.key = Keys.hmacShaKeyFor(props.jwtSecret().getBytes(StandardCharsets.UTF_8));
+        var secret = props.jwtSecret() == null ? new byte[0] : props.jwtSecret().getBytes(StandardCharsets.UTF_8);
+        if (secret.length < 32) throw new IllegalStateException(
+                "JWT_SECRET (yolcu.jwt-secret) is missing or shorter than 32 bytes; set a random 32+ character secret");
+        this.key = Keys.hmacShaKeyFor(secret);
     }
 
     public String issue(long userId, String role) {

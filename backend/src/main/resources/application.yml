@@ -5,10 +5,13 @@ yolcu:
   mocks-dir: ../mocks
   coin-rate: 500                 # 500 coin = 1 AZN
   demo:
-    enabled: true                # false: /demo/trigger/* and /demo/reset → 404 NOT_FOUND (simulate-answers is not gated)
+    enabled: ${DEMO_ENABLED:true} # false: /demo/trigger/* and /demo/reset → 404 NOT_FOUND (simulate-answers is not gated)
     clock-start: "08:12"         # demo saatı bu saatdan başlayır, real vaxtla irəliləyir
     auto-advance-reports: false  # true: dashboard-da adam yoxdursa şikayət öz-özünə irəliləyir
     bank-delay-seconds: 60
+    password: ${DEMO_PASSWORD:demo123}  # dispatcher@ / admin@yolcu.az; used by the seed
+    admin-only: false            # true: /api/v1/demo/** needs ADMIN (default: DISPATCHER or ADMIN)
+    sync-password: false         # true: on startup reset demo accounts' hash to yolcu.demo.password if it differs
 spring:
   datasource:
     url: jdbc:postgresql://localhost:${DB_PORT:5432}/yolcu
@@ -23,7 +26,10 @@ spring:
     restart.quiet-period: 400ms
 springdoc:
   swagger-ui.path: /swagger-ui.html
+  swagger-ui.enabled: ${SWAGGER_ENABLED:true}
+  api-docs.enabled: ${SWAGGER_ENABLED:true}
 server:
+  port: ${PORT:8080}
   compression:                   # gzip for geo layers / JSON; text/event-stream deliberately excluded (SSE must stream)
     enabled: true
     mime-types: application/json,application/geo+json,text/html,text/css,application/javascript
@@ -39,3 +45,25 @@ spring:
     url: jdbc:h2:mem:yolcu;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH
     username: sa
     password: ""
+
+---
+# Render / container: SPRING_PROFILES_ACTIVE=prod. Jar runs from /app, data in /app/data/processed and /app/mocks
+# (YolcuProperties falls back from ../data/processed to data/processed; YOLCU_DATA_DIR / YOLCU_MOCKS_DIR override).
+# DATABASE_URL (postgresql://user:pass@host[:port]/db?params) → spring.datasource.* via config.DatabaseUrlPostProcessor.
+spring:
+  config.activate.on-profile: prod
+yolcu:
+  jwt-secret: ${JWT_SECRET:}          # required, >= 32 bytes, else startup fails (JwtService)
+  demo:
+    enabled: ${DEMO_ENABLED:false}
+    password: ${DEMO_PASSWORD:}       # required, else startup fails (UserSeed)
+    admin-only: true
+    sync-password: true
+springdoc:
+  swagger-ui.enabled: ${SWAGGER_ENABLED:false}
+  api-docs.enabled: ${SWAGGER_ENABLED:false}
+server.tomcat.threads.max: 40   # 512 MB container: fewer thread stacks (SSE runs on async, not worker threads)
+logging.level:
+  root: INFO
+  org.hibernate: WARN
+  org.springframework.security: WARN

@@ -7,6 +7,7 @@ import jakarta.servlet.DispatcherType;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -25,7 +26,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
 
     @Bean
-    SecurityFilterChain filterChain(HttpSecurity http, JwtFilter jwtFilter, ObjectMapper mapper) throws Exception {
+    SecurityFilterChain filterChain(HttpSecurity http, JwtFilter jwtFilter, ObjectMapper mapper,
+            @Value("${yolcu.demo.admin-only:false}") boolean demoAdminOnly) throws Exception {
+        var demoRoles = demoAdminOnly ? new String[] {"ADMIN"} : new String[] {"DISPATCHER", "ADMIN"};
         return http
                 .csrf(c -> c.disable())
                 .cors(Customizer.withDefaults())
@@ -33,10 +36,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(a -> a
                         // SSE/async re-dispatches carry no JWT; the original request was already authorized
                         .dispatcherTypeMatchers(DispatcherType.ASYNC, DispatcherType.ERROR).permitAll()
-                        .requestMatchers("/api/v1/auth/**", "/api/v1/geo/**", "/api/v1/stops/**", "/api/v1/places/**").permitAll()
+                        .requestMatchers("/api/v1/health", "/api/v1/auth/**", "/api/v1/geo/**", "/api/v1/stops/**", "/api/v1/places/**").permitAll()
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/error").permitAll()
                         .requestMatchers("/api/v1/admin/**").hasAnyRole("DISPATCHER", "ADMIN")
-                        .requestMatchers("/api/v1/demo/**").hasAnyRole("DISPATCHER", "ADMIN")
+                        .requestMatchers("/api/v1/demo/**").hasAnyRole(demoRoles)
                         .requestMatchers("/api/v1/me/**").authenticated()
                         .requestMatchers("/api/**", "/actuator/**").authenticated()
                         // everything else is the static web dashboard (auth is enforced client-side + by the API)

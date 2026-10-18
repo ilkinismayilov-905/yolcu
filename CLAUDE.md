@@ -27,6 +27,7 @@ Yolçu — AYNA üçün vahid nəqliyyat platformasıdır. **Web dashboard** (AY
 | `docs/08_DESIGN_SYSTEM.md` | Rənglər, şrift, komponentlər, mətn qaydaları |
 | `docs/09_24H_PLAN_AND_DEMO.md` | Saat-saat plan, komanda bölgüsü, demo ssenarisi, ehtiyat planlar |
 | `docs/10_WEB_FULLSTACK_SLICES.md` | **Web işi: backend və frontend birlikdə, dilim-dilim (S0–S11)** |
+| `docs/11_DEPLOY.md` | Render-də deploy (Blueprint, `Dockerfile`, `render.yaml`, `prod` profili) |
 | `design/web_dashboard.html` | **Web üçün vizual həqiqət mənbəyi.** Brauzerdə aç, ekranı təkrarla |
 | `design/mobile_app.html` | **Mobil üçün vizual həqiqət mənbəyi** |
 | `mocks/*.json` | Fake hissələr və mock rejim üçün hazır data |

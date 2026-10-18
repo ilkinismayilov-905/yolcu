@@ -31,6 +31,8 @@ Baza URL: `/api/v1`. Bütün cavablar JSON, sahə adları `camelCase`, vaxt ISO-
 - Yanlış JSON, body yoxdur, səhv tip (`"size=abc"`, `"coins":"x"`), naməlum enum dəyəri, çatışmayan məcburi parametr → `400 VALIDATION`.
 - Dəstəklənməyən metod → `405`, `Content-Type` `application/json` deyil → `415`; hər ikisində `code: VALIDATION`, gövdə eyni `{ error }` formasındadır. Naməlum yol → `404 NOT_FOUND`. Server heç vaxt Spring-in default xəta gövdəsini qaytarmır.
 
+**GET** `/health` (açıq, token lazım deyil) → `200 { "status": "ok" }`. DB-yə müraciət etmir (liveness: DB yavaşlayanda Render konteyneri öldürməsin). Render health check üçün.
+
 ---
 
 ## 1. Auth
@@ -370,7 +372,7 @@ Qeydlər (BE-9.4): `A-2041`, `#A-2041`, `a2041` → mövcud şikayətdirsə `REP
 
 **POST** `/demo/trigger/{scenario}` → `{ "ok": true, "scenario": "artificial-jam", "message": "..." }`
 
-Spring profili yoxdur: `yolcu.demo.enabled` (default `true`). `false` olanda `/demo/trigger/*` və `/demo/reset` → `404 NOT_FOUND`. PASSENGER → `403 FORBIDDEN`. Naməlum ssenari → `404 NOT_FOUND`. `message` — Azərbaycanca qısa nəticə (toast üçün).
+`yolcu.demo.enabled` (env `DEMO_ENABLED`; dev default `true`, `prod` profilində default `false`). `prod` profilində `/demo/**` yalnız ADMIN (`yolcu.demo.admin-only=true`), DISPATCHER → `403 FORBIDDEN`; dev-də DISPATCHER və ADMIN. `false` olanda `/demo/trigger/*` və `/demo/reset` → `404 NOT_FOUND`. PASSENGER → `403 FORBIDDEN`. Naməlum ssenari → `404 NOT_FOUND`. `message` — Azərbaycanca qısa nəticə (toast üçün).
 
 | scenario | Nə edir |
 |---|---|
