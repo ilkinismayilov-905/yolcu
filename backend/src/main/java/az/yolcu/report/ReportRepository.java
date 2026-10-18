@@ -14,6 +14,8 @@ public interface ReportRepository extends JpaRepository<Report, Long>, JpaSpecif
 
     Optional<Report> findByCodeAndUserId(String code, Long userId);
 
+    java.util.List<Report> findTop5ByBortOrderByCreatedAtDescIdDesc(String bort);
+
     Page<Report> findByUserId(Long userId, Pageable pageable);
 
     long countByUserIdAndCreatedAtAfter(Long userId, OffsetDateTime after);

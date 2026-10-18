@@ -440,6 +440,58 @@ export interface HubProposal {
   createdAt: string;
 }
 
+// ---- 9. Operatorlar və avtopark: /admin/operators, /admin/buses; Axtarış: /admin/search ----
+
+/** GET /admin/operators item (array, no paging). `code`: bb | xf | ct | 6d. */
+export interface OperatorStats {
+  id: number;
+  code: string;
+  name: string; // "BakuBus MMC"
+  fleetTotal: number;
+  onLine: number;
+  avgRating: number | null; // (driver + road + bus) / 3, 1 decimal; null = no reviews
+  complaintsPer10k: number; // 1 decimal, last 30 days; raw seed values are ~60–120, show as is
+  punctuality: number; // %
+  routes: string[];
+}
+
+export type FleetBusStatus = 'LINE' | 'DEPOT' | 'REPAIR';
+
+/** GET /admin/buses?operator=&status=&type=&q=&page=&size=12 item, sorted by bort. q = bort or route substring. */
+export interface FleetBus {
+  bort: string; // "10-BB-482"
+  operator: string; // display name, e.g. "BakuBus MMC"
+  operatorCode: string; // "bb"
+  route: string;
+  type: BusType;
+  model: string;
+  capacity: number;
+  status: FleetBusStatus;
+  occupancy: number | null; // %, only LINE buses on simulated routes; else null
+  driverRating: number | null; // 1 decimal, null = no reviews
+}
+
+/** One review in GET /admin/buses/{bort}. */
+export interface BusReview {
+  createdAt: string;
+  driverRating: number;
+  roadRating: number;
+  busRating: number;
+  crowdLevel: 'EMPTY' | 'NORMAL' | 'FULL' | 'OVERFULL';
+  tags: string[];
+  comment: string | null;
+}
+
+/** GET /admin/buses/{bort}: the bus, its current occupancy and the last 5 reports and reviews (newest first). */
+export interface BusDetail extends FleetBus {
+  reviewCount: number;
+  reports: ReportListItem[];
+  reviews: BusReview[];
+}
+
+/** GET /admin/search?q= — BUS: exact bort (ignoring case, dashes, spaces); REPORT: existing report code. */
+export type SearchResult = { type: 'BUS'; ref: string } | { type: 'REPORT'; ref: string } | { type: 'NONE' };
+
 // ---- 10. Demo (DISPATCHER, ADMIN) ----
 
 export type DemoScenario = 'artificial-jam' | 'new-report' | 'overload-88' | 'bunching' | 'stadium' | 'rain' | 'crowd-28may' | 'ganja-arrival';

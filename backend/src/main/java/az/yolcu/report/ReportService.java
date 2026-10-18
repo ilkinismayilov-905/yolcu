@@ -121,6 +121,13 @@ public class ReportService {
         return PageResponse.of(reports.findAll(spec(status, category, operator, q), pageable(page, size)), r -> item(r, now));
     }
 
+    /** Last 5 reports about one bus (GET /admin/buses/{bort}). */
+    @Transactional(readOnly = true)
+    public List<ReportListItem> latestForBort(String bort) {
+        var now = clock.now();
+        return reports.findTop5ByBortOrderByCreatedAtDescIdDesc(bort).stream().map(r -> item(r, now)).toList();
+    }
+
     public record CsvExport(String body, int rows, LocalDate date) {}
 
     /** Same filters as {@link #list}, no paging, newest first. */

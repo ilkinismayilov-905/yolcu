@@ -160,11 +160,12 @@ export function Table({ head, loading, error, onRetry, empty, isEmpty, children 
 export const TD = 'whitespace-nowrap border-b border-line px-4 py-[11px] align-middle';
 export const TR_CLICK = 'cursor-pointer hover:[&>td]:bg-surface-2 focus-visible:[&>td]:bg-surface-2';
 
-export function Pager({ page, pages, onPage }: { page: number; pages: number; onPage: (p: number) => void }) {
+export function Pager({ page, pages, onPage, extra }: { page: number; pages: number; onPage: (p: number) => void; extra?: ReactNode }) {
   return (
     <div className="flex items-center gap-2 border-t border-line px-4 py-2.5 text-[13px] text-ink-2">
       <span>Səhifə {page + 1} / {pages}</span>
       <span className="flex-1" />
+      {extra}
       <Button sm disabled={page === 0} onClick={() => onPage(page - 1)}>Əvvəlki</Button>
       <Button sm disabled={page >= pages - 1} onClick={() => onPage(page + 1)}>Növbəti</Button>
     </div>

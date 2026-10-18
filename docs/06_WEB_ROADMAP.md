@@ -96,8 +96,8 @@ Sidebar qrupları (mockup-dakı kimi): **Canlı** (Canlı xəritə, Hub kamerala
 
 ## WEB-6 Operatorlar və avtopark — H13–H15 · MUST
 
-- [ ] **WEB-6.1** 4 operator kartı: BakuBus MMC, Xaliq Faiqoğlu MMC, Çinar-Trans MMC, 6 Dost MMC (xətdə / cəmi, orta rəy, şikayət / 10 min, dəqiqlik, marşrutlar). Klik → avtopark filtrlənir, təkrar klik → filtr götürülür.
-- [ ] **WEB-6.2** Avtopark cədvəli: axtarış (bort, marşrut), status seqmenti, növ seçimi, sütunlar (bort, operator, marşrut, növ və model, status, doluluq, sürücü rəyi), səhifələmə 12.
+- [x] **WEB-6.1** 4 operator kartı: BakuBus MMC, Xaliq Faiqoğlu MMC, Çinar-Trans MMC, 6 Dost MMC (xətdə / cəmi, orta rəy, şikayət / 10 min, dəqiqlik, marşrutlar). Klik → avtopark filtrlənir, təkrar klik → filtr götürülür.
+- [x] **WEB-6.2** Avtopark cədvəli: axtarış (bort, marşrut), status seqmenti, növ seçimi, sütunlar (bort, operator, marşrut, növ və model, status, doluluq, sürücü rəyi), səhifələmə 12.
 
 **Qəbul:** "Xaliq Faiqoğlu" seçiləndə yalnız `99-XF-` bortları görünür; bort axtarışı topbar-dan da işləyir.
 

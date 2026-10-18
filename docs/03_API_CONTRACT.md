@@ -285,6 +285,13 @@ Hər yeni cavab (real və ya simulyasiya), publish və close → `survey.updated
 ### Operatorlar və avtopark
 **GET** `/admin/operators` → `[{ "id": 1, "code": "bb", "name": "BakuBus MMC", "fleetTotal": 640, "onLine": 584, "avgRating": 4.6, "complaintsPer10k": 3.1, "punctuality": 91, "routes": ["1","2","4","88"] }]`
 **GET** `/admin/buses?operator=xf&status=LINE&type=ELECTRIC&q=99-XF&page=0&size=12` → `Page<{ bort, operator, route, type, model, status, occupancy, driverRating }>`
+**GET** `/admin/buses/{bort}` → `BusDetail` (yeni, BE-9.3)
+
+Qeydlər (BE-9.3):
+- `operators`: massiv (səhifələmə yoxdur), sıra `id` üzrə (bb, xf, ct, 6d). `fleetTotal` = seed-dəki şəhər miqyaslı park (`operators.fleet_total`, 640/300/140/60). `onLine` = `round(fleetTotal × xətdəki payı)`, pay = DB-dəki həmin operator avtobuslarında `status = LINE` olanların nisbəti (DB-də cəmi 66 avtobus var; **qısa yol**, tam park import olunanda real say olacaq). `avgRating` = operatorun bütün rəylərində `(driver + road + bus) / 3` ortası, 1 rəqəm (rəy yoxdursa `null`). `complaintsPer10k` = demo saatına görə **son 30 gündə** operatora aid şikayətlər ÷ həmin dövrdə operatorun avtobuslarında (`trips.bort → buses`) başlayan səfərlər × 10 000, 1 rəqəm (səfər yoxdursa `0`). Seed ilə xam rəqəm ~60–120 olur (40 şikayət / 5 000 səfər), UI olduğu kimi göstərsin. `punctuality` = seed dəyəri (`mocks/operators.json`), real cədvələ uyğunluq mənbəyi yoxdur (**qısa yol**). `routes` = seed siyahısı.
+- `buses` item: `{ "bort": "10-BB-120", "operator": "BakuBus MMC", "operatorCode": "bb", "route": "65", "type": "ELECTRIC", "model": "BMC Procity 12m", "capacity": 90, "status": "LINE", "occupancy": 56, "driverRating": 4.6 }`. `operator` = ad (digər siyahılarla eyni), `operatorCode` əlavə. `occupancy` = simulyatordan faiz, yalnız `LINE` və simulyasiya olunan marşrutlarda (`route_config`: 88, 4, 65, 33, M1...); qalanlarında `null`. `driverRating` = həmin bortun rəylərində `driver_rating` ortası, 1 rəqəm, yoxdursa `null`.
+- Filtrlər: `operator` = operator kodu; `status` = `LINE | DEPOT | REPAIR`; `type` = `ELECTRIC | DIESEL`; `q` = bort və ya marşrutda hərf fərqi olmadan alt sətir (≤ 40 simvol). Səhv dəyər → `VALIDATION`. `page ≥ 0`, `size` 1–100 (default 12). Sıra: `bort` artan.
+- `BusDetail` = `buses` item sahələri + `"reviewCount": 10`, `"reports": [ReportListItem]` (bu bort üzrə son 5, ən yenisi əvvəl), `"reviews": [{ "driverRating": 5, "roadRating": 4, "busRating": 4, "crowdLevel": "FULL", "tags": ["Vaxtında gəldi"], "comment": null, "createdAt": "..." }]` (son 5). `{bort}` hərf/tire fərqinə dözümlüdür (`10bb120` da tapır). Naməlum bort → `404 NOT_FOUND`.
 
 ### Data analitika
 **GET** `/admin/analytics/kpis` → `{ "trackedTrips30d": 1240000, "consentUsers": 31200, "avgTripMin": 27, "longestTransferWaitMin": 14, "suggestionAcceptance": 41 }`
@@ -311,6 +318,8 @@ Qeydlər (BE-9.2):
 
 ### Axtarış
 **GET** `/admin/search?q=10-BB-482` → `{ "type": "BUS", "ref": "10-BB-482" }` və ya `{ "type": "REPORT", "ref": "A-2042" }` və ya `{ "type": "NONE" }`
+
+Qeydlər (BE-9.4): `A-2041`, `#A-2041`, `a2041` → mövcud şikayətdirsə `REPORT` (`ref` = kanonik kod). Əks halda bort tam uyğunluğu, hərf, tire və boşluq fərqi nəzərə alınmır (`10bb482` → `10-BB-482`) → `BUS` (`ref` = kanonik bort). Qalan hər şey, boş `q` da → `{ "type": "NONE" }` (`ref` yoxdur). Marşrut axtarışı yoxdur.
 
 ## 10. Demo idarəsi (DISPATCHER, ADMIN; `yolcu.demo.enabled`)
 

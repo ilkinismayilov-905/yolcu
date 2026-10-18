@@ -63,6 +63,10 @@ const toItem = ({ code, createdAt, route, bort, operator, category, textPreview,
   code, createdAt, route, bort, operator, category, textPreview, status, late, place,
 });
 
+/** For the fleet mock: last 5 reports of a bus, and whether a report code exists. */
+export const reportsOfBort = (bort: string) => db.filter((r) => r.bort === bort).slice(0, 5).map(toItem);
+export const reportExists = (code: string) => db.some((r) => r.code.toLowerCase() === code.toLowerCase());
+
 function find(code: string) {
   const r = db.find((x) => x.code === code);
   if (!r) throw new ApiError(404, 'NOT_FOUND', `Şikayət tapılmadı: ${code}`);

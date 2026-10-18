@@ -2,17 +2,20 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { UserDto } from '@yolcu/shared/api';
+import type { SearchResult, UserDto } from '@yolcu/shared/api';
 import { DemoBadge } from './ui';
 import { useStream } from '@/lib/stream';
 import { setDark, useDark } from '@/lib/prefs';
 import { AvatarMenu } from './AvatarMenu';
+import { useToast } from './Toast';
+import { api } from '@/lib/api';
 
 const hhmm = () => new Date().toLocaleTimeString('az-AZ', { hour: '2-digit', minute: '2-digit', hour12: false });
 
 export function Topbar({ user, onLogout }: { user?: UserDto; onLogout: () => void }) {
   const dark = useDark();
   const router = useRouter();
+  const toast = useToast();
   const { status } = useStream();
   const [clock, setClock] = useState('');
   useEffect(() => {
@@ -33,12 +36,18 @@ export function Topbar({ user, onLogout }: { user?: UserDto; onLogout: () => voi
         <input
           className="flex-1 border-0 bg-transparent text-ink outline-0"
           placeholder="Bort nömrəsi, marşrut və ya şikayət ID"
-          onKeyDown={(e) => {
+          onKeyDown={async (e) => {
             if (e.key !== 'Enter') return;
             const v = e.currentTarget.value.trim().replace(/^#/, '');
             if (!v) return;
-            // Same rule as the mockup: A-xxxx -> reports, anything else -> fleet search.
-            router.push(/^A-/i.test(v) ? `/reports?q=${encodeURIComponent(v)}` : `/operators?q=${encodeURIComponent(v)}`);
+            try {
+              const r = await api.get<SearchResult>(`/admin/search?q=${encodeURIComponent(v)}`);
+              if (r.type === 'BUS') router.push(`/operators?q=${encodeURIComponent(r.ref)}`);
+              else if (r.type === 'REPORT') router.push(`/reports?q=${encodeURIComponent(r.ref)}`);
+              else toast('Heç nə tapılmadı');
+            } catch (err) {
+              toast(err instanceof Error ? err.message : 'Xəta baş verdi');
+            }
           }}
         />
       </label>

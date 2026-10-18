@@ -66,7 +66,8 @@ export function Drawer({ open, onClose, meta, title, extra, footer, children }: 
             ✕
           </button>
         </div>
-        <div className="grid flex-1 content-start gap-4 overflow-auto p-5">{children}</div>
+        {/* minmax(0,1fr): grid items may shrink below their min-content, so truncated rows don't widen the drawer */}
+        <div className="grid flex-1 grid-cols-[minmax(0,1fr)] content-start gap-4 overflow-auto p-5">{children}</div>
         {footer && <div className="flex justify-end gap-2 border-t border-line px-5 py-3.5">{footer}</div>}
       </div>
     </>

@@ -106,8 +106,8 @@
 
 - [x] **BE-9.1** `GET /admin/analytics/kpis`, `/od`, `/alighting` (sintetik + real səfərlər).
 - [x] **BE-9.2** `HubProposalRule` (`02_ARCHITECTURE` §6.2) + `GET /admin/hub-proposals`, `accept`, `reject`, `proposal.created` SSE.
-- [ ] **BE-9.3** `GET /admin/operators` (rəylərdən orta, şikayət / 10 min), `GET /admin/buses` (filtrlər, səhifələmə, doluluq simulyatordan).
-- [ ] **BE-9.4** `GET /admin/search`.
+- [x] **BE-9.3** `GET /admin/operators` (rəylərdən orta, şikayət / 10 min), `GET /admin/buses` (filtrlər, səhifələmə, doluluq simulyatordan).
+- [x] **BE-9.4** `GET /admin/search`.
 - [x] **BE-9.5** `DemoController`: bütün ssenarilər (`03_API` §10) + `reset`. `yolcu.demo.enabled` (profil yox).
 
 **Qəbul:** `POST /demo/trigger/artificial-jam` → 4 saniyə ərzində `traffic.updated` (babek=JAM), `alert.created` və `proposal.created` gəlir; `/demo/reset` sonrası demo istifadəçinin balansı 245-dir.
