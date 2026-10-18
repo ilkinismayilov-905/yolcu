@@ -8,6 +8,7 @@ import az.yolcu.sim.dto.BusPosition;
 import az.yolcu.stream.StreamEvent;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.MissingNode;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -30,12 +31,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class SimulationService {
     static final double TICK_SECONDS = 2;
+    // shortcut: buses all run at route speed, so spacing never changes on its own; 88 starts with 10-BB-511 2 min
+    // behind 10-BB-482 so bunching (design #p-occ) is visible from boot. Replace when speeds vary per bus.
+    static final String DEMO_BUNCH_ROUTE = "88";
+    static final double DEMO_BUNCH_GAP_MIN = 2;
     private static final Logger log = LoggerFactory.getLogger(SimulationService.class);
 
     static final class SimBus {
         final String bort, type;
         final int capacity;
         double s, occ;
+        int hold; // ticks left standing still (driver told to wait)
 
         SimBus(String bort, String type, int capacity, double s, double occ) {
             this.bort = bort;
@@ -45,6 +51,9 @@ public class SimulationService {
             this.occ = occ;
         }
     }
+
+    /** Two consecutive buses of a route: back drives gapMin minutes behind front. */
+    public record Gap(String route, BusPosition front, BusPosition back, double gapMin) {}
 
     static final class SimRoute {
         final String route;
@@ -63,6 +72,7 @@ public class SimulationService {
     }
 
     private final Map<String, JsonNode> params = new HashMap<>(); // mocks/sim_routes.json by route
+    private final Map<String, Integer> seedInterval = new HashMap<>(); // mocks/route_config.json: baseOccupancy is at this interval
     private final Map<String, SimRoute> routes = new LinkedHashMap<>();
     private final Random rnd = new Random(88);
     private final GeoStore geo;
@@ -80,6 +90,9 @@ public class SimulationService {
         for (var r : mapper.readTree(props.mocksPath().resolve("sim_routes.json").toFile()).path("routes")) {
             params.put(r.path("route").asText(), r);
         }
+        for (var r : mapper.readTree(props.mocksPath().resolve("route_config.json").toFile())) {
+            seedInterval.put(r.path("route").asText(), r.path("intervalMin").asInt());
+        }
     }
 
     @Scheduled(fixedRate = 2_000, initialDelay = 2_000)
@@ -94,7 +107,8 @@ public class SimulationService {
         for (var r : routes.values()) {
             double ds = r.speedKmh / 3.6 * TICK_SECONDS;
             for (var b : r.buses) {
-                b.s = r.line.wrap(b.s + ds);
+                if (b.hold > 0) b.hold--;
+                else b.s = r.line.wrap(b.s + ds);
                 b.occ = clamp(b.occ + (r.base - b.occ) * 0.2 + (rnd.nextDouble() * 8 - 4), 8, 100);
                 var p = r.line.at(b.s);
                 out.add(new BusPosition(b.bort, r.route, round5(p[0]), round5(p[1]), (int) Math.round(p[2]) % 360,
@@ -126,16 +140,53 @@ public class SimulationService {
         return (int) Math.ceil(best / (r.speedKmh / 3.6) / 60);
     }
 
+    /** mocks/sim_routes.json entry (type, operator code, speedKmh, baseOccupancy); missing node if unknown. */
+    public JsonNode routeParams(String route) { return params.getOrDefault(route, MissingNode.getInstance()); }
+
+    /** BE-8.3: consecutive bus pairs (along the line, by route speed) closer than maxMin minutes. */
+    public synchronized List<Gap> gaps(double maxMin) {
+        var pos = new HashMap<String, BusPosition>();
+        snapshot.forEach(p -> pos.put(p.bort(), p));
+        var out = new ArrayList<Gap>();
+        for (var r : routes.values()) {
+            if (r.buses.size() < 2) continue;
+            var sorted = r.buses.stream().sorted(Comparator.comparingDouble(b -> b.s)).toList();
+            for (int i = 0; i < sorted.size(); i++) {
+                var back = sorted.get(i);
+                var front = sorted.get((i + 1) % sorted.size());
+                double gapMin = r.line.wrap(front.s - back.s) / (r.speedKmh / 3.6) / 60;
+                if (gapMin < maxMin && pos.containsKey(front.bort) && pos.containsKey(back.bort)) {
+                    out.add(new Gap(r.route, pos.get(front.bort), pos.get(back.bort), gapMin));
+                }
+            }
+        }
+        return out;
+    }
+
+    /** Bus stands still for the given minutes (dispatcher told the driver to wait). False if not simulated. */
+    public synchronized boolean hold(String route, String bort, double minutes) {
+        var r = routes.get(route);
+        if (r == null) return false;
+        for (var b : r.buses) {
+            if (b.bort.equals(bort)) {
+                b.hold = (int) Math.round(minutes * 60 / TICK_SECONDS);
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void syncConfig() {
         for (var row : jdbc.queryForList("select route, interval_min, bus_count from route_config order by route")) {
             var route = (String) row.get("route");
             int interval = ((Number) row.get("interval_min")).intValue(), busCount = ((Number) row.get("bus_count")).intValue();
             var r = routes.computeIfAbsent(route, this::build);
             if (r == null) continue;
-            if (r.interval > 0 && r.interval != interval) {
+            int from = r.interval > 0 ? r.interval : seedInterval.getOrDefault(route, interval); // after a restart route_config may differ from the seed
+            if (from != interval) {
                 // same formula as IntervalEngine: shorter interval → proportionally fewer people per bus
-                r.base = clamp(r.base * interval / r.interval, 8, 100);
-                log.info("Sim {}: interval {} → {} min, base occupancy now {}%", route, r.interval, interval, Math.round(r.base));
+                r.base = clamp(r.base * interval / from, 8, 100);
+                log.info("Sim {}: interval {} → {} min, base occupancy now {}%", route, from, interval, Math.round(r.base));
             }
             r.interval = interval;
             if (r.busCount != busCount) spawn(r, busCount);
@@ -149,10 +200,14 @@ public class SimulationService {
         if (n < busCount) log.warn("Sim {}: route_config wants {} buses, buses table has {} on LINE → simulating {}",
                 r.route, busCount, borts.size(), n);
         var buses = new ArrayList<SimBus>();
+        double len = r.line.length(), gap = DEMO_BUNCH_GAP_MIN * 60 * r.speedKmh / 3.6;
+        boolean bunch = r.route.equals(DEMO_BUNCH_ROUTE) && n >= 2 && gap < len / n;
         for (int i = 0; i < n; i++) {
             var b = borts.get(i);
+            // bunched: bus 1 at 0, bus 0 gap ahead of it, the rest evenly over the remaining loop
+            double s = !bunch ? len * i / n : i == 0 ? gap : i == 1 ? 0 : gap + (i - 1) * (len - gap) / (n - 1);
             buses.add(new SimBus((String) b.get("bort"), (String) b.get("type"), ((Number) b.get("capacity")).intValue(),
-                    r.line.length() * i / n, clamp(r.base + rnd.nextDouble() * 12 - 6, 8, 100)));
+                    s, clamp(r.base + rnd.nextDouble() * 12 - 6, 8, 100)));
         }
         r.buses = buses;
         r.busCount = busCount;

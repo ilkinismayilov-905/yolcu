@@ -93,9 +93,9 @@
 
 ## BE-8 Doluluq, interval, hub-lar, Biletim, lent — H8–H14 (BE-B) · MUST
 
-- [ ] **BE-8.1** `IntervalEngine` + JUnit test vektorları (`02_ARCHITECTURE` §7; eyni vektorlar `packages/shared` testində).
-- [ ] **BE-8.2** `GET /admin/occupancy/routes`, `/routes/{r}/buses`, `/simulate`, `POST /routes/{r}/interval`, `PUT /auto`.
-- [ ] **BE-8.3** Topa yığılma detektoru + `GET /admin/occupancy/bunching`, `POST .../message`.
+- [x] **BE-8.1** `IntervalEngine` + JUnit test vektorları (`02_ARCHITECTURE` §7; eyni vektorlar `packages/shared` testində).
+- [x] **BE-8.2** `GET /admin/occupancy/routes`, `/routes/{r}/buses`, `/simulate`, `POST /routes/{r}/interval`, `PUT /auto`.
+- [x] **BE-8.3** Topa yığılma detektoru + `GET /admin/occupancy/bunching`, `POST .../message`.
 - [ ] **BE-8.4** `GET /admin/hubs` (+ tövsiyə qaydası), `POST /admin/hubs/{id}/apply`.
 - [ ] **BE-8.5** `BiletimAdapter` interfeysi + `MockBiletimAdapter` → `GET /admin/biletim/arrivals`.
 - [x] **BE-8.6** `FeedService` (`alerts` cədvəli) + `GET /admin/feed`, `GET /admin/kpis`.

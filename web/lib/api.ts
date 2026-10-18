@@ -1,5 +1,6 @@
 import { createClient, type ApiMode } from '@yolcu/shared/client';
 import { liveMocks } from './mocks/live';
+import { occupancyMocks } from './mocks/occupancy';
 import { reportMocks } from './mocks/reports';
 
 export const API_MODE: ApiMode = process.env.NEXT_PUBLIC_API_MODE === 'live' ? 'live' : 'mock';
@@ -20,5 +21,5 @@ export const api = createClient({
   baseUrl: API_URL,
   getToken,
   onUnauthorized: logout,
-  mocks: API_MODE === 'mock' ? { ...reportMocks, ...liveMocks } : undefined,
+  mocks: API_MODE === 'mock' ? { ...reportMocks, ...liveMocks, ...occupancyMocks } : undefined,
 });

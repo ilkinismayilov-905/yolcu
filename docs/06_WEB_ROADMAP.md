@@ -77,12 +77,12 @@ Sidebar qrupları (mockup-dakı kimi): **Canlı** (Canlı xəritə, Hub kamerala
 
 ## WEB-4 Avtobus doluluğu — H8–H13 · MUST
 
-- [ ] **WEB-4.1** Başlıqda "Avtomatik tənzimləmə" açarı (`PUT /admin/occupancy/auto`).
-- [ ] **WEB-4.2** KPI-lar.
-- [ ] **WEB-4.3** Marşrut cədvəli (lövhə, avtobus, doluluq zolağı, interval, tövsiyə, məmnunluq dəyişimi). Seçim → sağda avtobus siyahısı (salon miniatürü SVG, `84 / 90`, status).
-- [ ] **WEB-4.4** İnterval paneli: slayder 6–15, 4 göstərici (`packages/shared/headway.ts` ilə dərhal), qeyd mətni, "İntervalı tətbiq et" (`POST .../interval`), "Əlavə avtobusu haradan götürək?" → bölgü səhifəsi.
-- [ ] **WEB-4.5** Topa yığılma kartı (sxem SVG, mətn, "Sürücüyə mesaj göndər").
-- [ ] **WEB-4.6** Doluluq və məmnunluq qrafiki — **FAKE**, statik.
+- [x] **WEB-4.1** Başlıqda "Avtomatik tənzimləmə" açarı (`PUT /admin/occupancy/auto`).
+- [x] **WEB-4.2** KPI-lar.
+- [x] **WEB-4.3** Marşrut cədvəli (lövhə, avtobus, doluluq zolağı, interval, tövsiyə, məmnunluq dəyişimi). Seçim → sağda avtobus siyahısı (salon miniatürü SVG, `84 / 90`, status).
+- [x] **WEB-4.4** İnterval paneli: slayder 6–15, 4 göstərici (`packages/shared/headway.ts` ilə dərhal), qeyd mətni, "İntervalı tətbiq et" (`POST .../interval`), "Əlavə avtobusu haradan götürək?" → bölgü səhifəsi.
+- [x] **WEB-4.5** Topa yığılma kartı (sxem SVG, mətn, "Sürücüyə mesaj göndər").
+- [x] **WEB-4.6** Doluluq və məmnunluq qrafiki — **FAKE**, statik.
 
 **Qəbul:** slayder hərəkətində rəqəmlər < 100 ms dəyişir; tətbiq edəndə cədvəldə interval yenilənir və 30 saniyədə doluluq düşür.
 

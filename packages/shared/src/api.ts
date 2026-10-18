@@ -277,6 +277,64 @@ export interface AdminHub extends LiveHub {
   recommendation: string | null;
 }
 
+// ---- 9. Admin: Doluluq və interval (/admin/occupancy/...) ----
+
+/** GET /admin/occupancy/routes item; POST .../routes/{route}/interval response; `route.updated` SSE payload. */
+export interface RouteOccupancy {
+  route: string;
+  type: BusType;
+  operator: string; // display name, e.g. "BakuBus MMC"
+  busCount: number;
+  avgOccupancy: number; // %
+  intervalMin: number;
+  recommendedMin: number;
+  satNow: number; // 1 decimal
+  satAfter: number; // at recommendedMin, 1 decimal
+  autoMode: boolean;
+}
+
+/** GET /admin/occupancy/routes/{route}/buses item. `occupancy` = passengers on board (shown as "84 / 90"). */
+export interface OccupancyBus {
+  bort: string;
+  type: BusType;
+  near: string; // stop name
+  occupancy: number;
+  capacity: number;
+}
+
+/** POST /admin/occupancy/routes/{route}/interval body. */
+export interface IntervalRequest {
+  intervalMin: number;
+}
+
+/** GET /admin/occupancy/simulate?route=&intervalMin= */
+export interface SimulateResult {
+  occupancy: number; // %
+  waitMin: number;
+  busesNeeded: number;
+  sat: number;
+  note: string;
+}
+
+/** PUT /admin/occupancy/auto body. */
+export interface AutoModeRequest {
+  enabled: boolean;
+}
+
+export interface BunchingBus {
+  bort: string;
+  occupancy: number; // passengers
+}
+
+/** GET /admin/occupancy/bunching item. */
+export interface BunchingCase {
+  route: string;
+  front: BunchingBus;
+  back: BunchingBus;
+  gapMin: number;
+  near: string;
+}
+
 // ---- 11. SSE (GET /api/v1/stream?token=...), list in 02_ARCHITECTURE.md §4 ----
 
 export const STREAM_EVENTS = [
@@ -321,7 +379,7 @@ export interface StreamEventMap {
   'report.updated': ReportListItem;
   'notification.created': unknown;
   'coin.updated': CoinUpdatedPayload;
-  'route.updated': unknown;
+  'route.updated': RouteOccupancy;
   'proposal.created': unknown;
   'traffic.updated': TrafficSegment[];
   ping: PingPayload;
