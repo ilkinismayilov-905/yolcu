@@ -1,6 +1,7 @@
 import { createClient, type ApiMode } from '@yolcu/shared/client';
 import type { Role } from '@yolcu/shared/api';
 import { analyticsMocks } from './mocks/analytics';
+import { coinMocks } from './mocks/coins';
 import { liveMocks } from './mocks/live';
 import { occupancyMocks } from './mocks/occupancy';
 import { reportMocks } from './mocks/reports';
@@ -31,5 +32,5 @@ export const api = createClient({
   baseUrl: API_URL,
   getToken,
   onUnauthorized: logout,
-  mocks: API_MODE === 'mock' ? { ...reportMocks, ...liveMocks, ...occupancyMocks, ...surveyMocks, ...analyticsMocks, ...fleetMocks, ...terminalMocks } : undefined,
+  mocks: API_MODE === 'mock' ? { ...reportMocks, ...liveMocks, ...occupancyMocks, ...surveyMocks, ...analyticsMocks, ...fleetMocks, ...terminalMocks, ...coinMocks } : undefined,
 });

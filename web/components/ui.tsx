@@ -230,3 +230,8 @@ export function Note({ icon = 'i', children }: { icon?: ReactNode; children: Rea
     </div>
   );
 }
+
+/** Yolçu Coin icon (mockup .coin): yellow circle with "Y". */
+export function CoinIcon() {
+  return <span aria-hidden="true" className="inline-grid size-[18px] place-items-center rounded-full bg-coin align-[-3px] text-[10px] font-extrabold text-on-color">Y</span>;
+}

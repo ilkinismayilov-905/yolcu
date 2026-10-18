@@ -13,6 +13,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("update User u set u.coinBalance = u.coinBalance + :delta where u.id = :id")
     int addCoins(Long id, int delta);
 
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("update User u set u.coinBalance = u.coinBalance - :amount where u.id = :id and u.coinBalance >= :amount")
+    int spendCoins(Long id, int amount);
+
     @Query("select u.coinBalance from User u where u.id = :id")
     int coinBalance(Long id);
 }

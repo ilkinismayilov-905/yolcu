@@ -109,7 +109,7 @@ Sidebar qrupları (mockup-dakı kimi): **Canlı** (Canlı xəritə, Hub kamerala
 
 ## WEB-8 Avtobus bölgüsü — H15–H16 · SHOULD (FAKE)
 
-- [ ] **WEB-8.1** 33 və 88 kartları, mini avtobus nişanları, slayder 0–3, 3 göstərici, şərtlər siyahısı, təsdiq/rədd (toast), saatlıq tələbat-tutum qrafiki. Hamısı `headway.ts` ilə.
+- [x] **WEB-8.1** 33 və 88 kartları, mini avtobus nişanları, slayder 0–3, 3 göstərici, şərtlər siyahısı, təsdiq/rədd (toast), saatlıq tələbat-tutum qrafiki. Hamısı `headway.ts` ilə.
 
 ## WEB-9 Data analitika — H15–H18 · MUST
 
@@ -123,8 +123,8 @@ Sidebar qrupları (mockup-dakı kimi): **Canlı** (Canlı xəritə, Hub kamerala
 
 ## WEB-10 Coin, inteqrasiyalar, demo paneli — H16–H18
 
-- [ ] **WEB-10.1** Coin proqramı: KPI-lar, qaydalar cədvəli, çevirmə sorğuları cədvəli (REAL). · MUST
-- [ ] **WEB-10.2** İnteqrasiyalar: 12 kart (`mocks/integrations.json`), Biletim.az birinci, "Bağlantını yoxla" toast. · MUST (FAKE)
+- [x] **WEB-10.1** Coin proqramı: KPI-lar, qaydalar cədvəli, çevirmə sorğuları cədvəli (REAL). · MUST
+- [x] **WEB-10.2** İnteqrasiyalar: 12 kart (`mocks/integrations.json`), Biletim.az birinci, "Bağlantını yoxla" toast. · MUST (FAKE)
 - [x] **WEB-10.3** `/demo`: hər ssenari üçün iri düymə (`03_API` §10) + "Sıfırla". Yalnız ADMIN. · MUST
 
 ## WEB-11 Cilalama — H18–H20 · MUST

@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from 'react';
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { CreateSurveyRequest, PageResponse, SurveyAudience, SurveyListItem, SurveyResults, SurveyStatus } from '@yolcu/shared/api';
-import { Bar, Button, PageHeader, Pager, Panel, Seg, Status, Table, TD, TR_CLICK, fmtNum } from '@/components/ui';
+import { Bar, Button, CoinIcon, PageHeader, Pager, Panel, Seg, Status, Table, TD, TR_CLICK, fmtNum } from '@/components/ui';
 import { useToast } from '@/components/Toast';
 import { api } from '@/lib/api';
 import { navItem } from '@/lib/nav';
@@ -18,10 +18,6 @@ const REWARD_SEG = REWARDS.map((r) => [r, `${r} coin`] as const);
 const INPUT = 'w-full rounded-[9px] border border-line bg-surface px-3 text-ink outline-0 focus:border-primary aria-invalid:border-bad';
 const LABEL = 'text-[13px] font-medium text-ink-2';
 const errText = (e: unknown) => (e instanceof Error ? e.message : 'Xəta baş verdi');
-
-function Coin() {
-  return <span className="inline-grid size-[18px] place-items-center rounded-full bg-coin align-[-3px] text-[10px] font-extrabold text-on-color">c</span>;
-}
 
 export default function Page() {
   const qc = useQueryClient();
@@ -115,7 +111,7 @@ function SurveyList({ status, page, sel, onStatus, onPage, onSelect }: {
                 <td className={TD}><Status kind={kind}>{label}</Status></td>
                 <td className={`${TD} min-w-[120px] whitespace-normal! text-ink-2`}>{s.audienceLabel}</td>
                 <td className={`${TD} tabular-nums`}>{fmtNum(s.responses)}</td>
-                <td className={TD}><Coin /> {s.coinReward}</td>
+                <td className={TD}><CoinIcon /> {s.coinReward}</td>
               </tr>
             );
           })}

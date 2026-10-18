@@ -507,9 +507,43 @@ export interface BusDetail extends FleetBus {
 /** GET /admin/search?q= — BUS: exact bort (ignoring case, dashes, spaces); REPORT: existing report code. */
 export type SearchResult = { type: 'BUS'; ref: string } | { type: 'REPORT'; ref: string } | { type: 'NONE' };
 
+// ---- 9. Coin program (DISPATCHER, ADMIN) ----
+
+/** GET /admin/coins/summary. `convertedThisMonthAzn` is a manat string with 2 decimals; `rate` = coins per 1 AZN. */
+export interface CoinSummary {
+  earnedToday: number;
+  earnedTodayUsers: number;
+  inCirculation: number;
+  convertedThisMonthAzn: string;
+  rate: number;
+}
+
+/** One row of GET /admin/coins/rules (mockup #p-coins "Coin qaydaları"): `amount` e.g. "+5", "+5–20", "−60". */
+export interface CoinRule {
+  code: string;
+  action: string;
+  amount: string;
+  limit: string;
+}
+
+export type CoinConversionStatus = 'PENDING' | 'COMPLETED';
+
+/** One row of GET /admin/coins/conversions (Page) and the `conversion.updated` SSE payload. */
+export interface CoinConversion {
+  id: number;
+  userName: string;
+  phoneMask: string;
+  coins: number;
+  azn: string;
+  cardMask: string;
+  status: CoinConversionStatus;
+  createdAt: string;
+  completedAt: string | null;
+}
+
 // ---- 10. Demo (DISPATCHER, ADMIN) ----
 
-export type DemoScenario = 'artificial-jam' | 'new-report' | 'overload-88' | 'bunching' | 'stadium' | 'rain' | 'crowd-28may' | 'ganja-arrival';
+export type DemoScenario = 'artificial-jam' | 'new-report' | 'overload-88' | 'bunching' | 'stadium' | 'rain' | 'crowd-28may' | 'ganja-arrival' | 'coin-conversion';
 
 /** POST /demo/trigger/{scenario} and POST /demo/reset (scenario "reset"); `message` = short Azerbaijani result for the toast. Reset also returns coinBalance + deleted counts (unused). */
 export interface DemoResponse {
@@ -532,6 +566,7 @@ export const STREAM_EVENTS = [
   'proposal.created',
   'traffic.updated',
   'survey.updated',
+  'conversion.updated',
   'ping',
   'hello',
 ] as const;
@@ -567,6 +602,7 @@ export interface StreamEventMap {
   'proposal.created': HubProposal;
   'traffic.updated': TrafficSegment[];
   'survey.updated': SurveyListItem;
+  'conversion.updated': CoinConversion;
   ping: PingPayload;
   hello: HelloPayload;
 }

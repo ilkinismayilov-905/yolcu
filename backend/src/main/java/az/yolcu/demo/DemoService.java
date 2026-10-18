@@ -1,6 +1,7 @@
 package az.yolcu.demo;
 
 import az.yolcu.biletim.BiletimService;
+import az.yolcu.coin.ConversionService;
 import az.yolcu.common.ApiException;
 import az.yolcu.common.AppClock;
 import az.yolcu.config.YolcuProperties;
@@ -56,6 +57,7 @@ public class DemoService {
     private final FeedService feed;
     private final ReportService reports;
     private final NotificationService notifications;
+    private final ConversionService conversions;
     private final UserRepository users;
     private final JdbcTemplate jdbc;
     private final TransactionTemplate tx;
@@ -73,6 +75,7 @@ public class DemoService {
 
     public DemoService(TrafficService traffic, HubProposalRule rule, HubSimulator hubs, SimulationService sim,
                        OccupancyService occupancy, BiletimService biletim, FeedService feed, ReportService reports, NotificationService notifications,
+                       ConversionService conversions,
                        UserRepository users, JdbcTemplate jdbc, TransactionTemplate tx, ApplicationEventPublisher events,
                        AppClock clock, ObjectMapper mapper, YolcuProperties props) {
         this.traffic = traffic;
@@ -84,6 +87,7 @@ public class DemoService {
         this.feed = feed;
         this.reports = reports;
         this.notifications = notifications;
+        this.conversions = conversions;
         this.users = users;
         this.jdbc = jdbc;
         this.tx = tx;
@@ -102,6 +106,11 @@ public class DemoService {
             case "bunching" -> bunching();
             case "crowd-28may" -> crowd();
             case "stadium" -> stadium();
+            case "coin-conversion" -> {
+                var c = conversions.demoConversion();
+                yield ConversionService.DEMO_NAME + ": " + c.coins() + " Yolçu Coin → " + c.azn().replace('.', ',')
+                        + " ₼ çevirmə sorğusu (Gözləyir, " + props.demo().bankDelaySeconds() + " san sonra Tamamlandı)";
+            }
             case "rain" -> {
                 feed.add("WEATHER", "17:00-dan yağış gözlənilir", "Avtobus tələbatı təxminən 15% artacaq", "p-occ");
                 yield "WEATHER xəbərdarlığı lentə yazıldı";
@@ -194,6 +203,12 @@ public class DemoService {
             d.put("coin_conversions", jdbc.update("delete from coin_conversions where user_id = ? and created_at >= ?", uid, today));
             d.put("notifications", jdbc.update("delete from notifications where user_id = ? and created_at >= ?", uid, today));
             d.put("survey_answers", jdbc.update("delete from survey_answers where user_id = ? and created_at >= ?", uid, today));
+            // demo-triggered conversions (synthetic passenger): today's rows go, balance = ledger sum; pending ones never complete
+            long demoConv = conversions.demoUserId();
+            d.merge("coin_conversions", jdbc.update("delete from coin_conversions where user_id = ? and created_at >= ?", demoConv, today), Integer::sum);
+            d.merge("coin_tx", jdbc.update("delete from coin_tx where user_id = ? and created_at >= ?", demoConv, today), Integer::sum);
+            d.merge("notifications", jdbc.update("delete from notifications where user_id = ? and created_at >= ?", demoConv, today), Integer::sum);
+            jdbc.update("update users set coin_balance = (select coalesce(sum(amount), 0) from coin_tx where user_id = ?) where id = ?", demoConv, demoConv);
             alerts += jdbc.update("delete from alerts where category = 'AI' and title like ?", HubProposalService.ALERT_PREFIX + "%");
             d.put("alerts", alerts);
             d.put("hub_proposals", jdbc.update("delete from hub_proposals"));

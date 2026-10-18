@@ -13,7 +13,7 @@ Baza URL: `/api/v1`. Bütün cavablar JSON, sahə adları `camelCase`, vaxt ISO-
 { "items": [], "page": 0, "size": 20, "total": 46 }
 
 // Xəta (HTTP 4xx/5xx)
-{ "error": { "code": "COINS_INSUFFICIENT", "message": "Coin kifayət etmir: 40 var, 60 lazımdır" } }
+{ "error": { "code": "COINS_INSUFFICIENT", "message": "Yolçu Coin kifayət etmir: 40 var, 60 lazımdır" } }
 ```
 
 | Xəta kodu | HTTP | Nə vaxt |
@@ -189,13 +189,21 @@ Hər sual cavablanmalıdır, dəyər `options`-dan biri olmalıdır, naməlum su
 **GET** `/me/wallet`
 
 ```json
-{ "balance": 245, "aznEquivalent": "2.45", "rate": 100,
-  "history": [{ "label": "Sorğu: interval rahatlığı", "amount": 10, "createdAt": "..." }],
+{ "balance": 245, "aznEquivalent": "2.45", "rate": 100, "earnedToday": 5,
+  "history": [{ "label": "Banka çevirmə: 2,00 ₼", "amount": -200, "createdAt": "...", "status": "PENDING" },
+              { "label": "Sorğu: interval rahatlığı", "amount": 10, "createdAt": "...", "status": null }],
   "rules": [{ "label": "Səfərdən sonra rəy", "amount": "+5" }] }
 ```
+- `history`: ledger (`coin_tx`), ən yenisi əvvəl, son 50 sətir. `SEED` ("Başlanğıc balansı") və `DEMO` sətirləri **göstərilmir**, ona görə tarixçənin cəmi balansa bərabər olmaya bilər.
+- `status`: yalnız bank çevirməsi sətirlərində `PENDING | COMPLETED` (mobil: "icra olunur" / "tamamlandı"), qalanlarında `null`.
+- `earnedToday`: bu gün (demo saatının günü, Bakı) qazanılan müsbət sətirlərin cəmi, `SEED`/`DEMO` daxil deyil.
+- `rules`: yalnız qazanma qaydaları (`+` ilə), `/admin/coins/rules`-dan törəyir (eyni mənbə: `CoinService.rules()`).
 
-**POST** `/me/wallet/conversions` — `{ "coins": 200, "cardMask": "•• 0193" }` → `{ "id": 7, "coins": 200, "azn": "2.00", "status": "PENDING" }`
-Min 100, 100-ə bölünməlidir. 60 san sonra `COMPLETED` + bildiriş.
+**POST** `/me/wallet/conversions` — `{ "coins": 200, "cardMask": "•• 0193" }` → `201 { "id": 7, "coins": 200, "azn": "2.00", "status": "PENDING", "coinBalance": 45 }`
+- `coins`: min 100 və 100-ə bölünən, əks halda `400 VALIDATION` (`coins: minimum 100 və 100-ə bölünən olmalıdır`). Balans azdırsa `409 COINS_INSUFFICIENT` (`Yolçu Coin kifayət etmir: 245 var, 300 lazımdır`), heç nə yazılmır.
+- `cardMask` istəyə bağlıdır (default `•• 0193`, ≤ 30 simvol). Format `•• NNNN`; "Partnyor bank" sözünü UI əlavə edir.
+- `azn = coins / yolcu.coin-rate`, 2 rəqəm, string. Ledger: `reason=CONVERSION`, `ref=conv:{id}`, label `Banka çevirmə: 2,00 ₼`, + `coin.updated` (sahibə) və `conversion.updated` (DISPATCHER, ADMIN).
+- Bank (SIM, `BankSimJob`): `yolcu.demo.bank-delay-seconds` (60) san sonra `COMPLETED` → sahibə bildiriş (`type: COIN`, `title: Bank çevirməsi tamamlandı`, `body: 200 Yolçu Coin → 2,00 ₼ kartınıza köçürüldü (•• 0193)`, `target: wallet`) + `COIN` alert (`Bank çevirməsi tamamlandı: 2,00 ₼` / `Nigar Ə., 200 Yolçu Coin, Partnyor bank •• 0193`, `p-coins`) + `conversion.updated`. Gecikmə real (divar) saatı ilə sayılır, server restart-ından sağ çıxır.
 
 ## 8. Canlı data (SIM)
 
@@ -216,7 +224,7 @@ SSE yükləri (`02_ARCHITECTURE` §4): `bus.positions` → `/live/buses` element
 ### Dashboard
 **GET** `/admin/kpis` → `{ "avgSpeedKmh": 18, "avgSpeedYesterday": 22, "waitingAtHubs": 12480, "avgOccupancy": 74, "overfullBuses": 63, "satisfaction": 4.2, "satisfactionWeekDelta": 0.2 }`
 **GET** `/admin/feed?limit=50` → `Alert[]` · `{ "id": 1, "category": "OCC", "title": "...", "body": "...", "target": "p-occ", "createdAt": "..." }`
-`Alert.category`: `HUB | OCC | AI | BILETIM | REPORT | EVENT | WEATHER`. `target` — web səhifə id-si (`p-hubs`, `p-occ`, `p-split`, `p-express`, `p-reports` ...). Lent ən yenisi əvvəl, `limit` 1–200 (default 50). Yeni şikayət gələndə `REPORT` alert-i yaranır (`title`: `Yeni şikayət #A-2044: 88, <kateqoriya>`, `body`: mətn, `target`: `p-reports`) və `alert.created` SSE yayılır.
+`Alert.category`: `HUB | OCC | AI | BILETIM | REPORT | EVENT | WEATHER | COIN` (`COIN`: bank çevirməsi tamamlandı, `target: p-coins`). `target` — web səhifə id-si (`p-hubs`, `p-occ`, `p-split`, `p-express`, `p-reports` ...). Lent ən yenisi əvvəl, `limit` 1–200 (default 50). Yeni şikayət gələndə `REPORT` alert-i yaranır (`title`: `Yeni şikayət #A-2044: 88, <kateqoriya>`, `body`: mətn, `target`: `p-reports`) və `alert.created` SSE yayılır.
 KPI mənbələri: `avgSpeedKmh` — simulyasiya avtobuslarının marşrut sürətlərinin orta qiyməti; `avgSpeedYesterday` — hələlik sabit `22`; `waitingAtHubs` — `/live/hubs` `count` cəmi; `avgOccupancy` — avtobusların orta doluluğu (%); `overfullBuses` — doluluğu > 90% olan simulyasiya avtobusları; `satisfaction` — bütün rəylərin orta balı (3 reytinqin ortası, 1 onluq); `satisfactionWeekDelta` — son 7 gün − əvvəlki 7 gün.
 
 ### Hub kameraları
@@ -296,12 +304,21 @@ Status keçidləri: `NEW → REVIEW → FORWARDED → ANSWERED/RESOLVED`. `NEW`-
 **POST** `/admin/surveys` — `{ "title": "...", "audience": "ALL", "coinReward": 10, "questions": [{ "text": "...", "options": ["A","B"] }], "publish": true }` → `201 SurveyListItem`
 Validasiya (`VALIDATION`): `title` 1–160 simvol; `audience` yuxarıdakı 3 dəyərdən biri; `coinReward` ∈ {5, 10, 20}; `questions` 1–10; hər sualın `text` 1–500, `options` 2–10 təkrarsız, hər biri 1–80 simvol. `publish: false` → `DRAFT`.
 **POST** `/admin/surveys/{id}/publish` (`DRAFT → ACTIVE`) · **POST** `/admin/surveys/{id}/close` (`ACTIVE → CLOSED`) → `SurveyListItem`. Səhv keçid → `VALIDATION`.
-Publish → auditoriyadakı hər sərnişinə `notification` (`type: SURVEY`, `title` = sorğu başlığı, `body` = "1 dəqiqəlik sorğu. Cavab verin, {coinReward} coin qazanın.", `target: survey:{id}`) + hər birinə `notification.created` SSE. Auditoriya: `ALL` = bütün sərnişinlər; `ROUTE_88_4` = 88 və ya 4 ilə səfəri olanlar; `AVTOVAGZAL_2KM` = Avtovağzalın 2 km-lik qutusunda düşən səfəri olanlar. Sintetik (demo) sərnişinlər heç bir auditoriyaya daxil deyil.
+Publish → auditoriyadakı hər sərnişinə `notification` (`type: SURVEY`, `title` = sorğu başlığı, `body` = "1 dəqiqəlik sorğu. Cavab verin, {coinReward} Yolçu Coin qazanın.", `target: survey:{id}`) + hər birinə `notification.created` SSE. Auditoriya: `ALL` = bütün sərnişinlər; `ROUTE_88_4` = 88 və ya 4 ilə səfəri olanlar; `AVTOVAGZAL_2KM` = Avtovağzalın 2 km-lik qutusunda düşən səfəri olanlar. Sintetik (demo) sərnişinlər heç bir auditoriyaya daxil deyil.
 Hər yeni cavab (real və ya simulyasiya), publish və close → `survey.updated` SSE (DISPATCHER, ADMIN), data = `SurveyListItem`.
 
-### Coin proqramı
+### Yolçu Coin proqramı
 **GET** `/admin/coins/summary` → `{ "earnedToday": 48210, "earnedTodayUsers": 9120, "inCirculation": 3100000, "convertedThisMonthAzn": "12400.00", "rate": 100 }`
-**GET** `/admin/coins/conversions?page=0&size=10` → `Page<{ id, userName, phoneMask, coins, azn, cardMask, status, createdAt }>`
+Mənbə: pilot üzrə baza rəqəmlər (dizayndakı `48 210 / 9 120 / 3,1 mln / 12 400 ₼`, `CoinService`-də sabit) + DB: `earnedToday`/`earnedTodayUsers` — bu gün müsbət `coin_tx` cəmi / fərqli istifadəçi (`SEED`, `DEMO` daxil deyil); `inCirculation` — sərnişinlərin `coin_balance` cəmi; `convertedThisMonthAzn` — bu ay `COMPLETED` olan çevirmələrin `azn` cəmi (string, 2 rəqəm). Web `3100000` → "3,1 mln" formatlayır.
+
+**GET** `/admin/coins/conversions?page=0&size=10` → `Page<ConversionRow>`, ən yenisi əvvəl (id üzrə), `size` 1–100 (default 10):
+`{ "id": 7, "userName": "Elvin M.", "phoneMask": "+994 55 ••• 08", "coins": 1200, "azn": "12.00", "cardMask": "•• 4410", "status": "PENDING", "createdAt": "...", "completedAt": null }`
+`userName` = ad + soyadın ilk hərfi; `phoneMask` = ilk 7 simvol + ` ••• ` + son 2 rəqəm; `status`: `PENDING | COMPLETED`. Web status mətni: `PENDING` → "Gözləyir", `COMPLETED` → "Tamamlandı"; kart sütunu `Partnyor bank {cardMask}`.
+Seed: cədvəl boşdursa (mövcud DB-də də) 5 sətir — 3 `COMPLETED` + 2 `PENDING` (dizayndakı CONV məbləğləri: 500, 1200, 300, 800, 2000), seed sərnişinləri adından. Seed `PENDING` sətirləri bank simulyasiyasına **düşmür** (demo boyu "Gözləyir" qalır).
+
+**GET** `/admin/coins/rules` → `CoinRule[]` (səhifələnmir, `CoinService` sabitlərindən):
+`[{ "code": "REVIEW", "action": "Səfərdən sonra rəy", "amount": "+5", "limit": "Hər səfər üçün 1 dəfə" }, { "code": "SURVEY", "action": "Sorğuya cavab", "amount": "+5–20", "limit": "Sorğu başına 1 dəfə" }, { "code": "REPORT", "action": "Şikayət göndərmək", "amount": "+5", "limit": "10 dəqiqədə ən çox 3" }, { "code": "REPORT_VERIFIED", "action": "Şikayət təsdiqləndi", "amount": "+15", "limit": "Operator və ya AYNA təsdiqi ilə" }, { "code": "FARE", "action": "Gediş haqqını Yolçu Coin ilə ödəmək", "amount": "−60", "limit": "0,60 ₼ gediş" }]`
+`amount` göstəriş üçün string-dir (işarə ilə, `−` U+2212).
 
 ### Operatorlar və avtopark
 **GET** `/admin/operators` → `[{ "id": 1, "code": "bb", "name": "BakuBus MMC", "fleetTotal": 640, "onLine": 584, "avgRating": 4.6, "complaintsPer10k": 3.1, "punctuality": 91, "routes": ["1","2","4","88"] }]`
@@ -357,10 +374,12 @@ Spring profili yoxdur: `yolcu.demo.enabled` (default `true`). `false` olanda `/d
 | `rain` | WEATHER xəbərdarlığı |
 | `new-report` | Demo sərnişin adından şikayət yaradır |
 | `overload-88` | 88 doluluğunu 95%-ə qaldırır |
+| `coin-conversion` | Demo sərnişin Rauf Həsənli (`+994 51 ••• 92`) üçün 200 coinlik bank çevirməsi, `PENDING` → 60 san sonra `COMPLETED` |
 | `artificial-jam` | Fətəli Xan Xoyski pr. seqmentini 1 san sonra SLOW, 2,5 san sonra JAM edir, JAM müddətini 35 dəq yazır → hub təklifi qaydası işləyir |
 
 Ssenari detalları (BE-9.5):
 - `artificial-jam`: cavab dərhal; `babek` seqmenti (id tarixi səbəbdən belədir; real küçə — Fətəli Xan Xoyski prospekti, OSM ilə yoxlanılıb, bax `04_DATA` §7) 1 san sonra `SLOW` (`traffic.updated` + `EVENT` alert `Fətəli Xan Xoyski pr.: hərəkət ləngiyir`), 2,5 san sonra `JAM`, JAM müddəti 35 dəq (`traffic.updated` + `OCC` alert `Fətəli Xan Xoyski pr.: tıxac, 35 dəqiqədir davam edir`), 3 san sonra hub təklifi qaydası → `proposal.created` + `AI` alert. Seqment reset-ə qədər `JAM` qalır. Hər trigger yeni təklif yaradır (təkrar oynatmaq üçün dublikat yoxlaması atlanır). Reset gözləyən addımları ləğv edir.
+- `coin-conversion`: Rauf Həsənli (yoxdursa yaradılır, `users.synthetic = false`, sorğu simulyatorunun hovuzuna düşməsin deyə) əvvəlcə +200 alır (`reason=DEMO`, `ref=demo-conv:{n}`, ledger uyğun qalsın), sonra adi `POST /me/wallet/conversions` axını: −200 `CONVERSION`, `PENDING`, `conversion.updated`; 60 san sonra `BankSimJob` → `COMPLETED` + bildiriş + `COIN` alert + `conversion.updated`. Hər trigger yeni sorğu yaradır.
 - `new-report`: demo sərnişin (Nigar) adından `88`, `10-BB-482`, `Kobud davranış`, 28 May yaxınlığında şikayət → `report.created` + `REPORT` alert, sərnişinə +5 coin. Adi limit qüvvədədir: 10 dəqiqədə 4-cü → `429 RATE_LIMIT` (reset limiti sıfırlayır).
 - `overload-88`: 88-in simulyasiya doluluğu ~95% (random walk onun ətrafında qalır, reset-ə və ya interval dəyişənə qədər) + `OCC` alert `88: avtobuslar 95% doludur` / `Tövsiyə: interval 12 → 8 dəq`.
 - `bunching`: 88-də 10-BB-511 10-BB-482-dən 2 dəq arxaya qoyulur (hər dəfə, əvvəlki "gözləyin" mesajından asılı olmayaraq) → `/admin/occupancy/bunching`-də 88, `gapMin 2`, + hər trigger-də bir `OCC` alert `88: iki avtobus topa yığılıb`.
@@ -373,7 +392,7 @@ Bu sorğunu hələ cavablamamış sintetik sərnişinlər (`users.synthetic = tr
 
 **POST** `/demo/reset` → simulyatoru və demo datanı başlanğıc vəziyyətə qaytarır (DB-də demo sərnişinin bu günkü şikayət, səfər, coin dəyişiklikləri silinir).
 → `{ "ok": true, "scenario": "reset", "message": "...", "coinBalance": 245, "deleted": { "report_events": 2, "reports": 2, "reviews": 0, "trips": 0, "coin_tx": 2, "coin_conversions": 0, "notifications": 1, "survey_answers": 0, "alerts": 3, "hub_proposals": 1 } }`
-Bir tranzaksiyada: demo sərnişinin **bu günkü** (demo saatının günü) `reports` + `report_events`, onların `REPORT` alert-ləri, `reviews` (bu gün yazılan və ya bu günkü səfərə), `trips`, `coin_tx`, `coin_conversions`, `notifications`, `survey_answers` silinir, `coin_balance = 245`; bütün `hub_proposals` və onların `AI` alert-ləri silinir; `route_config` interval/avtobus sayı `mocks/route_config.json`-a, `auto_mode = false`. Yaddaşda: tıxac override-ları və JAM müddətləri, hub boost-u, Biletim demo gəlişi, avtobus düzülüşü (88 demo topa yığılması daxil) və doluluq bazası başlanğıc vəziyyətə. Sərnişinə `coin.updated {balance: 245}`. Sxem silinmir, seed yenidən işləmir, digər istifadəçilərin datası və keçmiş günlərin seed sətirləri qalır; trigger-lərin `EVENT/WEATHER/HUB/OCC/BILETIM` alert-ləri lentdə qalır.
+Bir tranzaksiyada: demo sərnişinin **bu günkü** (demo saatının günü) `reports` + `report_events`, onların `REPORT` alert-ləri, `reviews` (bu gün yazılan və ya bu günkü səfərə), `trips`, `coin_tx`, `coin_conversions`, `notifications`, `survey_answers` silinir, `coin_balance = 245`; Rauf Həsənlinin (coin-conversion trigger-i) bu günkü `coin_conversions`, `coin_tx`, `notifications` sətirləri də silinir (sayları `deleted`-də eyni açarlara əlavə olunur), balansı = ledger cəmi; gözləyən çevirmə ləğv olunur (bank job sətri tapmır). `COIN` alert-ləri lentdə qalır; bütün `hub_proposals` və onların `AI` alert-ləri silinir; `route_config` interval/avtobus sayı `mocks/route_config.json`-a, `auto_mode = false`. Yaddaşda: tıxac override-ları və JAM müddətləri, hub boost-u, Biletim demo gəlişi, avtobus düzülüşü (88 demo topa yığılması daxil) və doluluq bazası başlanğıc vəziyyətə. Sərnişinə `coin.updated {balance: 245}`. Sxem silinmir, seed yenidən işləmir, digər istifadəçilərin datası və keçmiş günlərin seed sətirləri qalır; trigger-lərin `EVENT/WEATHER/HUB/OCC/BILETIM` alert-ləri lentdə qalır.
 
 ## 11. SSE
 
@@ -389,3 +408,7 @@ Qoşulan kimi `event: hello` → `{"userId":1,"role":"DISPATCHER","ts":"..."}`, 
 Hadisə siyahısı: `02_ARCHITECTURE.md` → SSE.
 
 `survey.updated` (DISPATCHER, ADMIN) → `SurveyListItem` (bax §9 Sorğular): yeni cavab, simulyasiya batch-i, publish, close.
+
+`conversion.updated` (DISPATCHER, ADMIN) → `ConversionRow` (`/admin/coins/conversions` sətri ilə eyni JSON, bax §9 Yolçu Coin proqramı): yeni çevirmə (`PENDING`) və bank cavabı (`COMPLETED`). Web id üzrə upsert edir (yeni id → siyahının əvvəlinə), `total`/KPI üçün `summary`-ni yenidən çəkə bilər.
+
+`coin.updated` (istifadəçi) → `{ "balance": 45 }`: hər `award`/`spend`-dən sonra (commit-dən sonra).

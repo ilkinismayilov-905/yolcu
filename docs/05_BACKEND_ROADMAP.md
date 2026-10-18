@@ -63,11 +63,11 @@
 
 ## BE-5 Coin və bildirişlər — H6–H10 (BE-A) · MUST
 
-- [ ] **BE-5.1** `CoinService.award/spend` (`02_ARCHITECTURE` §9), `@Transactional`, unique ilə təkrar qoruması, `coin.updated` SSE.
-- [ ] **BE-5.2** `GET /me/wallet`.
-- [ ] **BE-5.3** `POST /me/wallet/conversions` (min 100, 100-ə bölünən) + `BankSimJob` (60 san sonra `COMPLETED` + bildiriş).
+- [x] **BE-5.1** `CoinService.award/spend` (`02_ARCHITECTURE` §9), `@Transactional`, unique ilə təkrar qoruması, `coin.updated` SSE.
+- [x] **BE-5.2** `GET /me/wallet`.
+- [x] **BE-5.3** `POST /me/wallet/conversions` (min 100, 100-ə bölünən) + `BankSimJob` (60 san sonra `COMPLETED` + bildiriş).
 - [ ] **BE-5.4** `NotificationService.create(userId, ...)` + `notification.created` SSE; `GET /me/notifications`, `read`, `read-all`.
-- [ ] **BE-5.5** `GET /admin/coins/summary`, `GET /admin/coins/conversions`.
+- [x] **BE-5.5** `GET /admin/coins/summary`, `GET /admin/coins/conversions`.
 
 **Qəbul:** 245 coin-lik istifadəçi 300 coin çevirmək istəyəndə `COINS_INSUFFICIENT`; 200 çevirəndə balans 45 olur, 60 saniyə sonra bildiriş gəlir; eyni sorğuya iki dəfə mükafat verilmir.
 

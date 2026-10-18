@@ -242,7 +242,7 @@ create table hub_proposals (
 
 create table alerts (                              -- dashboard hadisələr lenti
   id         bigserial primary key,
-  category   varchar(12) not null,                 -- HUB | OCC | AI | BILETIM | REPORT | EVENT | WEATHER
+  category   varchar(12) not null,                 -- HUB | OCC | AI | BILETIM | REPORT | EVENT | WEATHER | COIN
   title      varchar(200) not null,
   body       text,
   target     varchar(30),                          -- web səhifə: "p-occ"
@@ -268,6 +268,7 @@ create table alerts (                              -- dashboard hadisələr lent
 | `survey.updated` | DISPATCHER, ADMIN | `SurveyListItem` | SurveyService (cavab, simulyasiya, publish, close) |
 | `notification.created` | istifadəçi | `Notification` | NotificationService |
 | `coin.updated` | istifadəçi | `{balance}` | CoinService |
+| `conversion.updated` | DISPATCHER, ADMIN | `ConversionRow` | ConversionService (yaradılma, BankSimJob tamamlama) |
 | `route.updated` | hamı | `RouteOccupancy` | OccupancyController |
 | `proposal.created` | DISPATCHER | `HubProposal` | HubProposalRule |
 | `traffic.updated` | hamı | `TrafficSegment[]` | Sim, dəyişəndə |
@@ -373,7 +374,7 @@ Girdi: `from {lat,lon}`, `to` (demo yer adı və ya koordinat), `filter`, `acces
 | Gediş coin ilə | −60 | `trip:{id}` |
 | Banka çevirmə | −coins | `conv:{id}` |
 
-`@Transactional`: `users.coin_balance` yenilənir + `coin_tx` yazılır. Balans < 0 olarsa `COINS_INSUFFICIENT`. Unique pozulsa — səssiz keç (artıq verilib). Hər dəyişiklikdən sonra `coin.updated` SSE.
+`@Transactional`: `users.coin_balance` yenilənir + `coin_tx` yazılır. `spend` şərtli `update ... where coin_balance >= n` ilə: balans < 0 ola bilməz → `409 COINS_INSUFFICIENT` (`Yolçu Coin kifayət etmir: {var} var, {lazım} lazımdır`). Məbləğ sabitləri (`REVIEW`, `REPORT`, `REPORT_VERIFIED`, `FARE`, `SURVEY_REWARDS`) və qaydalar cədvəli (`CoinService.rules()` → `/admin/coins/rules`, `/me/wallet.rules`) bir yerdədir. `SEED`/`DEMO` sətirləri tarixçədə və "bu gün qazanılan"da sayılmır. Bank çevirməsi: `coin_conversions.bank_due_at` (V4, divar saatı) — `BankSimJob` hər saniyə vaxtı keçən `PENDING`-i `COMPLETED` edir; `null` = simulyasiyaya düşmür (seed). Unique pozulsa — səssiz keç (artıq verilib). Hər dəyişiklikdən sonra `coin.updated` SSE.
 
 ## 10. Konfiqurasiya (`application.yml`)
 

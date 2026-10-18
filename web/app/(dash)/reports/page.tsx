@@ -14,7 +14,7 @@ import {
   type ReportStats,
   type ReportStatusFilter,
 } from '@yolcu/shared/api';
-import { Button, Kpi, PageHeader, Pager, Panel, Plate, Seg, Status, Table, TD, TR_CLICK } from '@/components/ui';
+import { Button, CoinIcon, Kpi, PageHeader, Pager, Panel, Plate, Seg, Status, Table, TD, TR_CLICK } from '@/components/ui';
 import { Drawer, Modal } from '@/components/Overlay';
 import { useToast } from '@/components/Toast';
 import { API_MODE, api } from '@/lib/api';
@@ -252,7 +252,7 @@ function ReportDrawer({ item, onClose }: { item: ReportListItem | null; onClose:
               </Button>
             )}
             {(r.status === 'FORWARDED' || r.status === 'ANSWERED') && (
-              <Button variant="p" disabled={busy} onClick={() => act.mutate({ method: 'POST', path: 'resolve', body: { answerText: ANSWER }, msg: 'Həll edildi. Sərnişinə bildiriş və +15 coin göndərildi' })}>
+              <Button variant="p" disabled={busy} onClick={() => act.mutate({ method: 'POST', path: 'resolve', body: { answerText: ANSWER }, msg: 'Həll edildi. Sərnişinə bildiriş və +15 Yolçu Coin göndərildi' })}>
                 Həll edildi
               </Button>
             )}
@@ -281,7 +281,7 @@ function ReportDrawer({ item, onClose }: { item: ReportListItem | null; onClose:
               <dt>Mənbə</dt><dd>Mobil tətbiq, GPS və bilet ilə təsdiqlənib</dd>
               <dt>Sərnişinə verilən</dt>
               <dd>
-                <span className="inline-grid size-[18px] place-items-center rounded-full bg-coin align-[-3px] text-[10px] font-extrabold text-on-color">c</span>{' '}
+                <CoinIcon />{' '}
                 {verified ? `${d.coinsGiven - 15} coin, təsdiq üçün +15` : `${d.coinsGiven} coin`}
               </dd>
             </dl>
