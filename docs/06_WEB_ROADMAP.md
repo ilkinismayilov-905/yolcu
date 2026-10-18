@@ -69,10 +69,10 @@ Sidebar qrupları (mockup-dakı kimi): **Canlı** (Canlı xəritə, Hub kamerala
 
 ## WEB-3 Sorğular — H9–H12 · MUST
 
-- [ ] **WEB-3.1** Tablar: Bütün sorğular / Yeni sorğu.
-- [ ] **WEB-3.2** Siyahı: filtr (Hamısı, Aktiv, Bitib, Qaralama), cədvəl (sorğu, status, auditoriya, cavab, coin). Sətir → sağ paneldə nəticələr (sual üzrə faiz zolaqları), aktivdirsə "Sorğunu bitir", qaralamadırsa "İndi göndər".
-- [ ] **WEB-3.3** Yeni sorğu forması: başlıq, sual, variantlar (vergüllə), auditoriya, mükafat (5/10/20 coin), "Sorğunu göndər" və "Qaralama kimi saxla". Sağda bildiriş önizləməsi canlı yenilənir.
-- [ ] **WEB-3.4** Göndərəndən sonra siyahıya keç, yeni sorğu seçili, toast.
+- [x] **WEB-3.1** Tablar: Bütün sorğular / Yeni sorğu.
+- [x] **WEB-3.2** Siyahı: filtr (Hamısı, Aktiv, Bitib, Qaralama), cədvəl (sorğu, status, auditoriya, cavab, coin). Sətir → sağ paneldə nəticələr (sual üzrə faiz zolaqları), aktivdirsə "Sorğunu bitir", qaralamadırsa "İndi göndər".
+- [x] **WEB-3.3** Yeni sorğu forması: başlıq, sual, variantlar (vergüllə), auditoriya, mükafat (5/10/20 coin), "Sorğunu göndər" və "Qaralama kimi saxla". Sağda bildiriş önizləməsi canlı yenilənir.
+- [x] **WEB-3.4** Göndərəndən sonra siyahıya keç, yeni sorğu seçili, toast.
 
 **Qəbul:** yeni sorğu göndəriləndə telefonda bildiriş görünür; telefon cavab verəndən sonra nəticələrdə cavab sayı artır (yenidən yükləmə ilə).
 

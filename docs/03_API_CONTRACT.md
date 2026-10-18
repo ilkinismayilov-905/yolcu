@@ -176,10 +176,12 @@ Kateqoriyalar (sabit siyahı, `packages/shared`): `Dayanacaqda saxlamadı`, `Kob
 
 ## 7. Mobil: sorğu, bildiriş, cüzdan
 
-**GET** `/me/surveys/{id}` → `{ "id": 1, "title": "...", "coinReward": 10, "answered": false, "questions": [{ "id": 3, "text": "...", "options": ["Hər gün","Xeyr"] }] }`
+**GET** `/me/surveys/{id}` → `{ "id": 1, "title": "...", "status": "ACTIVE", "coinReward": 10, "answered": false, "questions": [{ "id": 3, "text": "...", "options": ["Hər gün","Xeyr"] }] }`
+`status`: `ACTIVE | CLOSED` (bitmiş sorğu görünür, amma cavab qəbul etmir). `DRAFT` → `NOT_FOUND`.
 **POST** `/me/surveys/{id}/answers` — `{ "answers": { "3": "Hər gün", "4": "8 dəqiqə" } }` → `{ "coinsAwarded": 10, "coinBalance": 200 }`
+Hər sual cavablanmalıdır, dəyər `options`-dan biri olmalıdır, naməlum sual id-si olmaz → `VALIDATION`. Bir istifadəçi bir dəfə: təkrar → `409 ALREADY_DONE` (bitmiş sorğuda da). Cavablanmamış bitmiş sorğu → `VALIDATION`. Auditoriya yoxlanmır (bildiriş almayan da cavab verə bilər). Coin: `reason=SURVEY`, `ref=survey:{id}`, label `Sorğu: {title}`, + `coin.updated` SSE; dispetçerlərə `survey.updated`.
 
-**GET** `/me/notifications` → `[{ "id": 88, "type": "SURVEY", "title": "...", "body": "...", "target": "survey:1", "read": false, "createdAt": "..." }]`
+**GET** `/me/notifications?page=0&size=20` → `Page<{ "id": 88, "type": "SURVEY", "title": "...", "body": "...", "target": "survey:1", "read": false, "createdAt": "..." }>` (ən yenisi əvvəl)
 **POST** `/me/notifications/{id}/read` · **POST** `/me/notifications/read-all`
 
 `target` formatları: `survey:{id}` · `report:{code}` · `review:{tripId}` · `wallet`
@@ -265,11 +267,16 @@ Status keçidləri: `NEW → REVIEW → FORWARDED → ANSWERED/RESOLVED`. `NEW`-
 `late` = `FORWARDED` və `forwardedAt` 24 saatdan köhnədir (seed-də bir neçəsi belədir).
 
 ### Sorğular
-**GET** `/admin/surveys?status=ACTIVE` → `[{ "id": 1, "title": "...", "status": "ACTIVE", "audience": "ALL", "audienceLabel": "Bütün istifadəçilər", "responses": 3120, "coinReward": 10, "createdAt": "..." }]`
-**GET** `/admin/surveys/{id}/results` → `{ "id": 1, "responses": 3120, "questions": [{ "text": "...", "options": [{ "label": "Hər gün", "count": 686, "percent": 22 }] }] }`
-**POST** `/admin/surveys` — `{ "title": "...", "audience": "ALL", "coinReward": 10, "questions": [{ "text": "...", "options": ["A","B"] }], "publish": true }`
-**POST** `/admin/surveys/{id}/publish` · **POST** `/admin/surveys/{id}/close`
-Publish → auditoriyadakı hər sərnişinə `notification` + `notification.created` SSE.
+**GET** `/admin/surveys?status=ACTIVE&page=0&size=20` → `Page<SurveyListItem>`, ən yenisi əvvəl (`createdAt desc`). `status`: `DRAFT | ACTIVE | CLOSED` və ya boş (hamısı); başqa dəyər → `VALIDATION`.
+`SurveyListItem` = `{ "id": 1, "title": "...", "status": "ACTIVE", "audience": "ALL", "audienceLabel": "Bütün istifadəçilər", "responses": 3140, "coinReward": 10, "createdAt": "...", "publishedAt": "...", "closedAt": null }`
+`responses` = tarixi seed cəmi (`mocks/surveys.json`) + real cavablar. `audience` / `audienceLabel`: `ALL` Bütün istifadəçilər · `AVTOVAGZAL_2KM` Avtovağzal ətrafı, 2 km · `ROUTE_88_4` 88 və 4 sərnişinləri.
+**GET** `/admin/surveys/{id}/results` → `{ "id": 1, "responses": 3140, "questions": [{ "id": 1, "text": "...", "total": 3139, "options": [{ "label": "Hər gün", "count": 690, "percent": 22 }] }] }`
+`percent` = sualın öz `total`-ına görə, ən böyük qalıq üsulu ilə yuvarlaqlaşdırılır: bir sualın faizləri cəmi həmişə dəqiq 100 (heç kim cavab verməyibsə hamısı 0). Sualın `total`-ı seed yuvarlaqlaşdırmasına görə `responses`-dan bir neçə vahid fərqlənə bilər.
+**POST** `/admin/surveys` — `{ "title": "...", "audience": "ALL", "coinReward": 10, "questions": [{ "text": "...", "options": ["A","B"] }], "publish": true }` → `201 SurveyListItem`
+Validasiya (`VALIDATION`): `title` 1–160 simvol; `audience` yuxarıdakı 3 dəyərdən biri; `coinReward` ∈ {5, 10, 20}; `questions` 1–10; hər sualın `text` 1–500, `options` 2–10 təkrarsız, hər biri 1–80 simvol. `publish: false` → `DRAFT`.
+**POST** `/admin/surveys/{id}/publish` (`DRAFT → ACTIVE`) · **POST** `/admin/surveys/{id}/close` (`ACTIVE → CLOSED`) → `SurveyListItem`. Səhv keçid → `VALIDATION`.
+Publish → auditoriyadakı hər sərnişinə `notification` (`type: SURVEY`, `title` = sorğu başlığı, `body` = "1 dəqiqəlik sorğu. Cavab verin, {coinReward} coin qazanın.", `target: survey:{id}`) + hər birinə `notification.created` SSE. Auditoriya: `ALL` = bütün sərnişinlər; `ROUTE_88_4` = 88 və ya 4 ilə səfəri olanlar; `AVTOVAGZAL_2KM` = Avtovağzalın 2 km-lik qutusunda düşən səfəri olanlar. Sintetik (demo) sərnişinlər heç bir auditoriyaya daxil deyil.
+Hər yeni cavab (real və ya simulyasiya), publish və close → `survey.updated` SSE (DISPATCHER, ADMIN), data = `SurveyListItem`.
 
 ### Coin proqramı
 **GET** `/admin/coins/summary` → `{ "earnedToday": 48210, "earnedTodayUsers": 9120, "inCirculation": 3100000, "convertedThisMonthAzn": "12400.00", "rate": 100 }`
@@ -307,6 +314,9 @@ Hub matrisi, proqnoz, ödənişli yol və data məhsulları FAKE-dir: `mocks/ana
 | `overload-88` | 88 doluluğunu 95%-ə qaldırır |
 | `artificial-jam` | Babək pr. seqmentini 1 san sonra SLOW, 2,5 san sonra JAM edir, JAM müddətini 35 dəq yazır → hub təklifi qaydası işləyir |
 
+**POST** `/demo/surveys/{id}/simulate-answers?count=50` (DISPATCHER və ya ADMIN; `count` 1–500, default 50; yalnız `ACTIVE` sorğu, əks halda `VALIDATION`) → `{ "created": 50, "survey": SurveyListItem }`
+Bu sorğunu hələ cavablamamış sintetik sərnişinlər (`users.synthetic = true`) seçilir, çatmayan qədəri yenisi yaradılır (sonrakı sorğularda təkrar istifadə olunur). Variantlar sualın seed paylanmasına görə çəkili təsadüfi seçilir. Sintetik sərnişinlərə coin verilmir, bildiriş getmir. Batch-dən sonra bir dəfə `survey.updated`.
+
 **POST** `/demo/reset` → simulyatoru və demo datanı başlanğıc vəziyyətə qaytarır (DB-də demo sərnişinin bu günkü şikayət, səfər, coin dəyişiklikləri silinir).
 
 ## 11. SSE
@@ -321,3 +331,5 @@ data: {"code":"A-2042","route":"88",...}
 Qoşulan kimi `event: hello` → `{"userId":1,"role":"DISPATCHER","ts":"..."}`, sonra hər 20 san `event: ping` → `{"ts":"..."}`.
 
 Hadisə siyahısı: `02_ARCHITECTURE.md` → SSE.
+
+`survey.updated` (DISPATCHER, ADMIN) → `SurveyListItem` (bax §9 Sorğular): yeni cavab, simulyasiya batch-i, publish, close.

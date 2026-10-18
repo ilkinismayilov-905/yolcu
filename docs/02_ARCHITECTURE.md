@@ -265,6 +265,7 @@ create table alerts (                              -- dashboard hadisələr lent
 | `alert.created` | DISPATCHER | `Alert` | Sim, servislər, demo |
 | `report.created` | DISPATCHER | `ReportListItem` | ReportService |
 | `report.updated` | DISPATCHER + sahib | `ReportListItem` | ReportService |
+| `survey.updated` | DISPATCHER, ADMIN | `SurveyListItem` | SurveyService (cavab, simulyasiya, publish, close) |
 | `notification.created` | istifadəçi | `Notification` | NotificationService |
 | `coin.updated` | istifadəçi | `{balance}` | CoinService |
 | `route.updated` | hamı | `RouteOccupancy` | OccupancyController |

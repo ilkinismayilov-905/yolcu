@@ -36,6 +36,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/**", "/api/v1/geo/**", "/api/v1/stops/**", "/api/v1/places/**").permitAll()
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/error").permitAll()
                         .requestMatchers("/api/v1/admin/**").hasAnyRole("DISPATCHER", "ADMIN")
+                        .requestMatchers("/api/v1/demo/**").hasAnyRole("DISPATCHER", "ADMIN")
                         .requestMatchers("/api/v1/me/**").authenticated()
                         .requestMatchers("/api/**", "/actuator/**").authenticated()
                         // everything else is the static web dashboard (auth is enforced client-side + by the API)

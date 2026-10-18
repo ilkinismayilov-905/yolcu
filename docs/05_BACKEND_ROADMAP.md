@@ -84,10 +84,10 @@
 
 ## BE-7 Sorğular — H10–H13 (BE-A) · MUST
 
-- [ ] **BE-7.1** `GET /admin/surveys?status`, `GET /admin/surveys/{id}/results` (faiz hesabı).
-- [ ] **BE-7.2** `POST /admin/surveys` (`publish` ilə və ya qaralama), `publish`, `close`.
-- [ ] **BE-7.3** Publish → auditoriyadakı hər sərnişinə bildiriş (`target: survey:{id}`) + SSE.
-- [ ] **BE-7.4** `GET /me/surveys/{id}`, `POST /me/surveys/{id}/answers` (bir dəfə, +coin).
+- [x] **BE-7.1** `GET /admin/surveys?status`, `GET /admin/surveys/{id}/results` (faiz hesabı).
+- [x] **BE-7.2** `POST /admin/surveys` (`publish` ilə və ya qaralama), `publish`, `close`.
+- [x] **BE-7.3** Publish → auditoriyadakı hər sərnişinə bildiriş (`target: survey:{id}`) + SSE.
+- [x] **BE-7.4** `GET /me/surveys/{id}`, `POST /me/surveys/{id}/answers` (bir dəfə, +coin).
 
 **Qəbul:** dashboard-dan sorğu göndər → telefonda 2 saniyədə bildiriş; cavabla → +10 coin, nəticələr səhifəsində cavab sayı +1.
 

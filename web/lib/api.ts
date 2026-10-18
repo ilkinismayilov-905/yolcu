@@ -3,6 +3,7 @@ import type { Role } from '@yolcu/shared/api';
 import { liveMocks } from './mocks/live';
 import { occupancyMocks } from './mocks/occupancy';
 import { reportMocks } from './mocks/reports';
+import { surveyMocks } from './mocks/surveys';
 
 export const API_MODE: ApiMode = process.env.NEXT_PUBLIC_API_MODE === 'live' ? 'live' : 'mock';
 export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? '';
@@ -27,5 +28,5 @@ export const api = createClient({
   baseUrl: API_URL,
   getToken,
   onUnauthorized: logout,
-  mocks: API_MODE === 'mock' ? { ...reportMocks, ...liveMocks, ...occupancyMocks } : undefined,
+  mocks: API_MODE === 'mock' ? { ...reportMocks, ...liveMocks, ...occupancyMocks, ...surveyMocks } : undefined,
 });

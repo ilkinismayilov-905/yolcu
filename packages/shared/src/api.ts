@@ -346,6 +346,54 @@ export interface BunchingCase {
   near: string;
 }
 
+// ---- 9. Admin surveys: /admin/surveys ----
+
+export type SurveyStatus = 'DRAFT' | 'ACTIVE' | 'CLOSED';
+export type SurveyAudience = 'ALL' | 'AVTOVAGZAL_2KM' | 'ROUTE_88_4';
+
+/** GET /admin/surveys?status=&page=&size= item; also the `survey.updated` SSE payload. */
+export interface SurveyListItem {
+  id: number;
+  title: string;
+  status: SurveyStatus;
+  audience: SurveyAudience;
+  audienceLabel: string; // "Bütün istifadəçilər"
+  responses: number;
+  coinReward: number;
+  createdAt: string;
+  publishedAt: string | null;
+  closedAt: string | null;
+}
+
+export interface SurveyResultOption {
+  label: string;
+  count: number;
+  percent: number; // 0–100 integer; per question sums to 100
+}
+
+/** GET /admin/surveys/{id}/results */
+export interface SurveyResults {
+  id: number;
+  responses: number;
+  /** `total` = answers to this question; may differ from `responses` by a few (seed rounding). */
+  questions: { id: number; text: string; total: number; options: SurveyResultOption[] }[];
+}
+
+/** POST /demo/surveys/{id}/simulate-answers?count=50 (ACTIVE only) */
+export interface SimulateAnswersResult {
+  created: number;
+  survey: SurveyListItem;
+}
+
+/** POST /admin/surveys. publish=true → ACTIVE + notifications, false → DRAFT. */
+export interface CreateSurveyRequest {
+  title: string;
+  audience: SurveyAudience;
+  coinReward: number; // 5 | 10 | 20
+  questions: { text: string; options: string[] }[];
+  publish: boolean;
+}
+
 // ---- 11. SSE (GET /api/v1/stream?token=...), list in 02_ARCHITECTURE.md §4 ----
 
 export const STREAM_EVENTS = [
@@ -359,6 +407,7 @@ export const STREAM_EVENTS = [
   'route.updated',
   'proposal.created',
   'traffic.updated',
+  'survey.updated',
   'ping',
   'hello',
 ] as const;
@@ -393,6 +442,7 @@ export interface StreamEventMap {
   'route.updated': RouteOccupancy;
   'proposal.created': unknown;
   'traffic.updated': TrafficSegment[];
+  'survey.updated': SurveyListItem;
   ping: PingPayload;
   hello: HelloPayload;
 }
