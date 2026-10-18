@@ -229,7 +229,7 @@ create index on trips(user_id, started_at desc);
 
 create table hub_proposals (
   id          bigserial primary key,
-  name        varchar(120) not null,               -- Babək pr. – Gənclik metrosu
+  name        varchar(120) not null,               -- Fətəli Xan Xoyski pr. – Gənclik metrosu
   lat double precision not null, lon double precision not null,
   jam_minutes int not null, routes_count int not null, metro_m int not null,
   waiting int not null, pax_per_hour int not null,

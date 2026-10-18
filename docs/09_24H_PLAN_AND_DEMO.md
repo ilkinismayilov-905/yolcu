@@ -55,7 +55,7 @@ Hər kəs öz qovluğunda ayrıca Claude Code sessiyası işlədir. Müqavilə d
 | 1:30 | Telefon | Şikayət: "Dayanacaqda saxlamadı" → göndər | — |
 | 1:35 | Dashboard | Şikayət lentdə və cədvəldə görünür → aç → "Operatora göndər" | Telefonda status canlı dəyişir |
 | 2:00 | Dashboard | Avtobus doluluğu: 88 92% → AI 12 → 8 dəq → tətbiq et | Doluluq düşür, məmnunluq +0,7 |
-| 2:25 | Dashboard | Canlı xəritə → "Süni tıxac yarat" | Babək pr. qırmızı, "Yeni hub təklifi" drawer-i |
+| 2:25 | Dashboard | Canlı xəritə → "Süni tıxac yarat" | Fətəli Xan Xoyski pr. qırmızı, "Yeni hub təklifi" drawer-i |
 | 2:50 | Dashboard | Data analitika: OD matrisi → Ödənişli yollar (Yusif Səfərov, 1 ₼) → Datanın tətbiqi | Qərar və gəlir modeli |
 | 3:20 | Dashboard | Sorğular → yeni sorğu göndər | Telefonda bildiriş düşür |
 | 3:35 | Danışan | Bağlanış: "Bir data qatı, iki ekran, hər siqnal qərara çevrilir" + real/simulyasiya fərqi | Slayd |

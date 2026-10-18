@@ -99,8 +99,8 @@ class DemoTest {
         assertThat(level()).isEqualTo("JAM");
         steps.get(2).run();
         assertThat(events.stream(StreamEvent.class).filter(e -> e.name().equals("traffic.updated")).count()).isEqualTo(2);
-        assertThat(alerts("OCC")).contains("Babək pr.: tıxac, 35 dəqiqədir davam edir");
-        assertThat(alerts("AI")).contains("Yeni hub təklifi: Babək pr. – Gənclik metrosu");
+        assertThat(alerts("OCC")).contains("Fətəli Xan Xoyski pr.: tıxac, 35 dəqiqədir davam edir");
+        assertThat(alerts("AI")).contains("Yeni hub təklifi: Fətəli Xan Xoyski pr. – Gənclik metrosu");
         assertThat(events.stream(StreamEvent.class).filter(e -> e.name().equals("proposal.created") && e.role() == Role.DISPATCHER).count()).isEqualTo(1);
         mvc.perform(get("/api/v1/admin/hub-proposals").header("Authorization", auth()))
                 .andExpect(jsonPath("$.length()").value(1))

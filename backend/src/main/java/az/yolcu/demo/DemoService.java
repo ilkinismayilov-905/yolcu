@@ -115,7 +115,7 @@ public class DemoService {
         return new DemoResult(true, scenario, message);
     }
 
-    /** Babək pr.: SLOW after 1 s, JAM (35 min) after 2.5 s, HubProposalRule after 3 s → proposal.created. */
+    /** Fətəli Xan Xoyski pr. (segment id "babek", kept for stable ids): SLOW after 1 s, JAM (35 min) after 2.5 s, HubProposalRule after 3 s → proposal.created. */
     private String artificialJam() {
         int e = epoch.get();
         delayer.later(SLOW_AT_MS, step(e, () -> {
@@ -235,7 +235,7 @@ public class DemoService {
         }
     }
 
-    private String name() { return segment().map(s -> s.name()).orElse("Babək pr."); }
+    private String name() { return segment().map(s -> s.name()).orElse("Fətəli Xan Xoyski pr."); }
 
     private int speed() { return segment().map(s -> s.speedKmh()).orElse(0); }
 

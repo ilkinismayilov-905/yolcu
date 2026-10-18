@@ -26,7 +26,7 @@ import org.springframework.stereotype.Component;
 public class HubProposalRule {
     static final int MIN_JAM_MIN = 20, STOP_M = 300, MIN_ROUTES = 3, MAX_METRO_M = 400, MIN_WAITING = 40;
     // §6.2 says "existing hub > 500 m", but every hub camera is a metro station, so no point ≤ 400 m from a metro exit
-    // near a hub could ever pass; 300 m keeps "not at an existing hub" (Babək pr. stop: 380 m from the Gənclik camera)
+    // near a hub could ever pass; 300 m keeps "not at an existing hub" (Fətəli Xan Xoyski pr. stop: 380 m from the Gənclik camera)
     static final int HUB_CLEAR_M = 300, DUPLICATE_M = 300;
     static final int ROUTE_PASS_M = 50, BIKE_M = 50;
     // shortcut: no hourly counts per station, peak hour ≈ 6 % of metro_ridership avgDaily2026; replace with hourly data

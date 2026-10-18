@@ -11,7 +11,7 @@ import { api } from '@/lib/api';
 
 // 03_API_CONTRACT §10. Not in the sidebar: opened by URL during the demo.
 const SCENARIOS: [DemoScenario, string, string, [string, string]][] = [
-  ['artificial-jam', 'Süni tıxac → yeni hub', 'Babək prospekti 1 saniyəyə ləngiyir, 2,5 saniyəyə tıxac olur. Bir neçə saniyə sonra xəritədə yeni hub təklifi açılır.', ['/map', 'Canlı xəritə']],
+  ['artificial-jam', 'Süni tıxac → yeni hub', 'Fətəli Xan Xoyski prospekti 1 saniyəyə ləngiyir, 2,5 saniyəyə tıxac olur. Bir neçə saniyə sonra xəritədə yeni hub təklifi açılır.', ['/map', 'Canlı xəritə']],
   ['new-report', 'Yeni şikayət', 'Demo sərnişin adından şikayət yaranır. Şikayətlər səhifəsində və hadisələr lentində dərhal görünür.', ['/reports', 'Şikayətlər']],
   ['overload-88', '88 dolub', '88 marşrutunun doluluğu 95%-ə qalxır. Doluluq səhifəsində interval tövsiyəsi dəyişir.', ['/occupancy?route=88', 'Avtobus doluluğu']],
   ['bunching', 'Topa yığılma', 'İki 88 avtobusu bir-birinə yaxınlaşır, lentdə doluluq xəbərdarlığı çıxır.', ['/occupancy?route=88', 'Avtobus doluluğu']],

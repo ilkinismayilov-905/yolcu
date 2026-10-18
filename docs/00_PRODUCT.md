@@ -71,5 +71,5 @@ Ekologiya bölməsi layihədən **çıxarılıb**.
 5. Şikayət göndərir → **dashboard-da 1–2 saniyəyə görünür** → dispetçer "Operatora göndər" basır → sərnişinin telefonunda status dəyişir.
 6. Dashboard-da 88-in 92% dolu olduğu görünür → AI 12 → 8 dəq təklif edir → dispetçer tətbiq edir.
 7. Dispetçer sorğu göndərir → bütün telefonlara bildiriş düşür.
-8. Dispetçer "Süni tıxac yarat" basır → Babək prospekti qırmızıya çevrilir → sistem orada yeni hub təklif edir (səbəbləri, nə qurulmalı, təsiri).
+8. Dispetçer "Süni tıxac yarat" basır → Fətəli Xan Xoyski prospekti (Gənclik metrosunun yanı) qırmızıya çevrilir → sistem orada yeni hub təklif edir (səbəbləri, nə qurulmalı, təsiri).
 9. Data analitika: haradan-haraya matrisi, proqnoz, ödənişli yol pilotu (Yusif Səfərov küç., 07:30–10:00, 1 ₼) və AYNA-nın datadan necə gəlir əldə edə biləcəyi.

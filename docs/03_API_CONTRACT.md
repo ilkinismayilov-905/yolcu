@@ -299,7 +299,7 @@ Qeydlər (BE-9.1): mənbə `trips` cədvəlidir (real + 5 000 sintetik seed səf
 - `alighting`: `limit` 1–50 (default 5), əks halda `VALIDATION`. `alight_stop` üzrə ən çoxdan aza. `perDay` = 30 günlük say / 30 (tam); `peak` = ən çox düşülən 5 dəqiqəlik slot (`ended_at`, `"08:35"`); `note` = `"<əsas mənşə> → <dayanacaq> axını, <ən çox 2 marşrut 'və' ilə>"`.
 
 ### Hub təklifləri
-**GET** `/admin/hub-proposals?status=NEW` → `[{ "id": 3, "name": "Babək pr. – Gənclik metrosu", "lat": 40.3990, "lon": 49.8560, "jamMinutes": 35, "routesCount": 3, "metroM": 300, "waiting": 58, "paxPerHour": 2400, "confidence": 82, "items": ["Avtobus cibi, 2 avtobusluq"], "impact": { "transferMin": -6, "toMetroPerDay": 900, "waitingPct": -40, "costAzn": "180–240 min" }, "status": "NEW" }]`
+**GET** `/admin/hub-proposals?status=NEW` → `[{ "id": 3, "name": "Fətəli Xan Xoyski pr. – Gənclik metrosu", "lat": 40.3990, "lon": 49.8560, "jamMinutes": 35, "routesCount": 3, "metroM": 300, "waiting": 58, "paxPerHour": 2400, "confidence": 82, "items": ["Avtobus cibi, 2 avtobusluq"], "impact": { "transferMin": -6, "toMetroPerDay": 900, "waitingPct": -40, "costAzn": "180–240 min" }, "status": "NEW" }]`
 **POST** `/admin/hub-proposals/{id}/accept` · **POST** `/admin/hub-proposals/{id}/reject` → yenilənmiş `HubProposal`
 
 Qeydlər (BE-9.2):
@@ -307,7 +307,7 @@ Qeydlər (BE-9.2):
 - Keçidlər: yalnız `NEW → ACCEPTED` və `NEW → REJECTED`; başqa keçid → `VALIDATION`, naməlum `id` → `NOT_FOUND`. Keçid SSE/alert yaratmır.
 - Yaradılanda: `proposal.created` (DISPATCHER, ADMIN) data = `HubProposal`; lentə `AI` alert: `title` `Yeni hub təklifi: <name>`, `body` `Tıxac 35 dəq, 19 marşrut, metroya 236 m, gözləyən 204 nəfər. Etibarlılıq 95%`, `target` `p-map`.
 - Qayda (`02_ARCHITECTURE` §6.2, hər 30 san): `JAM` ≥ 20 dəq olan seqmentdən ≤ 300 m-dəki hər seed dayanacağı üçün yer = seqmentin real küçə xəttində dayanacağa ən yaxın nöqtə. `routesCount` — həmin nöqtədən ≤ 50 m keçən real marşrut trayektoriyaları (`routes.geojson`) ≥ 3; `metroM` — ən yaxın real metro çıxışı (`metro_exits`) ≤ 400; `waiting` — ən yaxın hub kamerasının sayı (hub sim) ≥ 40; ən yaxın hub kamerası **> 300 m** (§6.2-də 500 m yazılıb, amma bütün hub-lar metro stansiyasıdır və metroya ≤ 400 m şərti ilə 500 m heç vaxt ödənmir); 300 m-də əvvəlki təklif (istənilən status) yoxdur — eyni yer bir dəfə təklif olunur. `confidence` §6.2 formulası, ən çoxu `95`. `paxPerHour` = stansiyanın `metro_ridership.avgDaily2026` × 6 % (pik saat payı), 100-ə yuvarlaq. `name` = `<seqment adı> – <metro stansiyası> metrosu`. `items`: `Avtobus cibi, 2 avtobusluq, <küçə> sağ tərəf`; 50 m-də velo parkinq yoxdursa `Velo parkinq, 20 yer və skuter zonası`; `Metroya qədər işıqlı piyada keçidi`; `Hub kamerası və canlı gəliş ekranı`. `impact`: `transferMin` = −round(metroM / 50), `toMetroPerDay` = paxPerHour × 3/8 (100-ə), `waitingPct` −40, `costAzn` `180–240 min` (sadə qayda, model deyil).
-- Demo nəticəsi (artificial-jam): `Babək pr. – Gənclik metrosu`, `lat 40.40115, lon 49.85522`, `metroM 236` (Gənclik, Çıxış 5), `routesCount 19`, `paxPerHour 2400`, `confidence 95`.
+- Demo nəticəsi (artificial-jam): `Fətəli Xan Xoyski pr. – Gənclik metrosu`, `lat 40.40115, lon 49.85522`, `metroM 236` (Gənclik, Çıxış 5), `routesCount 19`, `paxPerHour 2400`, `confidence 95`.
 
 ### Axtarış
 **GET** `/admin/search?q=10-BB-482` → `{ "type": "BUS", "ref": "10-BB-482" }` və ya `{ "type": "REPORT", "ref": "A-2042" }` və ya `{ "type": "NONE" }`
@@ -327,10 +327,10 @@ Spring profili yoxdur: `yolcu.demo.enabled` (default `true`). `false` olanda `/d
 | `rain` | WEATHER xəbərdarlığı |
 | `new-report` | Demo sərnişin adından şikayət yaradır |
 | `overload-88` | 88 doluluğunu 95%-ə qaldırır |
-| `artificial-jam` | Babək pr. seqmentini 1 san sonra SLOW, 2,5 san sonra JAM edir, JAM müddətini 35 dəq yazır → hub təklifi qaydası işləyir |
+| `artificial-jam` | Fətəli Xan Xoyski pr. seqmentini 1 san sonra SLOW, 2,5 san sonra JAM edir, JAM müddətini 35 dəq yazır → hub təklifi qaydası işləyir |
 
 Ssenari detalları (BE-9.5):
-- `artificial-jam`: cavab dərhal; `babek` seqmenti 1 san sonra `SLOW` (`traffic.updated` + `EVENT` alert `Babək pr.: hərəkət ləngiyir`), 2,5 san sonra `JAM`, JAM müddəti 35 dəq (`traffic.updated` + `OCC` alert `Babək pr.: tıxac, 35 dəqiqədir davam edir`), 3 san sonra hub təklifi qaydası → `proposal.created` + `AI` alert. Seqment reset-ə qədər `JAM` qalır. Hər trigger yeni təklif yaradır (təkrar oynatmaq üçün dublikat yoxlaması atlanır). Reset gözləyən addımları ləğv edir.
+- `artificial-jam`: cavab dərhal; `babek` seqmenti (id tarixi səbəbdən belədir; real küçə — Fətəli Xan Xoyski prospekti, OSM ilə yoxlanılıb, bax `04_DATA` §7) 1 san sonra `SLOW` (`traffic.updated` + `EVENT` alert `Fətəli Xan Xoyski pr.: hərəkət ləngiyir`), 2,5 san sonra `JAM`, JAM müddəti 35 dəq (`traffic.updated` + `OCC` alert `Fətəli Xan Xoyski pr.: tıxac, 35 dəqiqədir davam edir`), 3 san sonra hub təklifi qaydası → `proposal.created` + `AI` alert. Seqment reset-ə qədər `JAM` qalır. Hər trigger yeni təklif yaradır (təkrar oynatmaq üçün dublikat yoxlaması atlanır). Reset gözləyən addımları ləğv edir.
 - `new-report`: demo sərnişin (Nigar) adından `88`, `10-BB-482`, `Kobud davranış`, 28 May yaxınlığında şikayət → `report.created` + `REPORT` alert, sərnişinə +5 coin. Adi limit qüvvədədir: 10 dəqiqədə 4-cü → `429 RATE_LIMIT` (reset limiti sıfırlayır).
 - `overload-88`: 88-in simulyasiya doluluğu ~95% (random walk onun ətrafında qalır, reset-ə və ya interval dəyişənə qədər) + `OCC` alert `88: avtobuslar 95% doludur` / `Tövsiyə: interval 12 → 8 dəq`.
 - `bunching`: 88-də 10-BB-511 10-BB-482-dən 2 dəq arxaya qoyulur (hər dəfə, əvvəlki "gözləyin" mesajından asılı olmayaraq) → `/admin/occupancy/bunching`-də 88, `gapMin 2`, + hər trigger-də bir `OCC` alert `88: iki avtobus topa yığılıb`.

@@ -54,7 +54,7 @@ export default function Page() {
         title="Canlı xəritə"
         desc={navItem('/map').desc}
         actions={
-          <Button disabled={jam.running} onClick={jam.start} title="Demo ssenarisi: Babək prospektində süni tıxac yaradır, sistem yeni hub yeri təklif edir">
+          <Button disabled={jam.running} onClick={jam.start} title="Demo ssenarisi: Fətəli Xan Xoyski prospektində süni tıxac yaradır, sistem yeni hub yeri təklif edir">
             {jam.running ? 'Tıxac yaradılır…' : jam.done ? 'Ssenarini təkrarla' : 'Süni tıxac yarat (demo)'}
           </Button>
         }
@@ -106,7 +106,7 @@ function useJamDemo(onProposal: (id: number) => void) {
   });
   const start = () => {
     setRunning(true);
-    toast('Demo: Babək prospektində süni tıxac yaradılır');
+    toast('Demo: Fətəli Xan Xoyski prospektində süni tıxac yaradılır');
     api.post<DemoResponse>('/demo/trigger/artificial-jam').then(
       () => {
         timer.current = setTimeout(finish, JAM_TIMEOUT_MS);

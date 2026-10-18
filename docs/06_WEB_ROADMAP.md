@@ -51,7 +51,7 @@ Sidebar qrupları (mockup-dakı kimi): **Canlı** (Canlı xəritə, Hub kamerala
 - [x] **WEB-1.4** KPI kartları (`/admin/kpis`, 30 san yenilənmə).
 - [x] **WEB-1.5** Hadisələr lenti (`/admin/feed` + `alert.created`; yeni şikayət backend-də `REPORT` alert-i yaradır), kateqoriya rəngi, kliklə müvafiq səhifəyə keçid, yeni hadisə qısa vurğu.
 - [x] **WEB-1.6** Legend (sabit, aşağı solda).
-- [x] **WEB-1.7** **"Süni tıxac yarat (demo)"** düyməsi → `POST /demo/trigger/artificial-jam` → Babək pr. rəngi dəyişir → `proposal.created` gələndə xəritədə kəsik xətli "Yeni hub təklifi" markeri + sağda **Hub təklifi drawer-i** (səbəb, 4 göstərici, nə qurulmalı, təsir, "Plana əlavə et" → `accept`, "Analitikaya bax").
+- [x] **WEB-1.7** **"Süni tıxac yarat (demo)"** düyməsi → `POST /demo/trigger/artificial-jam` → Fətəli Xan Xoyski pr. rəngi dəyişir → `proposal.created` gələndə xəritədə kəsik xətli "Yeni hub təklifi" markeri + sağda **Hub təklifi drawer-i** (səbəb, 4 göstərici, nə qurulmalı, təsir, "Plana əlavə et" → `accept`, "Analitikaya bax").
 
 **Qəbul:** xəritədə 2 avtobus real vaxtda hərəkət edir; qatlar açılıb-bağlanır; demo düyməsindən 5 saniyə sonra hub təklifi drawer-i açılır.
 

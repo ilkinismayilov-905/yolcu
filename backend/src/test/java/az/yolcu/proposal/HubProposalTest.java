@@ -59,7 +59,7 @@ class HubProposalTest {
         var created = rule.check(false);
         assertThat(created).hasSize(1);
         var p = created.get(0);
-        assertThat(p.name()).isEqualTo("Babək pr. – Gənclik metrosu");
+        assertThat(p.name()).isEqualTo("Fətəli Xan Xoyski pr. – Gənclik metrosu");
         assertThat(p.jamMinutes()).isEqualTo(35);
         assertThat(p.status()).isEqualTo("NEW");
         assertThat(p.metroM()).isBetween(1, 400);
@@ -72,7 +72,7 @@ class HubProposalTest {
         assertThat(events.stream(StreamEvent.class).filter(e -> e.name().equals("proposal.created"))
                 .map(e -> ((HubProposal) e.data()).id())).contains(p.id());
         assertThat(events.stream(StreamEvent.class).filter(e -> e.name().equals("alert.created"))
-                .map(e -> ((AlertDto) e.data()).title())).contains("Yeni hub təklifi: Babək pr. – Gənclik metrosu");
+                .map(e -> ((AlertDto) e.data()).title())).contains("Yeni hub təklifi: Fətəli Xan Xoyski pr. – Gənclik metrosu");
 
         assertThat(rule.check(false)).isEmpty();  // same place is proposed once
         assertThat(rule.check(true)).hasSize(1);  // demo replay

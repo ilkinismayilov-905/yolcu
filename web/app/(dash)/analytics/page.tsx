@@ -235,7 +235,7 @@ const FC_HUBS: [string, number, number, string][] = [
   ['Koroğlu', 560, 510, 'Platforma 2-yə nəzarətçi'],
   ['28 May', 430, 340, '65 və 88 intervalı 9 dəq'],
   ['Avtovağzal', 310, 220, 'M1 ekspress 07:30-dan'],
-  ['Gənclik', 220, 160, 'Babək pr. tıxacına diqqət'],
+  ['Gənclik', 220, 160, 'Xoyski pr. tıxacına diqqət'],
   ['Nərimanov', 180, 110, 'Dəyişiklik lazım deyil'],
 ];
 const FC_FACTORS: [string, number][] = [

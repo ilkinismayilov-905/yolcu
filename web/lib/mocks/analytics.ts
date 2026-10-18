@@ -20,13 +20,13 @@ const alighting: AlightingPoint[] = [
   { stop: 'Nərimanov metro', perDay: 18420, peak: '08:35', note: 'Gənclik → Nərimanov axını, 88 və 4' },
   { stop: '28 May metro', perDay: 16900, peak: '08:20', note: 'Avtovağzal ekspressi üçün əsas hədəf' },
   { stop: 'Koroğlu', perDay: 14310, peak: '08:50', note: 'Metroya keçid, platforma 2 sıxdır' },
-  { stop: 'Gənclik', perDay: 9870, peak: '08:45', note: 'Babək pr. tıxacından sonra artıb' },
+  { stop: 'Gənclik', perDay: 9870, peak: '08:45', note: 'Xoyski pr. tıxacından sonra artıb' },
   { stop: 'Nizami', perDay: 7640, peak: '09:05', note: 'Sakit, alternativ kimi təklif olunur' },
 ];
 
 const proposals: HubProposal[] = [];
 const babek = (id: number): HubProposal => ({
-  id, name: 'Babək pr. – Gənclik metrosu', lat: 40.399, lon: 49.856, jamMinutes: 35, routesCount: 3, metroM: 300, waiting: 58, paxPerHour: 2400, confidence: 82,
+  id, name: 'Fətəli Xan Xoyski pr. – Gənclik metrosu', lat: 40.399, lon: 49.856, jamMinutes: 35, routesCount: 3, metroM: 300, waiting: 58, paxPerHour: 2400, confidence: 82,
   items: ['Avtobus cibi, 2 avtobusluq', 'Velo parkinq, 20 yer', 'Metroya işıqlı piyada keçidi', 'Hub kamerası və gəliş ekranı'],
   impact: { transferMin: -6, toMetroPerDay: 900, waitingPct: -40, costAzn: '180–240 min' }, status: 'NEW',
   reason: 'Bu nöqtədə tıxac sərnişinləri dayanacaqda saxlayır, amma 300 m-də metro var. Hub yaradılarsa, avtobusdan metroya və skuterə keçid rahatlaşır və tıxacdakı gözləmə azalır.',

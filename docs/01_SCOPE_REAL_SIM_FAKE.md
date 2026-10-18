@@ -86,7 +86,7 @@
 | Operatorlar: kartlar | **REAL** | Seed + reylərdən orta reytinq + şikayət sayı |
 | Avtopark: bütün avtobuslar, filtr, axtarış | **REAL** | 60+ avtobus seed-dən. Doluluq sütunu SIM |
 | İnteqrasiyalar səhifəsi | **FAKE** | `mocks/integrations.json` |
-| Süni tıxac düyməsi | **REAL (demo)** | `POST /demo/trigger/artificial-jam` → simulyator Babək pr.-ni JAM edir |
+| Süni tıxac düyməsi | **REAL (demo)** | `POST /demo/trigger/artificial-jam` → simulyator Fətəli Xan Xoyski pr.-ni JAM edir |
 | Yeni hub təklifi | **REAL (sadə qayda)** | Qayda: tıxac ≥ 20 dəq + ≥ 3 marşrut + 400 m-də metro + dayanacaqda ≥ 40 nəfər → `hub_proposals` |
 | Hub təklifini plana əlavə et | **REAL** | Status `ACCEPTED` |
 | Analitika: haradan-haraya (OD) matrisi | **REAL** | `trips` aqreqatı. Demo üçün 5 000 sintetik səfər seed olunur |

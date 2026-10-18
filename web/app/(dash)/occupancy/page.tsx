@@ -282,7 +282,7 @@ function IntervalPanel({ r }: { r: RouteOccupancy }) {
   );
 }
 
-const STOPN = ['Avtovağzal', 'Elmlər', 'Füzuli küç.', '28 May', 'Gənclik', 'Babək pr.', 'Nərimanov'];
+const STOPN = ['Avtovağzal', 'Elmlər', 'Füzuli küç.', '28 May', 'Gənclik', 'Xoyski pr.', 'Nərimanov'];
 
 function BunchingPanel({ q, route }: { q: UseQueryResult<BunchingCase[]>; route?: string }) {
   const toast = useToast();

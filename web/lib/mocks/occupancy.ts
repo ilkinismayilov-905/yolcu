@@ -8,7 +8,7 @@ import { emitMock } from '../mockBus';
 
 // API_MODE=mock fixtures for S3 occupancy. Occupancy values are the mockup's (OCCR); formulas from packages/shared headway.ts.
 const OCC: Record<string, number> = { '88': 92, '4': 81, M1: 76, '65': 58, '33': 31, H1: 64 };
-const STOPS = ['Avtovağzal', 'Elmlər', 'Füzuli küç.', '28 May', 'Gənclik', 'Babək pr.', 'Nərimanov'];
+const STOPS = ['Avtovağzal', 'Elmlər', 'Füzuli küç.', '28 May', 'Gənclik', 'Xoyski pr.', 'Nərimanov'];
 
 let autoMode = false;
 const state = routeConfig.map((c) => ({ ...c, occ: OCC[c.route] ?? 60 }));
