@@ -4,7 +4,7 @@ import { useState, type FormEvent } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type { ChangePasswordRequest, OkResponse } from '@yolcu/shared/api';
 import { api, ROLE_LABEL } from '@/lib/api';
-import { FEED_CATEGORIES } from '@/lib/live';
+import { FEED_CATEGORIES } from '@/lib/feed';
 import { beep, setPrefs, usePrefs } from '@/lib/prefs';
 import { useToast } from '@/components/Toast';
 import { Button, PageHeader, Panel, Switch } from '@/components/ui';

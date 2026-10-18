@@ -1,7 +1,6 @@
 import type { QueryClient } from '@tanstack/react-query';
 import type { PageResponse, ReportListItem, ReportStatus, ReportStatusFilter } from '@yolcu/shared/api';
 import type { StatusKind } from '@/components/ui';
-import { api } from '@/lib/api';
 import operatorsJson from '../../mocks/operators.json';
 
 // shortcut: operator select uses the static seed list (names are real, fixed); switch to GET /admin/operators when S-operators lands.
@@ -44,6 +43,7 @@ export function reportsPath(f: ReportFilters) {
 /** Download the filtered list as CSV (live only); returns the row count from X-Total-Count. */
 export async function exportReportsCsv(f: ReportFilters): Promise<number> {
   const p = filterParams(f);
+  const { api } = await import('@/lib/api'); // lazy: api.ts imports mocks/reports, which imports this file
   const { blob, headers } = await api.download(`/admin/reports/export.csv${p.size ? `?${p}` : ''}`);
   const name = /filename="?([^";]+)"?/.exec(headers.get('Content-Disposition') ?? '')?.[1] ?? `sikayetler-${new Date().toISOString().slice(0, 10)}.csv`;
   const url = URL.createObjectURL(blob);

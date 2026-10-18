@@ -93,6 +93,8 @@ Hər funksiya `docs/01_SCOPE_REAL_SIM_FAKE.md`-də bu etiketlərdən birini daş
 
 **Qayda (Claude Code və agentlər):** İnkişaf mühiti istifadəçinin terminalında 'pnpm dev' ilə daim işləyir (web 3000, API 8080). Serverləri başlatma, dayandırma, 3000/8080/5432/5433 portlarındakı prosesləri kill etmə. Kod dəyişəndə heç nəyi yenidən başlatma: web hot reload, backend watcher + devtools. Yoxlama üçün curl localhost:8080 və brauzerdə localhost:3000 istifadə et. pom.xml və ya package.json dəyişibsə, istifadəçiyə 'pnpm dev-i yenidən başlat' de.
 
+**Qayda (web):** Səhifə dəyişəndən sonra yalnız pnpm build kifayət deyil: səhifəni brauzerdə aç və runtime xəta olmadığını yoxla.
+
 Lokal Postgres 5432-ni tutursa: `DB_PORT=5433 ./run.sh`, `DB_PORT=5433 pnpm dev` (və ya `DB_PORT=5433 docker compose up -d db` + `DB_PORT=5433 mvn spring-boot:run`).
 
 pnpm qlobal quraşdırılmayıbsa `npx -y pnpm@9.15.9 ...` işlət (9.15.0 Node 26-da "Done"-dan sonra çıxmır). pnpm əmrlərini `CI=true` ilə işlət ki, sual verməsin.

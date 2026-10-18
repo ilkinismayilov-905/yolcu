@@ -16,5 +16,6 @@ Qaydalar:
 - Hər cədvəl və siyahıda boş, yüklənir və xəta vəziyyəti.
 - FAKE səhifələrdə backend çağırışı yoxdur, amma UI tam interaktivdir.
 - Bitəndə: pnpm build keçir, səhifəni brauzerdə yoxla, roadmap-də [x] et.
+- Səhifə dəyişəndən sonra yalnız pnpm build kifayət deyil: səhifəni brauzerdə aç və runtime xəta olmadığını yoxla. (pageerror / console.error / Next dev overlay; birbaşa açılışda və hot reload-dan sonra.)
 - Backend cavabı müqaviləyə uyğun deyilsə, frontend-də "düzəltmə": əsas sessiyaya yaz.
 - İnkişaf mühiti istifadəçinin terminalında 'pnpm dev' ilə daim işləyir (web 3000, API 8080). Serverləri başlatma, dayandırma, 3000/8080/5432/5433 portlarındakı prosesləri kill etmə. Kod dəyişəndə heç nəyi yenidən başlatma: web hot reload, backend watcher + devtools. Yoxlama üçün curl localhost:8080 və brauzerdə localhost:3000 istifadə et. pom.xml və ya package.json dəyişibsə, istifadəçiyə 'pnpm dev-i yenidən başlat' de.
