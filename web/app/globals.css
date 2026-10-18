@@ -12,6 +12,9 @@
   --on-color: #FFFFFF; /* text/icons on solid colored fills (plates, badges) */
   --scrim: rgba(8, 14, 24, .38); /* behind drawer / modal */
   --shadow: 0 1px 2px rgba(14, 26, 43, .04), 0 4px 14px rgba(14, 26, 43, .05);
+  /* Hub camera "footage" (FAKE SVG scene, mockup scene()): night CCTV look, same in both themes */
+  --cam-bg: #0E1520; --cam-floor: #1E2735; --cam-curb: #4A5568; --cam-pole: #334155; --cam-sign: #172131; --cam-text: #8A97A8; --cam-skin: #D6CDC2;
+  --cam-p1: #4A5A73; --cam-p2: #5B4F73; --cam-p3: #735052; --cam-p4: #4F735F; --cam-p5: #626A74; --cam-p6: #736650;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {

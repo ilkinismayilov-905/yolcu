@@ -83,6 +83,11 @@ public class HubSimulator {
         return hubs.stream().filter(h -> h.id().equals(hubId)).findFirst().map(h -> new double[]{h.lat(), h.lon()});
     }
 
+    /** Camera id from mocks/hubs.json, e.g. "K-201"; empty if the hub is unknown. */
+    public Optional<String> camera(String hubId) {
+        return hubs.stream().filter(h -> h.id().equals(hubId)).findFirst().map(Hub::camera);
+    }
+
     /** Demo crowd: the hub's count is multiplied by factor until reset; counts are recomputed now. False if unknown. */
     public boolean boost(String hubId, double factor) {
         if (coords(hubId).isEmpty()) return false;

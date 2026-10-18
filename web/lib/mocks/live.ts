@@ -1,4 +1,4 @@
-import type { AdminHub, Alert, AlertCategory, HubCount, Kpis, LiveBus, LiveHub, TrafficSegment } from '@yolcu/shared/api';
+import type { AdminHub, Alert, AlertCategory, CrowdLevel, HubCount, Kpis, LiveBus, LiveHub, TrafficSegment } from '@yolcu/shared/api';
 import type { MockHandler } from '@yolcu/shared/client';
 import hubsJson from '../../../mocks/hubs.json';
 import stopsJson from '../../../mocks/stops_seed.json';
@@ -10,9 +10,20 @@ import { emitMock } from '../mockBus';
 
 const stop = (id: string) => stopsJson.items.find((s) => s.id === id);
 
+// Contract BE-8.4: kind and level thresholds; recommendations from mockup HUBT.
+const HUB_IDS = ['may28', 'koroglu', 'avtovagzal'];
+const RECS: Record<string, string> = {
+  koroglu: 'Platforma 2-yə nəzarətçi göndər, 4 sərnişinlərinə tətbiqdə 88 təklif et',
+  may28: '65 intervalı 12 → 9 dəq, 88 intervalı 12 → 8 dəq',
+  avtovagzal: '08:20 Gəncə reysi üçün M1 ekspressi işə sal',
+};
+const level = (count: number, capacity: number): CrowdLevel => (count / capacity >= 0.8 ? 'HIGH' : count / capacity >= 0.55 ? 'MEDIUM' : 'LOW');
+
 const hubs: AdminHub[] = hubsJson.flatMap((h) => {
   const s = stop(h.id);
-  return s ? [{ id: h.id, name: h.name, lat: s.lat, lon: s.lon, count: h.base, capacity: h.capacity, trend10: 0, forecast15: h.base, level: 'HIGH', avgWaitMin: 8, camera: h.camera, recommendation: null }] : [];
+  return s
+    ? [{ id: h.id, name: h.name, lat: s.lat, lon: s.lon, count: h.base, capacity: h.capacity, trend10: 0, forecast15: h.base, level: level(h.base, h.capacity), avgWaitMin: Math.max(3, Math.round((h.base / h.capacity) * 14)), camera: h.camera, recommendation: RECS[h.id] ?? null, kind: HUB_IDS.includes(h.id) ? 'HUB' : 'STOP' } satisfies AdminHub]
+    : [];
 });
 
 const BUSES = [
@@ -44,6 +55,9 @@ function startSim() {
     const counts: HubCount[] = hubs.map((h) => {
       const delta = Math.round((Math.random() - 0.5) * 20);
       h.count = Math.max(0, h.count + delta);
+      h.trend10 = delta;
+      h.forecast15 = h.count + delta;
+      h.level = level(h.count, h.capacity);
       return { hubId: h.id, count: h.count, trend: delta, forecast15: h.count + delta };
     });
     emitMock('hub.counts', counts);
@@ -69,7 +83,13 @@ export const liveMocks: Record<string, MockHandler> = {
   'GET /live/buses': () => (startSim(), buses()),
   'GET /live/hubs': () => (startSim(), hubs.map(toLive)),
   'GET /live/traffic': (): TrafficSegment[] => [],
-  'GET /admin/hubs': () => structuredClone(hubs),
+  'GET /admin/hubs': () => (startSim(), structuredClone(hubs)),
+  'POST /admin/hubs/:id/apply': (_b, { params }) => {
+    const h = hubs.find((x) => x.id === params.id);
+    if (h?.recommendation)
+      emitMock('alert.created', { id: Date.now(), category: 'AI', title: `${h.name}: tövsiyə tətbiq olundu`, body: h.recommendation, target: 'p-hubs', createdAt: new Date().toISOString() });
+    return { ok: true };
+  },
   'GET /admin/kpis': (): Kpis => ({ avgSpeedKmh: 18, avgSpeedYesterday: 22, waitingAtHubs: 12480, avgOccupancy: 74, overfullBuses: 63, satisfaction: 4.2, satisfactionWeekDelta: 0.2 }),
   'GET /admin/feed': () => structuredClone(feed),
   'GET /geo/layers/:name': () => ({ type: 'FeatureCollection', features: [] }),

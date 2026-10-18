@@ -220,8 +220,21 @@ SSE yükləri (`02_ARCHITECTURE` §4): `bus.positions` → `/live/buses` element
 KPI mənbələri: `avgSpeedKmh` — simulyasiya avtobuslarının marşrut sürətlərinin orta qiyməti; `avgSpeedYesterday` — hələlik sabit `22`; `waitingAtHubs` — `/live/hubs` `count` cəmi; `avgOccupancy` — avtobusların orta doluluğu (%); `overfullBuses` — doluluğu > 90% olan simulyasiya avtobusları; `satisfaction` — bütün rəylərin orta balı (3 reytinqin ortası, 1 onluq); `satisfactionWeekDelta` — son 7 gün − əvvəlki 7 gün.
 
 ### Hub kameraları
-**GET** `/admin/hubs` → `/live/hubs` + `{ "level": "HIGH", "avgWaitMin": 11, "camera": "K-201", "recommendation": "65 intervalı 12 → 9 dəq" }`
+**GET** `/admin/hubs` → `/live/hubs` + `{ "level": "HIGH", "avgWaitMin": 11, "camera": "K-201", "recommendation": "65 intervalı 12 → 9 dəq", "kind": "HUB" }`
 **POST** `/admin/hubs/{id}/apply` → `{ "ok": true }` (alert yazır)
+
+Qeydlər (BE-8.4):
+- **Siyahı:** `/live/hubs` ilə eyni 8 element, eyni sıra (`koroglu, may28, avtovagzal, genclik, nizami, elmler, nerimanov, sahil`), eyni `count/trend10/forecast15` (SIM). `lat/lon` real metro stansiyası nöqtəsidir.
+- **`kind`:** `HUB | STOP` (dizayn `#p-hubs` seqmenti "Hub-lar" / "Dayanacaqlar"). `HUB` = `may28`, `koroglu`, `avtovagzal`; qalanları `STOP`. Ayrıca dayanacaq kamerası yoxdur — "Dayanacaqlar" bu 5 elementdir. "Yalnız sıx" = `level ≠ LOW`.
+- **`level`:** `r = count / capacity`; `r ≥ 0,8` → `HIGH`, `r ≥ 0,55` → `MEDIUM`, əks halda `LOW` (dizayn: `HIGH` = "Çox sıx"/bad, `MEDIUM` = "Sıx"/warn, `LOW` = "Normal"/ok).
+- **`avgWaitMin`:** `min(20, round(2 + 10 × r))`, tam dəqiqə.
+- **`camera`:** `mocks/hubs.json` `camera` (`K-201` ...).
+- **`recommendation`** (`string | null`), qayda ardıcıllığı:
+  1. `level = LOW` → `null` (UI: "Dəyişiklik lazım deyil", "Tətbiq et" düyməsi yoxdur).
+  2. `avtovagzal`: növbəti 30 dəq ərzində ≥ 40 bilet satılmış Biletim gəlişi varsa → `"08:20 Gəncə reysi üçün M1 ekspressi işə sal"` (ilk belə gəliş, demo gəlişi daxil).
+  3. Hub-dan keçən marşrutlar (`stops_seed`-də eyni id-li dayanacağın `routes`-u) arasında `IntervalEngine` tövsiyəsi `recommendedMin < intervalMin` olan, `avgOccupancy`-si ən yüksək marşrut → `"88 intervalı 12 → 8 dəq"` (rəqəmlər `/admin/occupancy/routes` ilə eyni).
+  4. Yoxdursa: `HIGH` → `"Platformaya nəzarətçi göndər, gözləyənlərə tətbiqdə metro təklif et"`, `MEDIUM` → `null`.
+- **`POST /apply`:** naməlum id → `404 NOT_FOUND`. Tövsiyə `null`-dırsa heç nə yazılmır, yenə `{ "ok": true }`. Əks halda lentə `AI` alert: `title` `28 May: tövsiyə tətbiq olundu`, `body` = `recommendation` mətni, `target` `p-hubs` (+ `alert.created`). Tövsiyə interval tipidirsə (qayda 3) interval həm də **real tətbiq olunur** — `POST /admin/occupancy/routes/{r}/interval` ilə eyni: `route_config` yazılır, `route.updated` SSE və öz `AI` alert-i (`88: interval 12 → 8 dəq tətbiq olundu`, `p-occ`). Yəni interval tövsiyəsində lentə 2 alert düşür. Tətbiqdən sonra tövsiyə yenidən hesablanır (növbəti GET-də başqa mətn və ya `null` ola bilər). Rol: DISPATCHER, ADMIN; PASSENGER → `403`.
 
 ### Doluluq və interval
 **GET** `/admin/occupancy/routes`
@@ -250,6 +263,14 @@ Qeydlər (BE-8.1–8.3):
 
 ### Avtovağzal və Biletim.az (SIM)
 **GET** `/admin/biletim/arrivals` → `[{ "time": "08:20", "from": "Gəncə", "plate": "90-AB-114", "ticketsSold": 41, "status": "Yoldadır, 18 km", "nextCityBusMin": 18, "level": "HIGH" }]`
+
+Qeydlər (BE-8.5):
+- **Mənbə:** `BiletimAdapter` interfeysi; indi `MockBiletimAdapter` (`mocks/biletim_arrivals.json`). Server başlayanda demo saatı (dəqiqəyə yuvarlanmış) "anker" olur: `time = anker + minutesFromNow`. Vaxtı keçmiş gəliş tam 180 dəqiqəlik dövrlər qədər irəli sürüşür, ona görə siyahının sonunda yenidən görünür (siyahı həmişə növbəti 3 saatdır, 7 element). `status` mətni mock-dan sabitdir.
+- **Sıra:** `time` artan (real an üzrə, gecə yarısını keçsə də düzgün). Demo gəlişi (bax §10 `ganja-arrival`) varsa **həmişə birinci**dir.
+- **`time`:** `"HH:mm"` Bakı vaxtı (demo saatı).
+- **`level`:** `ticketsSold ≥ 35` → `HIGH`, `≥ 20` → `MEDIUM`, əks halda `LOW`.
+- **`nextCityBusMin`** ("Şəhərə keçid"): bütün gələn sərnişinlərin şəhər avtobusuna minməsi üçün təxmini dəqiqə = `max(1, round(ticketsSold / 15 × h))`; `h` = Avtovağzaldan keçən simulyasiya marşrutlarının (`88`, `4`, `M1`) birləşik intervalı `1 / Σ(1 / intervalMin)` (`route_config`-dən canlı; interval qısalanda bu rəqəm də azalır). 15 = bir şəhər avtobusunda boş yer (sabit).
+- Rol: DISPATCHER, ADMIN; PASSENGER → `403`.
 
 ### Şikayətlər
 **GET** `/admin/reports?status=NEW&category=&operator=bb&q=10-BB&page=0&size=10` → `Page<ReportListItem>`
@@ -345,14 +366,14 @@ Ssenari detalları (BE-9.5):
 - `bunching`: 88-də 10-BB-511 10-BB-482-dən 2 dəq arxaya qoyulur (hər dəfə, əvvəlki "gözləyin" mesajından asılı olmayaraq) → `/admin/occupancy/bunching`-də 88, `gapMin 2`, + hər trigger-də bir `OCC` alert `88: iki avtobus topa yığılıb`.
 - `crowd-28may`: 28 May hub sayı ×70/46 (≈ +52%, reset-ə qədər) + `HUB` alert `28 May: N nəfər gözləyir` / `15 dəqiqəyə M-ə çata bilər` (`p-hubs`).
 - `stadium`: `EVENT` alert + bütün real (sintetik olmayan) sərnişinlərə bildiriş (`type: INFO`, `target: event:stadium` — mobil naməlum target-i sadəcə açmır).
-- `rain`: `WEATHER` alert. `ganja-arrival`: hələlik yalnız `BILETIM` alert `Gəncə reysi HH:mm-də gəlir, 45 bilet satılıb` (indi + 5 dəq), `p-express`.
+- `rain`: `WEATHER` alert. `ganja-arrival`: `/admin/biletim/arrivals`-a demo gəlişi əlavə olunur — `{ "time": indi + 5 dəq (dəqiqəyə yuvarlanmış), "from": "Gəncə", "plate": "90-AB-205", "ticketsSold": 45, "status": "Yoldadır, 6 km", "level": "HIGH" }`, siyahıda **birinci** (vaxtı keçənə və ya reset-ə qədər; təkrar trigger əvvəlkini əvəz edir) + `BILETIM` alert `Gəncə reysi HH:mm-də gəlir, 45 bilet satılıb` / `M1 ekspress tövsiyə olunur`, `p-express`. SSE `biletim.*` hadisəsi yoxdur — web `alert.created` (`BILETIM`) gələndə siyahını yenidən çəksin. Avtovağzal hub-unun tövsiyəsi bu gəlişə keçir (`"HH:mm Gəncə reysi üçün M1 ekspressi işə sal"`).
 
 **POST** `/demo/surveys/{id}/simulate-answers?count=50` (DISPATCHER və ya ADMIN; `count` 1–500, default 50; yalnız `ACTIVE` sorğu, əks halda `VALIDATION`) → `{ "created": 50, "survey": SurveyListItem }`
 Bu sorğunu hələ cavablamamış sintetik sərnişinlər (`users.synthetic = true`) seçilir, çatmayan qədəri yenisi yaradılır (sonrakı sorğularda təkrar istifadə olunur). Variantlar sualın seed paylanmasına görə çəkili təsadüfi seçilir. Sintetik sərnişinlərə coin verilmir, bildiriş getmir. Batch-dən sonra bir dəfə `survey.updated`.
 
 **POST** `/demo/reset` → simulyatoru və demo datanı başlanğıc vəziyyətə qaytarır (DB-də demo sərnişinin bu günkü şikayət, səfər, coin dəyişiklikləri silinir).
 → `{ "ok": true, "scenario": "reset", "message": "...", "coinBalance": 245, "deleted": { "report_events": 2, "reports": 2, "reviews": 0, "trips": 0, "coin_tx": 2, "coin_conversions": 0, "notifications": 1, "survey_answers": 0, "alerts": 3, "hub_proposals": 1 } }`
-Bir tranzaksiyada: demo sərnişinin **bu günkü** (demo saatının günü) `reports` + `report_events`, onların `REPORT` alert-ləri, `reviews` (bu gün yazılan və ya bu günkü səfərə), `trips`, `coin_tx`, `coin_conversions`, `notifications`, `survey_answers` silinir, `coin_balance = 245`; bütün `hub_proposals` və onların `AI` alert-ləri silinir; `route_config` interval/avtobus sayı `mocks/route_config.json`-a, `auto_mode = false`. Yaddaşda: tıxac override-ları və JAM müddətləri, hub boost-u, avtobus düzülüşü (88 demo topa yığılması daxil) və doluluq bazası başlanğıc vəziyyətə. Sərnişinə `coin.updated {balance: 245}`. Sxem silinmir, seed yenidən işləmir, digər istifadəçilərin datası və keçmiş günlərin seed sətirləri qalır; trigger-lərin `EVENT/WEATHER/HUB/OCC/BILETIM` alert-ləri lentdə qalır.
+Bir tranzaksiyada: demo sərnişinin **bu günkü** (demo saatının günü) `reports` + `report_events`, onların `REPORT` alert-ləri, `reviews` (bu gün yazılan və ya bu günkü səfərə), `trips`, `coin_tx`, `coin_conversions`, `notifications`, `survey_answers` silinir, `coin_balance = 245`; bütün `hub_proposals` və onların `AI` alert-ləri silinir; `route_config` interval/avtobus sayı `mocks/route_config.json`-a, `auto_mode = false`. Yaddaşda: tıxac override-ları və JAM müddətləri, hub boost-u, Biletim demo gəlişi, avtobus düzülüşü (88 demo topa yığılması daxil) və doluluq bazası başlanğıc vəziyyətə. Sərnişinə `coin.updated {balance: 245}`. Sxem silinmir, seed yenidən işləmir, digər istifadəçilərin datası və keçmiş günlərin seed sətirləri qalır; trigger-lərin `EVENT/WEATHER/HUB/OCC/BILETIM` alert-ləri lentdə qalır.
 
 ## 11. SSE
 

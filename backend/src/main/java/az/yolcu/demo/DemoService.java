@@ -1,5 +1,6 @@
 package az.yolcu.demo;
 
+import az.yolcu.biletim.BiletimService;
 import az.yolcu.common.ApiException;
 import az.yolcu.common.AppClock;
 import az.yolcu.config.YolcuProperties;
@@ -20,7 +21,6 @@ import az.yolcu.user.Role;
 import az.yolcu.user.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -43,7 +43,6 @@ public class DemoService {
     static final long SLOW_AT_MS = 1_000, JAM_AT_MS = 2_500, RULE_AT_MS = 3_000;
     static final double CROWD_FACTOR = 70 / 46.0; // contract: "46 → 70"
     private static final Logger log = LoggerFactory.getLogger(DemoService.class);
-    private static final DateTimeFormatter HHMM = DateTimeFormatter.ofPattern("HH:mm");
 
     /** Runs a step after a delay; tests replace it to run steps without sleeping. */
     interface Delayer { void later(long ms, Runnable step); }
@@ -53,6 +52,7 @@ public class DemoService {
     private final HubSimulator hubs;
     private final SimulationService sim;
     private final OccupancyService occupancy;
+    private final BiletimService biletim;
     private final FeedService feed;
     private final ReportService reports;
     private final NotificationService notifications;
@@ -72,7 +72,7 @@ public class DemoService {
     Delayer delayer = (ms, step) -> executor.schedule(step, ms, TimeUnit.MILLISECONDS);
 
     public DemoService(TrafficService traffic, HubProposalRule rule, HubSimulator hubs, SimulationService sim,
-                       OccupancyService occupancy, FeedService feed, ReportService reports, NotificationService notifications,
+                       OccupancyService occupancy, BiletimService biletim, FeedService feed, ReportService reports, NotificationService notifications,
                        UserRepository users, JdbcTemplate jdbc, TransactionTemplate tx, ApplicationEventPublisher events,
                        AppClock clock, ObjectMapper mapper, YolcuProperties props) {
         this.traffic = traffic;
@@ -80,6 +80,7 @@ public class DemoService {
         this.hubs = hubs;
         this.sim = sim;
         this.occupancy = occupancy;
+        this.biletim = biletim;
         this.feed = feed;
         this.reports = reports;
         this.notifications = notifications;
@@ -106,9 +107,10 @@ public class DemoService {
                 yield "WEATHER xəbərdarlığı lentə yazıldı";
             }
             case "ganja-arrival" -> {
-                var at = clock.now().plusMinutes(5).atZoneSameInstant(AppClock.ZONE).format(HHMM);
-                feed.add("BILETIM", "Gəncə reysi " + at + "-də gəlir, 45 bilet satılıb", "M1 ekspress tövsiyə olunur", "p-express");
-                yield "BILETIM xəbərdarlığı: Gəncə reysi " + at + "-də, 45 bilet";
+                var a = biletim.addDemoArrival();
+                feed.add("BILETIM", a.from() + " reysi " + a.time() + "-də gəlir, " + a.ticketsSold() + " bilet satılıb",
+                        "M1 ekspress tövsiyə olunur", "p-express");
+                yield "BILETIM: Gəncə reysi " + a.time() + "-də, " + a.ticketsSold() + " bilet (gəlişlər siyahısında birinci)";
             }
             default -> throw ApiException.notFound("Ssenari tapılmadı: " + scenario);
         };
@@ -206,6 +208,7 @@ public class DemoService {
         traffic.reset();
         hubs.reset();
         occupancy.resetState();
+        biletim.resetDemo();
         sim.reset();
         events.publishEvent(StreamEvent.toUser(uid, "coin.updated", Map.of("balance", DEMO_BALANCE)));
         log.info("Demo reset: deleted {}", deleted);

@@ -89,10 +89,10 @@ Sidebar qrupları (mockup-dakı kimi): **Canlı** (Canlı xəritə, Hub kamerala
 
 ## WEB-5 Hub kameraları — H12–H14 · MUST
 
-- [ ] **WEB-5.1** Seqment: Hamısı, Hub-lar, Dayanacaqlar, Yalnız sıx.
-- [ ] **WEB-5.2** Kamera kartları: SVG səhnə (insan fiqurları sayına görə, çərçivə rəngi səviyyəyə görə; **FAKE vizual**), altında ad, böyük rəqəm (`hub.counts` SSE ilə canlı), orta gözləmə, son 10 dəq dəyişim.
-- [ ] **WEB-5.3** Hub cədvəli (indi, doluluq zolağı, 15 dəq sonra, tövsiyə, "Tətbiq et").
-- [ ] **WEB-5.4** "Kamera rəqəmi qərara necə çevrilir" — 4 addım (statik).
+- [x] **WEB-5.1** Seqment: Hamısı, Hub-lar, Dayanacaqlar, Yalnız sıx.
+- [x] **WEB-5.2** Kamera kartları: SVG səhnə (insan fiqurları sayına görə, çərçivə rəngi səviyyəyə görə; **FAKE vizual**), altında ad, böyük rəqəm (`hub.counts` SSE ilə canlı), orta gözləmə, son 10 dəq dəyişim.
+- [x] **WEB-5.3** Hub cədvəli (indi, doluluq zolağı, 15 dəq sonra, tövsiyə, "Tətbiq et").
+- [x] **WEB-5.4** "Kamera rəqəmi qərara necə çevrilir" — 4 addım (statik).
 
 ## WEB-6 Operatorlar və avtopark — H13–H15 · MUST
 
@@ -103,9 +103,9 @@ Sidebar qrupları (mockup-dakı kimi): **Canlı** (Canlı xəritə, Hub kamerala
 
 ## WEB-7 Avtovağzal və Biletim.az — H14–H15 · MUST
 
-- [ ] **WEB-7.1** Gələn reyslər cədvəli (`/admin/biletim/arrivals`): gəliş, haradan + nömrə, satılmış bilet, vəziyyət, şəhərə keçid statusu.
-- [ ] **WEB-7.2** Ekspress tövsiyələri M1 və H1 (**FAKE** hesab: biletlərin cəmi / tutum), "Planı təsdiqlə".
-- [ ] **WEB-7.3** Çıxış axını qrafiki (statik).
+- [x] **WEB-7.1** Gələn reyslər cədvəli (`/admin/biletim/arrivals`): gəliş, haradan + nömrə, satılmış bilet, vəziyyət, şəhərə keçid statusu.
+- [x] **WEB-7.2** Ekspress tövsiyələri M1 və H1 (**FAKE** hesab: biletlərin cəmi / tutum), "Planı təsdiqlə".
+- [x] **WEB-7.3** Çıxış axını qrafiki (statik).
 
 ## WEB-8 Avtobus bölgüsü — H15–H16 · SHOULD (FAKE)
 

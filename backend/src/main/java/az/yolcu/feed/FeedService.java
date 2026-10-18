@@ -58,15 +58,18 @@ public class FeedService {
     public void seedIfEmpty() {
         if (alerts.count() > 0) return;
         var now = clock.now().truncatedTo(ChronoUnit.SECONDS);
-        for (var r : SEED) {
+        // oldest first, so ids grow with time (the feed is ordered by id)
+        for (int i = SEED.size() - 1; i >= 0; i--) {
+            var r = SEED.get(i);
             alerts.save(new Alert((String) r[0], (String) r[1], (String) r[2], (String) r[4], now.minusMinutes((Integer) r[3])));
         }
     }
 
+    // By id, not createdAt: the demo clock restarts at 08:12 on every boot, so createdAt can run backwards across restarts
     @Transactional(readOnly = true)
     public List<AlertDto> feed(int limit) {
         int n = Math.max(1, Math.min(limit, MAX_LIMIT));
-        return alerts.findAll(PageRequest.of(0, n, Sort.by(Sort.Order.desc("createdAt"), Sort.Order.desc("id"))))
+        return alerts.findAll(PageRequest.of(0, n, Sort.by(Sort.Order.desc("id"))))
                 .map(AlertDto::of).getContent();
     }
 

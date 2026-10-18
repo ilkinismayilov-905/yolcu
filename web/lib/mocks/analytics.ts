@@ -1,6 +1,7 @@
 import { ApiError, type AlightingPoint, type AnalyticsKpis, type DemoResponse, type DemoScenario, type HubProposal, type OdMatrix } from '@yolcu/shared/api';
 import type { MockHandler } from '@yolcu/shared/client';
 import { emitMock } from '../mockBus';
+import { mockGanjaArrival } from './terminal';
 
 // API_MODE=mock fixtures for S9 (analytics, hub proposals, /demo). Values = contract §9 examples / mockup.
 
@@ -51,6 +52,10 @@ export const analyticsMocks: Record<string, MockHandler> = {
   'POST /admin/hub-proposals/:id/reject': setStatus('REJECTED'),
   // shortcut: mock traffic layer is empty, so the jam only produces the proposal (no red street); live mode has the real one.
   'POST /demo/trigger/:scenario': (_b, { params }) => {
+    if (params.scenario === 'ganja-arrival') {
+      const at = new Date(mockGanjaArrival()).toLocaleTimeString('az-AZ', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Baku' });
+      emitMock('alert.created', { id: Date.now(), category: 'BILETIM', title: `Gəncə reysi ${at}-də gəlir, 45 bilet satılıb`, body: 'M1 ekspress tövsiyə olunur', target: 'p-express', createdAt: new Date().toISOString() });
+    }
     if (params.scenario === 'artificial-jam')
       setTimeout(() => {
         const p = babek(proposals.length + 1);

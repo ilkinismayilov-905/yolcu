@@ -96,8 +96,8 @@
 - [x] **BE-8.1** `IntervalEngine` + JUnit test vektorları (`02_ARCHITECTURE` §7; eyni vektorlar `packages/shared` testində).
 - [x] **BE-8.2** `GET /admin/occupancy/routes`, `/routes/{r}/buses`, `/simulate`, `POST /routes/{r}/interval`, `PUT /auto`.
 - [x] **BE-8.3** Topa yığılma detektoru + `GET /admin/occupancy/bunching`, `POST .../message`.
-- [ ] **BE-8.4** `GET /admin/hubs` (+ tövsiyə qaydası), `POST /admin/hubs/{id}/apply`.
-- [ ] **BE-8.5** `BiletimAdapter` interfeysi + `MockBiletimAdapter` → `GET /admin/biletim/arrivals`.
+- [x] **BE-8.4** `GET /admin/hubs` (+ tövsiyə qaydası), `POST /admin/hubs/{id}/apply`.
+- [x] **BE-8.5** `BiletimAdapter` interfeysi + `MockBiletimAdapter` → `GET /admin/biletim/arrivals`.
 - [x] **BE-8.6** `FeedService` (`alerts` cədvəli) + `GET /admin/feed`, `GET /admin/kpis`.
 
 **Qəbul:** `POST /admin/occupancy/routes/88/interval {8}` → 30 saniyə ərzində 88-in orta doluluğu 60–70%-ə enir; `route.updated` SSE gəlir; avtomatik rejimdə tövsiyələr özü tətbiq olunur və lentdə görünür.

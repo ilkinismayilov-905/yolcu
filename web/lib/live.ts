@@ -22,7 +22,7 @@ export const FEED_LIMIT = 50;
 export const useBuses = () => useQuery({ queryKey: liveKeys.buses, queryFn: () => api.get<LiveBus[]>('/live/buses'), staleTime: Infinity });
 export const useHubs = () => useQuery({ queryKey: liveKeys.hubs, queryFn: () => api.get<LiveHub[]>('/live/hubs'), staleTime: Infinity });
 export const useTraffic = () => useQuery({ queryKey: liveKeys.traffic, queryFn: () => api.get<TrafficSegment[]>('/live/traffic'), staleTime: Infinity });
-export const useAdminHubs = () => useQuery({ queryKey: liveKeys.adminHubs, queryFn: () => api.get<AdminHub[]>('/admin/hubs'), staleTime: Infinity });
+export const useAdminHubs = () => useQuery({ queryKey: liveKeys.adminHubs, queryFn: () => api.get<AdminHub[]>('/admin/hubs'), refetchInterval: 30_000 }); // counts by SSE; level/recommendation re-read
 export const useKpis = () => useQuery({ queryKey: liveKeys.kpis, queryFn: () => api.get<Kpis>('/admin/kpis'), refetchInterval: 30_000 });
 export const useFeed = () => useQuery({ queryKey: liveKeys.feed, queryFn: () => api.get<Alert[]>(`/admin/feed?limit=${FEED_LIMIT}`) });
 

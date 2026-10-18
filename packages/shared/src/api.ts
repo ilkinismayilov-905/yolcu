@@ -280,12 +280,27 @@ export interface Alert {
   createdAt: string;
 }
 
+export type CrowdLevel = 'LOW' | 'MEDIUM' | 'HIGH';
+
 /** GET /admin/hubs item: /live/hubs + camera data. */
 export interface AdminHub extends LiveHub {
-  level: string; // e.g. "HIGH"; full value list not fixed in the contract yet
+  level: CrowdLevel;
   avgWaitMin: number;
   camera: string; // "K-201"
   recommendation: string | null;
+  /** "Hub-lar" / "Dayanacaqlar" segment: HUB = may28, koroglu, avtovagzal; the rest STOP. */
+  kind: 'HUB' | 'STOP';
+}
+
+/** GET /admin/biletim/arrivals item (SIM, Biletim.az). */
+export interface BiletimArrival {
+  time: string; // "08:20", Baku time
+  from: string; // "Gəncə"
+  plate: string; // "90-AB-114"
+  ticketsSold: number;
+  status: string; // "Yoldadır, 18 km"
+  nextCityBusMin: number;
+  level: CrowdLevel;
 }
 
 // ---- 9. Admin: Doluluq və interval (/admin/occupancy/...) ----
