@@ -5,8 +5,8 @@ export const dynamic = 'force-static';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Yolcu — AYNA idarəetmə mərkəzi',
-    short_name: 'Yolcu',
+    name: 'Yolçu — AYNA idarəetmə mərkəzi',
+    short_name: 'Yolçu',
     description: 'AYNA üçün vahid nəqliyyat platforması',
     start_url: '/map/',
     display: 'standalone',

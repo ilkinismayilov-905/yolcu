@@ -45,10 +45,10 @@ public class ReportService {
     public static final List<String> CATEGORIES = List.of("Dayanacaqda saxlamadı", "Kobud davranış", "Təhlükəli sürüş",
             "Telefonla danışırdı", "Kondisioner işləmir", "Çirkli salon", "Çox uzun gözləmə", "Əlçatanlıq problemi",
             "Ödəniş problemi", "Doluluq");
-    static final int RATE_LIMIT = 3;
-    static final Duration RATE_WINDOW = Duration.ofMinutes(10);
+    public static final int RATE_LIMIT = 3;
+    public static final Duration RATE_WINDOW = Duration.ofMinutes(10);
     static final Duration LATE_AFTER = Duration.ofHours(24);
-    static final int COINS_CREATE = 5, COINS_RESOLVED = 15;
+    static final int COINS_CREATE = CoinService.REPORT, COINS_RESOLVED = CoinService.REPORT_VERIFIED;
     private static final String PASSENGER_ACTOR = "Sərnişin";
     private static final DateTimeFormatter CSV_TIME = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private static final Sort NEWEST = Sort.by(Sort.Order.desc("createdAt"), Sort.Order.desc("id"));
@@ -224,7 +224,7 @@ public class ReportService {
                 if (userNote != null) r.setAnswerText(userNote);
                 reportEvents.save(new ReportEvent(r.getId(), "STATUS", statusNote(next, userNote), actor, now));
                 title = "Şikayətiniz həll edildi";
-                body = "#" + code + ": təşəkkür edirik! +" + COINS_RESOLVED + " coin hesabınıza əlavə olundu";
+                body = "#" + code + ": təşəkkür edirik! +" + COINS_RESOLVED + " Yolçu Coin hesabınıza əlavə olundu";
                 if (r.getUserId() != null) {
                     coins.award(r.getUserId(), COINS_RESOLVED, "REPORT_VERIFIED", "report-ok:" + code, "Təsdiqlənmiş şikayət #" + code);
                 }

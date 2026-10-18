@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Yolcu mobil (mockup v4)</title>
+<title>Yolçu mobil (mockup v4)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -274,7 +274,7 @@ textarea{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12
 <body>
 
 <aside class="guide">
-  <h1>Yolcu mobil</h1>
+  <h1>Yolçu mobil</h1>
   <p>Sərnişin tətbiqinin kliklə işləyən mockup-ı, v4. Bütün data demo məqsədlidir.</p>
   <ol>
     <li>Xəritədə "Velo və skuter", "Tıxac" və "Sıxlıq" qatlarını açın</li>
@@ -282,9 +282,9 @@ textarea{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12
     <li>"İş: Nərimanov" seçin, 88 variantına toxunun</li>
     <li>Dayanacağa yolu görün, naviqasiyanı başladın</li>
     <li>Ödəyin, minin: 10 saniyə sonra tətbiq düşdüyünüzü özü aşkarlayır</li>
-    <li>Bildirişdən rəy verin, 5 coin qazanın</li>
+    <li>Bildirişdən rəy verin, 5 Yolçu Coin qazanın</li>
     <li>Şikayət göndərin, statusun dəyişməsini izləyin</li>
-    <li>Cüzdanda coin-i banka çevirin</li>
+    <li>Cüzdanda Yolçu Yolçu Coin-i banka çevirin</li>
   </ol>
   <h2>Bütün ekranlar</h2>
   <div class="jump" id="jump"></div>
@@ -295,7 +295,7 @@ textarea{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12
 <div class="screen" id="screen">
   <div class="notch"></div>
   <div class="status"><span>08:12</span><span>●●●● 5G ▮</span></div>
-  <button class="push" id="push"><img src="../web/public/brand/logo-icon.svg" alt="Yolcu" width="38" height="38" style="display:block;border-radius:22%"><div><div class="ttl"><span>Yolcu</span><span>indi</span></div><b id="pushT"></b><div class="small muted" id="pushS"></div></div></button>
+  <button class="push" id="push"><img src="../web/public/brand/logo-icon.svg" alt="Yolçu" width="38" height="38" style="display:block;border-radius:22%"><div><div class="ttl"><span>Yolçu</span><span>indi</span></div><b id="pushT"></b><div class="small muted" id="pushS"></div></div></button>
 
   <!-- HOME -->
   <section class="view on" id="v-home">
@@ -367,11 +367,11 @@ textarea{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12
       <div class="h1">Gediş haqqını ödə</div>
       <p class="sub">QR kodu avtobusdakı validatora yaxınlaşdırın</p>
       <div class="qr"><svg id="qr" viewBox="0 0 29 29" width="190" height="190" shape-rendering="crispEdges"></svg></div>
-      <div class="row" style="justify-content:center;margin:6px 0 16px"><b style="font-size:26px">0,60 ₼</b><span class="cpill"><span class="coin">c</span>səfərdən sonra +5</span></div>
+      <div class="row" style="justify-content:center;margin:6px 0 16px"><b style="font-size:26px">0,60 ₼</b><span class="cpill"><span class="coin">Y</span>səfərdən sonra +5</span></div>
       <div style="text-align:left" id="methods">
         <button class="method on" data-m="bk"><span class="mi" style="background:var(--primary)">BK</span><div style="flex:1"><b>BakıKart •• 4821</b><div class="small faint">Balans 3,20 ₼</div></div></button>
         <button class="method" data-m="card"><span class="mi" style="background:#33415A">KART</span><div style="flex:1"><b>Bank kartı •• 0193</b><div class="small faint">Avtomatik ödəniş</div></div></button>
-        <button class="method" data-m="coin"><span class="mi" style="background:var(--coin)">COIN</span><div style="flex:1"><b>Coin ilə, 60 coin</b><div class="small faint" id="payCoinBal"></div></div></button>
+        <button class="method" data-m="coin"><span class="mi" style="background:var(--coin)">COIN</span><div style="flex:1"><b>Yolçu Coin ilə, 60 coin</b><div class="small faint" id="payCoinBal"></div></div></button>
       </div>
       <div class="err" id="payErr"></div>
       <button class="btn p" id="payBtn">Ödənişi təsdiqlə</button>
@@ -399,7 +399,7 @@ textarea{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12
   <!-- REVIEW -->
   <section class="view" id="v-review">
     <div class="scroll">
-      <div class="row between"><span class="plate e" id="rvPlate">88</span><span class="cpill"><span class="coin">c</span>+5 coin</span></div>
+      <div class="row between"><span class="plate e" id="rvPlate">88</span><span class="cpill"><span class="coin">Y</span>+5 coin</span></div>
       <div class="h1">Səfəriniz necə keçdi?</div>
       <p class="sub" id="rvSub">Rəyiniz AYNA-ya və operatora çatır.</p>
       <div id="rvBody">
@@ -409,7 +409,7 @@ textarea{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12
         <div class="rv"><b>Avtobus nə qədər dolu idi?</b><div class="pills" data-single><button class="pill">Boş</button><button class="pill on">Normal</button><button class="pill">Dolu</button><button class="pill">Həddən artıq dolu</button></div></div>
         <div class="rv"><b>Nə qeyd edərdiniz?</b><div class="pills"><button class="pill on">Nəzakətli sürücü</button><button class="pill">Təhlükəsiz sürüş</button><button class="pill">Təmiz salon</button><button class="pill">Kondisioner işləmir</button><button class="pill">Dayanacaqda gec saxladı</button></div></div>
         <textarea rows="2" placeholder="Əlavə fikir, istəyə görə"></textarea>
-        <button class="btn p" style="margin-top:14px" id="sendReview">Göndər və 5 coin al</button>
+        <button class="btn p" style="margin-top:14px" id="sendReview">Göndər və 5 Yolçu Coin al</button>
         <button class="btn" style="margin-top:8px;background:none" data-go="v-home">İndi yox</button>
       </div>
     </div>
@@ -444,7 +444,7 @@ textarea{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12
 
   <!-- SURVEY -->
   <section class="view" id="v-survey">
-    <div class="scroll"><button class="back" data-go="v-notifs">‹ Bildirişlər</button><div class="row between"><span class="small faint" id="svStep"></span><span class="cpill"><span class="coin">c</span>+10 coin</span></div><div class="prog"><i id="svProg"></i></div><div id="svBody"></div></div>
+    <div class="scroll"><button class="back" data-go="v-notifs">‹ Bildirişlər</button><div class="row between"><span class="small faint" id="svStep"></span><span class="cpill"><span class="coin">Y</span>+10 coin</span></div><div class="prog"><i id="svProg"></i></div><div id="svBody"></div></div>
   </section>
 
   <!-- WALLET -->
@@ -452,12 +452,12 @@ textarea{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12
     <div class="scroll">
       <div class="h1" style="margin-bottom:12px">Cüzdan</div>
       <div class="wallet">
-        <div class="small" style="opacity:.75">Coin balansı</div>
-        <div class="bal"><span class="coin">c</span><b id="wBal">245</b></div>
+        <div class="small" style="opacity:.75">Yolçu Coin balansı</div>
+        <div class="bal"><span class="coin">Y</span><b id="wBal">245</b></div>
         <div class="azn" id="wAzn">≈ 2,45 ₼, partnyor bank məzənnəsi ilə</div>
         <div class="btn2"><button class="btn p sm" data-go="v-convert" style="width:100%">Banka çevir</button><button class="btn sm" id="payWithCoin" style="width:100%">Gedişə xərclə</button></div>
       </div>
-      <div class="sec">Coin necə qazanılır</div>
+      <div class="sec">Yolçu Coin necə qazanılır</div>
       <div class="card small" style="display:grid;gap:6px"><div class="row between"><span>Səfərdən sonra rəy</span><b>+5</b></div><div class="row between"><span>Sorğuya cavab</span><b>+5–20</b></div><div class="row between"><span>Şikayət göndərmək</span><b>+5</b></div><div class="row between"><span>Şikayət təsdiqləndi</span><b>+15</b></div></div>
       <div class="sec">Biletim.az biletləriniz</div>
       <div class="bil"><div class="ic">BİL</div><div><b>Bakı → Gəncə</b><div class="small faint">18 oktyabr, 18:30, yer 14</div></div><button class="btn sm" data-dest="Avtovağzal" data-go="v-trip">Avtovağzala yol</button></div>
@@ -472,8 +472,8 @@ textarea{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12
   <section class="view" id="v-convert">
     <div class="scroll">
       <button class="back" data-go="v-wallet">‹ Cüzdan</button>
-      <div class="h1">Coin-i banka çevir</div>
-      <p class="sub">Coin partnyor bank vasitəsilə manata çevrilir və kartınıza köçürülür. Məzənnə: 100 coin = 1 ₼. Minimum 100 coin.</p>
+      <div class="h1">Yolçu Coin-i banka çevir</div>
+      <p class="sub">Yolçu Coin partnyor bank vasitəsilə manata çevrilir və kartınıza köçürülür. Məzənnə: 100 coin = 1 ₼. Minimum 100 coin.</p>
       <div class="amts" id="amts"><button data-amt="100">100</button><button data-amt="200" class="on">200</button><button data-amt="all">Hamısı</button></div>
       <div class="card row between"><span class="muted">Kartınıza köçürüləcək</span><b style="font-size:22px" id="cvAzn">2,00 ₼</b></div>
       <div class="sec">Kart</div>
@@ -515,7 +515,7 @@ textarea{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12
     </div>
   </section>
 
-  <div class="burst" id="burst"><span class="coin">c</span><span id="burstT">+5</span></div>
+  <div class="burst" id="burst"><span class="coin">Y</span><span id="burstT">+5</span></div>
   <div class="toast" id="toast"></div>
 
   <nav class="tabbar" id="tabbar">
@@ -535,9 +535,9 @@ const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const azn=c=>(c/100).toFixed(2).replace('.',',');
 
 /* ============ STATE ============ */
-const S={coins:245,history:[['Sorğu: interval rahatlığı','16 okt',10],['Təsdiqlənmiş şikayət #A-2031','15 okt',15],['Səfər rəyi, 88','15 okt',5],['Gediş haqqı, coin ilə','14 okt',-60]],
+const S={coins:245,history:[['Sorğu: interval rahatlığı','16 okt',10],['Təsdiqlənmiş şikayət #A-2031','15 okt',15],['Səfər rəyi, 88','15 okt',5],['Gediş haqqı, Yolçu Coin ilə','14 okt',-60]],
   dest:'Nərimanov',filter:'fast',opt:'o88',paidWith:null,reviewed:false,surveyDone:false,reports:[{id:'A-2031',cat:'Kobud davranış',route:'65',stage:4,when:'15 okt'}],
-  notifs:[{id:'sv',t:'AYNA sorğusu: yeni ekspress xətt',s:'Avtovağzal → 28 May ekspress haqqında fikriniz. 1 dəqiqə, +10 coin.',when:'5 dəq əvvəl',to:'v-survey',read:false,ic:'SOR',c:'var(--primary)'},
+  notifs:[{id:'sv',t:'AYNA sorğusu: yeni ekspress xətt',s:'Avtovağzal → 28 May ekspress haqqında fikriniz. 1 dəqiqə, +10 Yolçu Coin.',when:'5 dəq əvvəl',to:'v-survey',read:false,ic:'SOR',c:'var(--primary)'},
           {id:'r2031',t:'Şikayətinizə cavab verildi',s:'#A-2031: BakuBus sürücü ilə izahat işi aparıldığını bildirdi.',when:'Dünən',to:'status:A-2031',read:false,ic:'ŞİK',c:'var(--ok)'},
           {id:'iv',t:'88-də səhər intervalı 8 dəqiqəyə endirildi',s:'Avtobus kameraları dolu getdiyini göstərdi, rəylər də təsdiqlədi.',when:'2 gün əvvəl',to:null,read:true,ic:'88',c:'var(--bus-e)'},
           {id:'ev',t:'Bu axşam stadionda oyun var',s:'19:00-dan sonra 65 və 88 sıx olacaq. Metro ilə getməyi tövsiyə edirik.',when:'3 saat əvvəl',to:null,read:true,ic:'TƏD',c:'var(--ink-2)'}],
@@ -684,7 +684,7 @@ $('#arrived').onclick=()=>{if(OPTS[S.opt].stop==='N'){S.paidWith='BakıKart';rou
 let payM='bk';
 $('#methods').onclick=e=>{const m=e.target.closest('[data-m]');if(!m)return;payM=m.dataset.m;$$('[data-m]').forEach(x=>x.classList.toggle('on',x===m));$('#payErr').textContent='';};
 $('#payBtn').onclick=()=>{
-  if(payM==='coin'){if(S.coins<60){$('#payErr').textContent=`Coin kifayət etmir: ${S.coins} coin var, 60 lazımdır. Başqa ödəniş üsulu seçin.`;return;}addCoins(-60,'Gediş haqqı, coin ilə');}
+  if(payM==='coin'){if(S.coins<60){$('#payErr').textContent=`Yolçu Coin kifayət etmir: ${S.coins} var, 60 lazımdır. Başqa ödəniş üsulu seçin.`;return;}addCoins(-60,'Gediş haqqı, Yolçu Coin ilə');}
   S.paidWith={bk:'BakıKart •• 4821',card:'Bank kartı •• 0193',coin:'60 coin'}[payM];S.reviewed=false;
   toast('0,60 ₼ ödənildi. Xoş səfər');setTimeout(()=>route('v-ride'),700);};
 $('#payWithCoin').onclick=()=>{payM='coin';$$('[data-m]').forEach(x=>x.classList.toggle('on',x.dataset.m==='coin'));route('v-pay');};
@@ -699,7 +699,7 @@ $('#leftBus').onclick=()=>endRide(false);
 /* ============ REVIEW ============ */
 $$('[data-stars]').forEach(w=>{const init=+w.dataset.stars;for(let i=1;i<=5;i++){const s=document.createElement('button');s.textContent='★';s.setAttribute('aria-label',i+' ulduz');if(i<=init)s.classList.add('on');s.onclick=()=>w.querySelectorAll('button').forEach((x,j)=>x.classList.toggle('on',j<i));w.appendChild(s);}});
 function renderReview(){const o=OPTS[S.opt];const pl=o.plate==='M'?'65':o.plate;$('#rvPlate').textContent=pl;$('#rvPlate').className='plate '+(o.cls==='d'||o.plate==='M'?'d':'e');$('#rvSub').textContent=`${STOPS[o.stop].n} → ${S.dest}. Rəyiniz AYNA-ya və operatora çatır.`;
-  $('#sendReview').disabled=S.reviewed;$('#sendReview').textContent=S.reviewed?'Bu səfərə artıq rəy vermisiniz':'Göndər və 5 coin al';}
+  $('#sendReview').disabled=S.reviewed;$('#sendReview').textContent=S.reviewed?'Bu səfərə artıq rəy vermisiniz':'Göndər və 5 Yolçu Coin al';}
 $('#sendReview').onclick=()=>{if(S.reviewed)return;S.reviewed=true;addCoins(5,`Səfər rəyi, ${$('#rvPlate').textContent}`);toast('Rəyiniz göndərildi');setTimeout(()=>route('v-wallet'),900);};
 
 /* ============ REPORT ============ */
@@ -725,7 +725,7 @@ $('#readAll').onclick=()=>{S.notifs.forEach(n=>n.read=true);renderNotifs();toast
 const SV=[['Avtovağzaldan 28 May-a dayanacaqsız ekspress avtobusdan istifadə edərdinizmi?',['Hər gün','Həftədə bir neçə dəfə','Nadir hallarda','Xeyr']],['Ekspress üçün hansı interval sizə uyğundur?',['5 dəqiqə','8 dəqiqə','12 dəqiqə','Fərqi yoxdur']],['Hazırda Avtovağzaldan şəhərə necə gedirsiniz?',['Avtobus','Metro','Taksi','Şəxsi avtomobil']]];
 function renderSurvey(i){$('#svStep').textContent=S.surveyDone?'Tamamlanıb':`Sual ${Math.min(i+1,3)} / 3`;$('#svProg').style.width=(S.surveyDone?100:(i+1)/3*100)+'%';const b=$('#svBody');
   if(S.surveyDone&&i===0){b.innerHTML=`<div class="empty"><div class="h1">Bu sorğunu artıq cavablamısınız</div><p class="sub">Nəticələr hazır olanda sizə bildiriş göndərəcəyik.</p><button class="btn" data-go="v-notifs">Bildirişlərə qayıt</button></div>`;return;}
-  if(i>=SV.length){S.surveyDone=true;const n=S.notifs.find(x=>x.id==='sv');if(n){n.read=true;n.t='Sorğu tamamlandı: yeni ekspress xətt';n.s='Təşəkkürlər. 10 coin hesabınıza köçürüldü.';}renderNotifs();addCoins(10,'AYNA sorğusu: ekspress xətt');b.innerHTML=`<div class="empty" style="padding-top:40px"><div class="h1">Təşəkkürlər</div><p class="sub">Cavablarınız AYNA-nın ekspress xətt qərarında istifadə olunacaq.</p><button class="btn p" data-go="v-wallet">Cüzdana bax</button></div>`;return;}
+  if(i>=SV.length){S.surveyDone=true;const n=S.notifs.find(x=>x.id==='sv');if(n){n.read=true;n.t='Sorğu tamamlandı: yeni ekspress xətt';n.s='Təşəkkürlər. 10 Yolçu Coin hesabınıza köçürüldü.';}renderNotifs();addCoins(10,'AYNA sorğusu: ekspress xətt');b.innerHTML=`<div class="empty" style="padding-top:40px"><div class="h1">Təşəkkürlər</div><p class="sub">Cavablarınız AYNA-nın ekspress xətt qərarında istifadə olunacaq.</p><button class="btn p" data-go="v-wallet">Cüzdana bax</button></div>`;return;}
   b.innerHTML=`<div class="h1" style="font-size:21px;margin-bottom:18px">${SV[i][0]}</div>`+SV[i][1].map(a=>`<button class="ans">${a}</button>`).join('');b.querySelectorAll('.ans').forEach(x=>x.onclick=()=>{x.classList.add('on');setTimeout(()=>renderSurvey(i+1),300);});}
 
 /* ============ WALLET + CONVERT ============ */
@@ -734,8 +734,8 @@ function renderWallet(){$('#wBal').textContent=S.coins;$('#wAzn').textContent=`�
 let amt=200;
 $('#amts').onclick=e=>{const b=e.target.closest('[data-amt]');if(!b)return;amt=b.dataset.amt==='all'?'all':+b.dataset.amt;$$('[data-amt]').forEach(x=>x.classList.toggle('on',x===b));updAmt();};
 function updAmt(){const a=amt==='all'?Math.floor(S.coins/100)*100:amt;$('#cvAzn').textContent=azn(a)+' ₼';$('#cvErr').textContent='';}
-$('#cvBtn').onclick=()=>{const a=amt==='all'?Math.floor(S.coins/100)*100:amt;if(a<100||a>S.coins){$('#cvErr').textContent=`Kifayət qədər coin yoxdur. Balans: ${S.coins} coin, minimum 100.`;return;}
-  addCoins(-a,`Banka köçürmə, ${azn(a)} ₼ (icra olunur)`);toast(`${a} coin çevrildi. ${azn(a)} ₼ kartınıza köçürülür`);route('v-wallet');
+$('#cvBtn').onclick=()=>{const a=amt==='all'?Math.floor(S.coins/100)*100:amt;if(a<100||a>S.coins){$('#cvErr').textContent=`Kifayət qədər Yolçu Coin yoxdur. Balans: ${S.coins} coin, minimum 100.`;return;}
+  addCoins(-a,`Banka köçürmə, ${azn(a)} ₼ (icra olunur)`);toast(`${a} Yolçu Coin çevrildi. ${azn(a)} ₼ kartınıza köçürülür`);route('v-wallet');
   setTimeout(()=>{const h=S.history.find(x=>x[0].includes('icra olunur'));if(h)h[0]=h[0].replace('icra olunur','tamamlandı');renderWallet();addNotif({id:'cv'+Date.now(),t:'Köçürmə tamamlandı',s:`${azn(a)} ₼ partnyor bank kartınıza köçürüldü.`,to:'v-wallet',ic:'₼',c:'var(--coin)'});push('Köçürmə tamamlandı',`${azn(a)} ₼ kartınıza köçürüldü`,'v-wallet');},7000);};
 
 /* ============ PROFILE ============ */
@@ -756,10 +756,10 @@ let autoTimer=null;
 function endRide(auto){clearTimeout(autoTimer);if(S.autoEnded)return;S.autoEnded=true;const o=OPTS[S.opt];const pl=o.plate==='M'?'65':o.plate;
   if(S.track)S.trips.unshift({route:pl,cls:o.cls==='d'||o.plate==='M'?'d':'e',from:STOPS[o.stop].n,to:S.dest,on:'08:18',off:'08:41',day:'Bu gün',auto});
   renderForYou();toast(auto?`Düşdüyünüz aşkarlandı: ${S.dest}, 08:41`:`Səfər bitdi: ${S.dest}`);route('v-home');
-  setTimeout(()=>push('Səfəriniz necə keçdi?',`${pl} nömrəli avtobus. Qiymətləndirin, 5 coin qazanın`,'v-review'),1100);}
+  setTimeout(()=>push('Səfəriniz necə keçdi?',`${pl} nömrəli avtobus. Qiymətləndirin, 5 Yolçu Coin qazanın`,'v-review'),1100);}
 
 /* ============ ROUTER ============ */
-const SCREENS=[['v-home','Xəritə'],['v-trip','Marşrut variantları'],['v-route','Dayanacağa yol'],['v-walk','Naviqasiya'],['v-pay','Ödəniş'],['v-ride','Səfər'],['v-review','Rəy'],['v-report','Şikayət'],['status:A-2031','Şikayət statusu'],['v-notifs','Bildirişlər'],['v-survey','Sorğu'],['v-wallet','Coin cüzdanı'],['v-convert','Banka çevir'],['v-trips','Səfərlərim'],['v-profile','Profil']];
+const SCREENS=[['v-home','Xəritə'],['v-trip','Marşrut variantları'],['v-route','Dayanacağa yol'],['v-walk','Naviqasiya'],['v-pay','Ödəniş'],['v-ride','Səfər'],['v-review','Rəy'],['v-report','Şikayət'],['status:A-2031','Şikayət statusu'],['v-notifs','Bildirişlər'],['v-survey','Sorğu'],['v-wallet','Yolçu Coin cüzdanı'],['v-convert','Banka çevir'],['v-trips','Səfərlərim'],['v-profile','Profil']];
 $('#jump').innerHTML=SCREENS.map(([id,l])=>`<button data-jump="${id}">${l}</button>`).join('');
 $('#jump').onclick=e=>{const b=e.target.closest('[data-jump]');if(!b)return;if(b.dataset.jump==='v-walk')startWalk();else route(b.dataset.jump);};
 function route(id){
@@ -790,7 +790,7 @@ const gm=()=>toast('Google Maps açılır: '+S.dest+' istiqaməti');$('#gmaps').
 
 $('#themeBtn').onclick=()=>{const r=document.documentElement;const dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;r.dataset.theme=dark?'light':'dark';};
 renderWallet();renderNotifs();renderProfile();renderForYou();route('v-home');
-setTimeout(()=>{if($('#v-home').classList.contains('on')&&!S.surveyDone)push('AYNA sorğusu: yeni ekspress xətt','1 dəqiqəlik sorğu. Cavab verin, 10 coin qazanın','v-survey');},4000);
+setTimeout(()=>{if($('#v-home').classList.contains('on')&&!S.surveyDone)push('AYNA sorğusu: yeni ekspress xətt','1 dəqiqəlik sorğu. Cavab verin, 10 Yolçu Coin qazanın','v-survey');},4000);
 </script>
 </body>
 </html>

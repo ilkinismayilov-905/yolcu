@@ -1,13 +1,14 @@
-> **Ad:** məhsul Yolcu, Java paketi `az.yolcu`, DB `yolcu`, property prefiksi `yolcu.*`,
-> demo hesablar `dispatcher@yolcu.az` / `admin@yolcu.az` (şifrə `demo123`).
+> **Məhsul adı (UI): Yolçu. Kodda: yolcu** — Java paketi `az.yolcu`, DB `yolcu`, property prefiksi `yolcu.*`,
+> demo hesablar `dispatcher@yolcu.az` / `admin@yolcu.az` (şifrə `demo123`). Coin-in UI adı: **Yolçu Coin** (API sahə adları dəyişmir: `coinBalance`, `coinReward`…).
+> İstifadəçinin gördüyü mətnlərdə həmişə "Yolçu"; identifikator, fayl/qovluq, URL, e-poçt ASCII qalır.
 
-# CLAUDE.md — Yolcu (Claude Code üçün əsas təlimat)
+# CLAUDE.md — Yolçu (Claude Code üçün əsas təlimat)
 
 Bu faylı hər sessiyanın əvvəlində oxu. Sonra yalnız tapşırığa aid sənədi aç (aşağıdakı xəritə).
 
 ## 1. Layihə bir abzasda
 
-Yolcu — AYNA üçün vahid nəqliyyat platformasıdır. **Web dashboard** (AYNA dispetçeri): canlı xəritə, hub kameraları, avtobus doluluğu və AI interval tövsiyəsi, avtobus bölgüsü, Avtovağzal + Biletim.az, data analitika (OD matrisi, proqnoz, ödənişli yollar, datanın tətbiqi), süni tıxac → yeni hub təklifi, şikayətlər, sorğular, coin proqramı, operatorlar və avtopark. **Mobil tətbiq** (sərnişin): sadə xəritə (velo və skuter qatı ilə), "Sizin üçün" proaktiv təklif, marşrut variantları, dayanacağa piyada naviqasiya, ödəniş, səfər və düşmənin avtomatik aşkarlanması, rəy, şikayət, sorğu, coin cüzdanı, səfərlərim. Hər ikisi **bir Spring Boot backend**-ə qoşulur və canlı hadisələri **SSE** ilə alır.
+Yolçu — AYNA üçün vahid nəqliyyat platformasıdır. **Web dashboard** (AYNA dispetçeri): canlı xəritə, hub kameraları, avtobus doluluğu və AI interval tövsiyəsi, avtobus bölgüsü, Avtovağzal + Biletim.az, data analitika (OD matrisi, proqnoz, ödənişli yollar, datanın tətbiqi), süni tıxac → yeni hub təklifi, şikayətlər, sorğular, coin proqramı, operatorlar və avtopark. **Mobil tətbiq** (sərnişin): sadə xəritə (velo və skuter qatı ilə), "Sizin üçün" proaktiv təklif, marşrut variantları, dayanacağa piyada naviqasiya, ödəniş, səfər və düşmənin avtomatik aşkarlanması, rəy, şikayət, sorğu, coin cüzdanı, səfərlərim. Hər ikisi **bir Spring Boot backend**-ə qoşulur və canlı hadisələri **SSE** ilə alır.
 
 **Vaxt: 1 gün.** Məqsəd: tez, sabit, demo-da heç vaxt sınmayan məhsul. Mükəmməl arxitektura yox, işləyən axın.
 

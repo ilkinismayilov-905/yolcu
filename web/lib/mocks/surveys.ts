@@ -95,7 +95,7 @@ export const surveyMocks: Record<string, MockHandler> = {
   'POST /admin/surveys': (body) => {
     const r = body as CreateSurveyRequest;
     if (!r.title?.trim()) invalid('Başlıq boş ola bilməz');
-    if (![5, 10, 20].includes(r.coinReward)) invalid('Mükafat 5, 10 və ya 20 coin olmalıdır');
+    if (![5, 10, 20].includes(r.coinReward)) invalid('Mükafat 5, 10 və ya 20 Yolçu Coin olmalıdır');
     if (!r.questions?.length || r.questions.some((q) => !q.text.trim() || q.options.length < 2)) invalid('Hər sualda ən azı 2 variant olmalıdır');
     const s: MockSurvey = {
       id: Math.max(...db.map((x) => x.id)) + 1,

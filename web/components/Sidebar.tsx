@@ -14,7 +14,7 @@ export function Sidebar({ user, reportsBadge }: { user?: UserDto; reportsBadge?:
       <div className="flex items-center gap-2.5 px-2.5 pt-0.5 pb-5">
         <LogoMark size={32} />
         <div>
-          <b className="block text-base leading-[1.1] tracking-[.01em]">Yolcu</b>
+          <b className="block text-base leading-[1.1] tracking-[.01em]">Yolçu</b>
           <span className="text-xs text-ink-3">AYNA idarəetmə mərkəzi</span>
         </div>
       </div>

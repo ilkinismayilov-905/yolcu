@@ -35,11 +35,11 @@ Bir məlumat qatı, iki interfeys, bir-birini qidalandıran dövrə:
 | 4 | Avtobus bölgüsü (33 → 88) | ✓ | — |
 | 5 | Avtovağzal + Biletim.az (gəlişlər, ekspress xətt) | ✓ | Biletim bileti, Avtovağzala yol |
 | 6 | Marşrut planlayıcı + piyada naviqasiya | — | ✓ |
-| 7 | Ödəniş (BakıKart, kart, coin) + səfər | — | ✓ |
+| 7 | Ödəniş (BakıKart, kart, Yolçu Coin) + səfər | — | ✓ |
 | 8 | Rəy (Bolt tipli, səfərdən sonra) | operator reytinqinə düşür | ✓ |
 | 9 | Şikayət (vasitəçisiz, AYNA-ya birbaşa) | ✓ bütün şikayətlər | ✓ göndər + status |
 | 10 | Sorğular (hamıya bildiriş) | ✓ bütün sorğular + yeni | ✓ cavabla |
-| 11 | Coin (qazan, gedişə xərclə, banka çevir) | ✓ proqram icmalı | ✓ cüzdan |
+| 11 | Yolçu Coin (qazan, gedişə xərclə, banka çevir) | ✓ proqram icmalı | ✓ cüzdan |
 | 12 | Operatorlar və avtopark (BakuBus, Xaliq Faiqoğlu, Çinar-Trans, 6 Dost) | ✓ | — |
 | 13 | İnteqrasiyalar (Biletim.az, AYNA MaaS, BakıKart, bank, YPX, kameralar) | ✓ status | — |
 | 14 | Data analitika: OD matrisi, hub istilik matrisi, proqnoz, ödənişli yol namizədləri, datanın tətbiqi və satışı | ✓ | — |
@@ -56,9 +56,9 @@ Ekologiya bölməsi layihədən **çıxarılıb**.
 - Eyni marşrut eyni saat aralığında (±45 dəq) və eyni həftə günü tipində (iş günü / həftəsonu) ən azı 3 dəfə təkrarlanıbsa, bu "vərdiş" sayılır və əsas ekranda "Sizin üçün" kartı göstərilir: "İş günləri bu saatda Nərimanova gedirsiniz, 88 6 dəqiqəyə gəlir".
 - Anonim aqreqatlar (haradan-haraya, düşmə nöqtələri) web-dəki Data analitika səhifəsinə düşür.
 
-## Coin modeli
+## Yolçu Coin modeli
 
-- Coin real pul deyil. Sərnişin rəy (+5), sorğu (+5–20), şikayət (+5) və təsdiqlənmiş şikayət (+15) üçün qazanır.
+- Yolçu Coin real pul deyil (API-də sahə adları `coin…` qalır). Sərnişin rəy (+5), sorğu (+5–20), şikayət (+5) və təsdiqlənmiş şikayət (+15) üçün qazanır.
 - İstifadə: gediş haqqı (60 coin = 0,60 ₼) və ya partnyor bank vasitəsilə manata çevirmə (100 coin = 1 ₼, minimum 100).
 - Demo-da bank inteqrasiyası simulyasiyadır: sorğu yaranır, 60 saniyə sonra "tamamlandı" olur.
 
@@ -66,8 +66,8 @@ Ekologiya bölməsi layihədən **çıxarılıb**.
 
 1. Sərnişin xəritədə Koroğlu tıxacını görür, "İş: Nərimanov" seçir.
 2. Tətbiq 4 əvəzinə 88 təklif edir, Elmlər dayanacağına piyada yolu göstərir, naviqasiya başlayır.
-3. Ödəyir (coin ilə), minir. Avtobusun doluluğu görünür.
-4. "Düşdüm" → bildiriş → rəy → +5 coin.
+3. Ödəyir (Yolçu Coin ilə), minir. Avtobusun doluluğu görünür.
+4. "Düşdüm" → bildiriş → rəy → +5 Yolçu Coin.
 5. Şikayət göndərir → **dashboard-da 1–2 saniyəyə görünür** → dispetçer "Operatora göndər" basır → sərnişinin telefonunda status dəyişir.
 6. Dashboard-da 88-in 92% dolu olduğu görünür → AI 12 → 8 dəq təklif edir → dispetçer tətbiq edir.
 7. Dispetçer sorğu göndərir → bütün telefonlara bildiriş düşür.

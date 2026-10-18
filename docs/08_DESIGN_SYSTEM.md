@@ -91,7 +91,7 @@ Böyük hərflə etiket (ALL CAPS) yoxdur. Başlıqlar cümlə formasında.
 
 - Sadə, aktiv, cümlə forması: "Şikayət göndər", "Sorğunu göndər", "Banka çevir".
 - Eyni hərəkət eyni adla: düymə "Operatora göndər" → toast "Operatora göndərildi".
-- Xəta: nə oldu + necə düzəlir. "Coin kifayət etmir: 40 coin var, 60 lazımdır. Başqa ödəniş üsulu seçin."
+- Xəta: nə oldu + necə düzəlir. "Yolçu Coin kifayət etmir: 40 var, 60 lazımdır. Başqa ödəniş üsulu seçin."
 - Boş vəziyyət: niyə boşdur + nə etmək olar. "Bu filtrə uyğun şikayət yoxdur. Filtrləri dəyişin."
 - Rəqəmlər: minliklər boşluqla (12 480), onluq vergüllə (4,2), "dəq", "₼", "coin".
 - Simulyasiya datası olan ekranda "Demo data" nişanı.
@@ -116,7 +116,7 @@ Böyük hərflə etiket (ALL CAPS) yoxdur. Başlıqlar cümlə formasında.
 | `logo-icon-512.png` | Nişan, 512 px | Manifest ikonu |
 | `favicon.ico` | 16/32 px | `app/favicon.ico` |
 
-Kodda yalnız `web/components/Logo.tsx` istifadə olunur: `LogoMark` (nişan) və `LogoFull` (tam loqo; açıq/tünd fayl `.logo-on-light` / `.logo-on-dark` ilə tema token-lərinin seçiciləri üzrə dəyişir). Hər `img`-də `alt="Yolcu"`.
+Kodda yalnız `web/components/Logo.tsx` istifadə olunur: `LogoMark` (nişan) və `LogoFull` (tam loqo; açıq/tünd fayl `.logo-on-light` / `.logo-on-dark` ilə tema token-lərinin seçiciləri üzrə dəyişir). Hər `img`-də `alt="Yolçu"`.
 
 **Ölçü:**
 - Nişan minimum 16 px (ekranda 24 px-dən kiçik olduqda yalnız nişan, yazılı loqo yox). Sidebar-da 32 px.
@@ -130,7 +130,7 @@ Kodda yalnız `web/components/Logo.tsx` istifadə olunur: `LogoMark` (nişan) v�
 
 **Rəng:** loqonun öz rəngləri qırmızı `#A10D1F`, yaşıl `#15562D`, tünd göy `#132142`. Bunlar UI token-ləri deyil (UI-nin əsas rəngi `--primary` `#0B6FCB`); token-lərə əlavə edilməyib, UI-də loqodan kənar istifadə olunmur.
 
-**Ad:** loqonun yazısı "Yolçu"-dur; məhsul adı kodda və UI mətnlərində hələ "Yolcu" (CLAUDE.md). Fərq bilərəkdən saxlanılıb, qərar komandaya aiddir.
+**Ad:** UI-da məhsul adı **Yolçu**, coin-in adı **Yolçu Coin** (başlıq və izahlarda tam ad; sıx cədvəl xanalarında rəqəmin yanında qısa "coin" qala bilər, məs. "+5 coin"). Kod identifikatorları, fayl/qovluq adları, URL və e-poçtlar ASCII: `yolcu`. Coin ikonu: sarı dairədə "Y".
 
 ## 9. Mənbələr
 

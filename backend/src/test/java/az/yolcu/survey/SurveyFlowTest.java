@@ -123,7 +123,7 @@ class SurveyFlowTest {
         var dto = (NotificationDto) sse.get(0).data();
         assertThat(dto.target()).isEqualTo("survey:" + id);
         assertThat(dto.type()).isEqualTo("SURVEY");
-        assertThat(dto.body()).isEqualTo("1 dəqiqəlik sorğu. Cavab verin, 10 coin qazanın.");
+        assertThat(dto.body()).isEqualTo("1 dəqiqəlik sorğu. Cavab verin, 10 Yolçu Coin qazanın.");
 
         mvc.perform(get("/api/v1/me/notifications?size=5").header("Authorization", token(passenger(0), "PASSENGER")))
                 .andExpect(status().isOk())

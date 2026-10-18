@@ -41,22 +41,22 @@ export const NAV: { group: string; items: NavItem[] }[] = [
   {
     group: 'Analitika',
     items: [
-      { href: '/analytics', label: 'Data analitika', icon: 'chart', desc: 'Yolcunun topladığı data AYNA üçün haraya tətbiq olunur: axın matrisləri, tələbat proqnozu, ödənişli yol namizədləri və data məhsulları.' },
+      { href: '/analytics', label: 'Data analitika', icon: 'chart', desc: 'Yolçunun topladığı data AYNA üçün haraya tətbiq olunur: axın matrisləri, tələbat proqnozu, ödənişli yol namizədləri və data məhsulları.' },
     ],
   },
   {
     group: 'Sərnişinlər',
     items: [
       { href: '/reports', label: 'Şikayətlər', icon: 'chat', badge: 'reports', desc: 'Mobil tətbiqdən birbaşa gələn bütün şikayətlər. Sətrə klikləyin: detallara baxın, operatora göndərin və ya statusu dəyişin.' },
-      { href: '/surveys', label: 'Sorğular', icon: 'poll', desc: 'Bütün istifadəçilərə və ya seçilmiş qrupa bildiriş kimi sorğu göndərin. Cavab verənlər coin qazanır.' },
-      { href: '/coins', label: 'Coin proqramı', icon: 'coin', desc: 'Sərnişinlər rəy, sorğu və şikayət üçün coin qazanır. Coin real pul deyil: partnyor bank vasitəsilə manata çevrilir və ya gediş haqqına xərclənir.' },
+      { href: '/surveys', label: 'Sorğular', icon: 'poll', desc: 'Bütün istifadəçilərə və ya seçilmiş qrupa bildiriş kimi sorğu göndərin. Cavab verənlər Yolçu Coin qazanır.' },
+      { href: '/coins', label: 'Yolçu Coin', icon: 'coin', desc: 'Sərnişinlər rəy, sorğu və şikayət üçün Yolçu Coin qazanır. Yolçu Coin real pul deyil: partnyor bank vasitəsilə manata çevrilir və ya gediş haqqına xərclənir.' },
     ],
   },
   {
     group: 'Tərəfdaşlar',
     items: [
       { href: '/operators', label: 'Operatorlar', icon: 'ops', desc: 'Hər operatorun bütün avtobusları, statusu, doluluğu və sərnişin rəyləri. Operatoru seçin və ya bort nömrəsi ilə axtarın.' },
-      { href: '/integrations', label: 'İnteqrasiyalar', icon: 'plug', desc: 'Yolcunun məlumat aldığı və ya göndərdiyi sistemlər. Demo-da simulyasiya olunanlar ayrıca qeyd edilib.' },
+      { href: '/integrations', label: 'İnteqrasiyalar', icon: 'plug', desc: 'Yolçunun məlumat aldığı və ya göndərdiyi sistemlər. Demo-da simulyasiya olunanlar ayrıca qeyd edilib.' },
     ],
   },
 ];

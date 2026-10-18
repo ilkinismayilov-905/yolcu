@@ -41,7 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class SurveyService {
     static final Map<String, String> AUDIENCES = Map.of("ALL", "Bütün istifadəçilər",
             "AVTOVAGZAL_2KM", "Avtovağzal ətrafı, 2 km", "ROUTE_88_4", "88 və 4 sərnişinləri");
-    static final Set<Integer> REWARDS = Set.of(5, 10, 20);
+    static final Set<Integer> REWARDS = Set.copyOf(CoinService.SURVEY_REWARDS);
     static final double AVTOVAGZAL_LAT = 40.4214, AVTOVAGZAL_LON = 49.7963; // mocks/places.json
     private static final Sort NEWEST = Sort.by(Sort.Order.desc("createdAt"), Sort.Order.desc("id"));
     private static final TypeReference<List<String>> STRINGS = new TypeReference<>() {};
@@ -137,7 +137,7 @@ public class SurveyService {
         if (!survey.getStatus().equals(Survey.DRAFT)) throw ApiException.validation("Yalnız qaralama göndərilə bilər");
         survey.publish(clock.now());
         notifications.createAll(audience(survey.getAudience()), "SURVEY", survey.getTitle(),
-                "1 dəqiqəlik sorğu. Cavab verin, " + survey.getCoinReward() + " coin qazanın.", "survey:" + id);
+                "1 dəqiqəlik sorğu. Cavab verin, " + survey.getCoinReward() + " Yolçu Coin qazanın.", "survey:" + id);
         return updated(survey);
     }
 

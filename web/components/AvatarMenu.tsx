@@ -138,7 +138,7 @@ export function AvatarMenu({ user, onLogout }: { user?: UserDto; onLogout: () =>
           </button>
           <div className="mt-1.5 flex items-center gap-2 border-t border-line px-2.5 pt-2.5 pb-1 text-xs text-ink-3" role="presentation">
             <LogoMark size={18} />
-            Yolcu · AYNA idarəetmə mərkəzi
+            Yolçu · AYNA idarəetmə mərkəzi
           </div>
         </div>
       )}
