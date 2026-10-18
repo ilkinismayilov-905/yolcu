@@ -6,6 +6,7 @@ import type { UserDto } from '@yolcu/shared/api';
 import { ROLE_LABEL } from '@/lib/api';
 import { beep, setDark, setPrefs, useDark, usePrefs } from '@/lib/prefs';
 import { SwitchTrack } from './ui';
+import { LogoMark } from './Logo';
 
 const initials = (name = '') => name.split(/\s+/).map((w) => w[0]).slice(0, 2).join('').toUpperCase();
 
@@ -135,6 +136,10 @@ export function AvatarMenu({ user, onLogout }: { user?: UserDto; onLogout: () =>
           >
             Çıxış
           </button>
+          <div className="mt-1.5 flex items-center gap-2 border-t border-line px-2.5 pt-2.5 pb-1 text-xs text-ink-3" role="presentation">
+            <LogoMark size={18} />
+            Yolcu · AYNA idarəetmə mərkəzi
+          </div>
         </div>
       )}
     </div>

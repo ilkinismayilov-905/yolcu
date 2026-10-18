@@ -5,18 +5,14 @@ import { usePathname } from 'next/navigation';
 import type { UserDto } from '@yolcu/shared/api';
 import { ICON, NAV } from '@/lib/nav';
 import { ROLE_LABEL } from '@/lib/api';
+import { LogoMark } from './Logo';
 
 export function Sidebar({ user, reportsBadge }: { user?: UserDto; reportsBadge?: number }) {
   const path = usePathname();
   return (
     <aside className="flex flex-col overflow-auto border-r border-line bg-surface px-3 py-[18px] max-[820px]:hidden">
       <div className="flex items-center gap-2.5 px-2.5 pt-0.5 pb-5">
-        <div className="grid size-8 place-items-center rounded-[9px] bg-primary text-on-color">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6">
-            <circle cx="8.5" cy="12" r="5" />
-            <circle cx="15.5" cy="12" r="5" />
-          </svg>
-        </div>
+        <LogoMark size={32} />
         <div>
           <b className="block text-base leading-[1.1] tracking-[.01em]">Yolcu</b>
           <span className="text-xs text-ink-3">AYNA idarəetmə mərkəzi</span>

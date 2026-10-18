@@ -5,7 +5,14 @@ import './globals.css';
 
 const onest = Onest({ subsets: ['latin', 'latin-ext'], weight: ['400', '500', '600', '700', '800'], variable: '--font-onest' });
 
-export const metadata: Metadata = { title: 'Yolcu · İdarəetmə mərkəzi' };
+export const metadata: Metadata = {
+  // shortcut: OG/manifest URLs resolve against :8080 (the one-process demo); set NEXT_PUBLIC_SITE_URL for a real host
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:8080'),
+  title: { default: 'Yolcu — AYNA idarəetmə mərkəzi', template: '%s | Yolcu' },
+  description: 'AYNA üçün vahid nəqliyyat platforması',
+  applicationName: 'Yolcu',
+  openGraph: { title: 'Yolcu — AYNA idarəetmə mərkəzi', description: 'AYNA üçün vahid nəqliyyat platforması', siteName: 'Yolcu', locale: 'az_AZ', type: 'website' },
+};
 
 // Apply saved theme before paint; without a saved choice the system preference applies (CSS media query).
 const themeInit = `try{var t=localStorage.getItem('yolcu.theme');if(t)document.documentElement.dataset.theme=t}catch(e){}`;

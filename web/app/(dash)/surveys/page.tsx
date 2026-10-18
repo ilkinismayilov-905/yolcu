@@ -9,6 +9,7 @@ import { api } from '@/lib/api';
 import { navItem } from '@/lib/nav';
 import { useStream } from '@/lib/stream';
 import { AUDIENCES, REWARDS, SURVEYS_PER_PAGE, SURVEY_STATUS, applySurveyUpdate, parseOptions, shortDate, surveyKeys } from '@/lib/surveys';
+import { LogoMark } from '@/components/Logo';
 
 const TABS = [['list', 'Bütün sorğular'], ['new', 'Yeni sorğu']] as const;
 const FILTER = [['', 'Hamısı'], ['ACTIVE', 'Aktiv'], ['CLOSED', 'Bitib'], ['DRAFT', 'Qaralama']] as const satisfies readonly (readonly [SurveyStatus | '', string])[];
@@ -305,12 +306,7 @@ function NewSurvey({ onCreated }: { onCreated: (s: SurveyListItem) => void }) {
       </Panel>
       <Panel title="İstifadəçinin görəcəyi bildiriş">
         <div className="grid max-w-[380px] grid-cols-[36px_1fr] gap-2.5 rounded-[14px] border border-line bg-surface-2 p-3" aria-live="polite">
-          <div className="grid size-9 place-items-center rounded-[9px] bg-primary">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" className="text-on-color" aria-hidden="true">
-              <circle cx="8.5" cy="12" r="5" />
-              <circle cx="15.5" cy="12" r="5" />
-            </svg>
-          </div>
+          <LogoMark size={36} />
           <div className="min-w-0">
             <b className="break-words">{f.title.trim() || 'Başlıq'}</b>
             <div className="text-[13px] text-ink-2">1 dəqiqəlik sorğu. Cavab verin, {reward} coin qazanın.</div>

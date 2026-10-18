@@ -6,6 +6,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { ApiError } from '@yolcu/shared/api';
 import { api, API_MODE, getToken, setToken } from '@/lib/api';
 import { Button } from '@/components/ui';
+import { LogoFull } from '@/components/Logo';
 
 const inputCls = 'h-10 rounded-[9px] border border-line bg-surface px-3 text-ink outline-0 focus:border-primary';
 
@@ -42,20 +43,12 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="grid min-h-screen place-items-center p-6">
+    <main className="grid min-h-screen place-items-center content-center gap-6 p-6">
+      <div className="grid justify-items-center gap-2">
+        <LogoFull height={132} />
+        <span className="text-sm text-ink-3">AYNA idarəetmə mərkəzi</span>
+      </div>
       <form onSubmit={submit} className="grid w-full max-w-[380px] gap-4 rounded-[14px] border border-line bg-surface p-6 shadow-card">
-        <div className="flex items-center gap-2.5 pb-1">
-          <div className="grid size-8 place-items-center rounded-[9px] bg-primary text-on-color">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6">
-              <circle cx="8.5" cy="12" r="5" />
-              <circle cx="15.5" cy="12" r="5" />
-            </svg>
-          </div>
-          <div>
-            <b className="block text-base leading-[1.1]">Yolcu</b>
-            <span className="text-xs text-ink-3">AYNA idarəetmə mərkəzi</span>
-          </div>
-        </div>
         <h1 className="m-0 text-[22px] font-bold tracking-[-.01em]">Daxil olun</h1>
         <div className="grid gap-1.5">
           <label htmlFor="email" className="text-[13px] font-medium text-ink-2">Email</label>

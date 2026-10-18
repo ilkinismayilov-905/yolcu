@@ -103,6 +103,35 @@ Böyük hərflə etiket (ALL CAPS) yoxdur. Başlıqlar cümlə formasında.
 - Canlı avtobus və naviqasiya animasiyası məzmunun özüdür.
 - `prefers-reduced-motion`: hamısı söndürülür, mövqe birbaşa dəyişir.
 
-## 8. Mənbələr
+## 8. Brend
+
+**Fayllar** (`web/public/brand/`, SVG əsasdır, PNG yalnız SVG işləməyən yerdə):
+
+| Fayl | Nə üçün | Harada |
+|---|---|---|
+| `logo-light.svg` | Tam loqo (nişan + "Yolçu" yazısı), açıq fon | Login (açıq rejim), OG şəkli olmayan yerlər |
+| `logo-dark.svg` | Tam loqo, tünd fon (yazı ağ) | Login (tünd rejim), OG şəkli |
+| `logo-icon.svg` | Nişan, ağ kvadrat fonla | Sidebar, avatar menyusu, bildiriş önizləməsi, `app/icon.svg` |
+| `logo-icon-transparent.svg` | Nişan, fonsuz | Yalnız açıq və sakit fonda |
+| `logo-icon-512.png` | Nişan, 512 px | Manifest ikonu |
+| `favicon.ico` | 16/32 px | `app/favicon.ico` |
+
+Kodda yalnız `web/components/Logo.tsx` istifadə olunur: `LogoMark` (nişan) və `LogoFull` (tam loqo; açıq/tünd fayl `.logo-on-light` / `.logo-on-dark` ilə tema token-lərinin seçiciləri üzrə dəyişir). Hər `img`-də `alt="Yolcu"`.
+
+**Ölçü:**
+- Nişan minimum 16 px (ekranda 24 px-dən kiçik olduqda yalnız nişan, yazılı loqo yox). Sidebar-da 32 px.
+- Tam loqo minimum 96 px hündürlük: yazı ondan kiçikdə oxunmur (loqo şaquli, 508 × 626). Dar zolaqlarda (sidebar, topbar) tam loqo yox, nişan + mətn.
+
+**Boş sahə:** loqonun hər tərəfində ən azı nişan hündürlüyünün 1/4-i qədər boş sahə; yanında başqa loqo, ikon və ya mətn bu sahəyə girməsin.
+
+**Tünd fonda:** tam loqo üçün `logo-dark.svg`; nişan (`logo-icon.svg`) öz ağ kvadratı ilə hər iki rejimdə oxunur. Fonsuz nişanı tünd və ya rəngli fona qoyma.
+
+**Etmə:** uzatma və ya sıxma (nisbət həmişə saxlanılır), rəngini dəyişmə və ya token rənginə boyama, kölgə, kontur, parıltı, qradiyent əlavə etmə, fırlatma, fotoşəkil üstünə qoyma, nişanı başqa forma ilə (dairə və s.) kəsmə.
+
+**Rəng:** loqonun öz rəngləri qırmızı `#A10D1F`, yaşıl `#15562D`, tünd göy `#132142`. Bunlar UI token-ləri deyil (UI-nin əsas rəngi `--primary` `#0B6FCB`); token-lərə əlavə edilməyib, UI-də loqodan kənar istifadə olunmur.
+
+**Ad:** loqonun yazısı "Yolçu"-dur; məhsul adı kodda və UI mətnlərində hələ "Yolcu" (CLAUDE.md). Fərq bilərəkdən saxlanılıb, qərar komandaya aiddir.
+
+## 9. Mənbələr
 
 Ölçü, rəng və davranış üçün həqiqət mənbəyi: `design/web_dashboard.html` və `design/mobile_app.html`. Onların `:root` token-ləri bu cədvəllə eynidir.
