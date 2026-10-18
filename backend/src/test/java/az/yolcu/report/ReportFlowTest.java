@@ -67,7 +67,7 @@ class ReportFlowTest {
     }
 
     @Test
-    void createAwardsCoinsAndPublishesSse() throws Exception {
+    void createAwardsNoCoinsAndPublishesSse() throws Exception {
         long u = passenger(1);
         int before = balance(u);
         mvc.perform(json(post("/api/v1/me/reports"), token(u, "PASSENGER"), BODY))
@@ -77,16 +77,16 @@ class ReportFlowTest {
                 .andExpect(jsonPath("$.status").value("NEW"))
                 .andExpect(jsonPath("$.operator").value("BakuBus MMC"))
                 .andExpect(jsonPath("$.place").value("Elmlər"))
-                .andExpect(jsonPath("$.coinsAwarded").value(5))
-                .andExpect(jsonPath("$.coinsGiven").value(5))
+                .andExpect(jsonPath("$.coinsAwarded").value(0))
+                .andExpect(jsonPath("$.coinsGiven").value(0))
                 .andExpect(jsonPath("$.events[0].type").value("CREATED"))
                 .andExpect(jsonPath("$.passenger").doesNotExist());
-        assertThat(balance(u)).isEqualTo(before + 5);
+        assertThat(balance(u)).isEqualTo(before);
 
         var sse = events.stream(StreamEvent.class).filter(e -> e.name().equals("report.created")).toList();
         assertThat(sse).extracting(StreamEvent::role).containsExactlyInAnyOrder(Role.DISPATCHER, Role.ADMIN);
         assertThat(((ReportListItem) sse.get(0).data()).code()).isEqualTo("A-2042");
-        assertThat(events.stream(StreamEvent.class).filter(e -> e.name().equals("coin.updated") && e.userId() == u)).hasSize(1);
+        assertThat(events.stream(StreamEvent.class).filter(e -> e.name().equals("coin.updated") && e.userId() == u)).isEmpty();
 
         mvc.perform(get("/api/v1/me/reports").header("Authorization", token(u, "PASSENGER")))
                 .andExpect(jsonPath("$.total").value(jdbc.queryForObject("select count(*) from reports where user_id = ?", Long.class, u)))
@@ -168,12 +168,14 @@ class ReportFlowTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("RESOLVED"))
                 .andExpect(jsonPath("$.answerText").value("Sürücü ilə izahat işi aparıldı"))
-                .andExpect(jsonPath("$.coinsGiven").value(20));
-        assertThat(balance(u)).isEqualTo(afterCreate + 15);
+                .andExpect(jsonPath("$.coinsGiven").value(0));
+        assertThat(balance(u)).isEqualTo(afterCreate);
+        assertThat(jdbc.queryForObject("select body from notifications where user_id = ? and title = 'Şikayətiniz həll edildi'", String.class, u))
+                .doesNotContain("Coin");
 
         mvc.perform(json(post("/api/v1/admin/reports/" + code + "/resolve"), dispatcher(), resolve))
                 .andExpect(status().isBadRequest()).andExpect(jsonPath("$.error.code").value("VALIDATION"));
-        assertThat(balance(u)).isEqualTo(afterCreate + 15);
+        assertThat(balance(u)).isEqualTo(afterCreate);
 
         mvc.perform(json(post("/api/v1/admin/reports/" + code + "/share"), dispatcher(), "{\"targets\":[\"OPERATOR\",\"YPX\"],\"hidePersonal\":true}"))
                 .andExpect(jsonPath("$.ok").value(true));

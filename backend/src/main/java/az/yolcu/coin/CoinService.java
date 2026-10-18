@@ -6,7 +6,6 @@ import az.yolcu.coin.dto.Wallet;
 import az.yolcu.common.ApiException;
 import az.yolcu.common.AppClock;
 import az.yolcu.config.YolcuProperties;
-import az.yolcu.report.ReportService;
 import az.yolcu.stream.StreamEvent;
 import az.yolcu.user.UserRepository;
 import java.math.BigDecimal;
@@ -26,7 +25,9 @@ import org.springframework.transaction.annotation.Transactional;
 /** Coin rules (02_ARCHITECTURE §9). The only place where users.coin_balance changes. */
 @Service
 public class CoinService {
-    public static final int REVIEW = 5, REPORT = 5, REPORT_VERIFIED = 15, FARE = 60;
+    public static final int REVIEW = 5;
+    /** Bus fare in manat; paid with coins it costs FARE_AZN × rate (0.60 × 500 = 300). */
+    public static final BigDecimal FARE_AZN = new BigDecimal("0.60");
     public static final List<Integer> SURVEY_REWARDS = List.of(5, 10, 20);
     /** Not earned: seed opening balances and demo top-ups (excluded from wallet history / "earned today"). */
     static final List<String> NOT_EARNED = List.of("SEED", "DEMO");
@@ -58,10 +59,7 @@ public class CoinService {
         return List.of(
                 new CoinRule("REVIEW", "Səfərdən sonra rəy", "+" + REVIEW, "Hər səfər üçün 1 dəfə"),
                 new CoinRule("SURVEY", "Sorğuya cavab", "+" + min + "–" + max, "Sorğu başına 1 dəfə"),
-                new CoinRule("REPORT", "Şikayət göndərmək", "+" + REPORT,
-                        ReportService.RATE_WINDOW.toMinutes() + " dəqiqədə ən çox " + ReportService.RATE_LIMIT),
-                new CoinRule("REPORT_VERIFIED", "Şikayət təsdiqləndi", "+" + REPORT_VERIFIED, "Operator və ya AYNA təsdiqi ilə"),
-                new CoinRule("FARE", "Gediş haqqını Yolçu Coin ilə ödəmək", "−" + FARE, manat(FARE).replace('.', ',') + " ₼ gediş"));
+                new CoinRule("FARE", "Gediş haqqını Yolçu Coin ilə ödəmək", "−" + fare(), manat(fare()).replace('.', ',') + " ₼ gediş"));
     }
 
     /** Adds a ledger row and updates the balance; returns the awarded amount, 0 if (user, reason, refId) was already awarded. */
@@ -124,6 +122,11 @@ public class CoinService {
                 BASE_EARNED_TODAY_USERS + ((Number) earned.get("u")).intValue(),
                 BASE_IN_CIRCULATION + circulation,
                 BASE_CONVERTED_MONTH.add(converted).setScale(2, RoundingMode.HALF_UP).toPlainString(), rate);
+    }
+
+    /** Fare in coins at yolcu.coin-rate. */
+    public int fare() {
+        return FARE_AZN.multiply(BigDecimal.valueOf(rate)).intValueExact();
     }
 
     /** coins → AZN at yolcu.coin-rate, "2.45". */

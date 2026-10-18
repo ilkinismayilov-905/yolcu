@@ -52,7 +52,7 @@ const db: ReportDetail[] = seed.map((r) => {
     place: r.place,
     text: r.text,
     hasPhoto: r.hasPhoto,
-    coinsGiven: status === 'RESOLVED' ? 20 : 5,
+    coinsGiven: 0,
     answerText: status === 'ANSWERED' || status === 'RESOLVED' ? ANSWER : null,
     events: buildEvents(created, r.minutesAgo, status, operator),
     passenger: 'Gizli',
@@ -95,7 +95,7 @@ function scheduleDemoReport() {
     const r: ReportDetail = {
       code: 'A-2042', createdAt: iso(t), route: '65', bort: '10-BB-559', operator: opName('bb'), category: 'Çox uzun gözləmə',
       textPreview: 'Avtobusu 25 dəqiqə gözlədim.', status: 'NEW', late: false, place: '28 May', text: 'Avtobusu 25 dəqiqə gözlədim.',
-      hasPhoto: false, coinsGiven: 5, answerText: null, events: buildEvents(t, 0, 'NEW', ''), passenger: 'Gizli',
+      hasPhoto: false, coinsGiven: 0, answerText: null, events: buildEvents(t, 0, 'NEW', ''), passenger: 'Gizli',
     };
     db.unshift(r);
     emitMock('report.created', toItem(r));
@@ -142,7 +142,6 @@ export const reportMocks: Record<string, MockHandler> = {
     if (r.status !== 'FORWARDED' && r.status !== 'ANSWERED') invalid(`Status keçidi mümkün deyil: ${r.status} → RESOLVED`);
     if (!answerText?.trim()) invalid('answerText boş ola bilməz');
     r.answerText = answerText;
-    r.coinsGiven += 15;
     return change(r, 'RESOLVED', { type: 'ANSWERED', note: answerText, actor: 'Dispetçer' });
   },
   'POST /admin/reports/:code/share': (body, { params }) => {

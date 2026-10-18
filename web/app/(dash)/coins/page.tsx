@@ -57,7 +57,7 @@ export default function Page() {
     <>
       <PageHeader
         title="Yolçu Coin proqramı"
-        desc="Sərnişinlər rəy, sorğu və şikayət üçün Yolçu Coin qazanır. Yolçu Coin real pul deyil: partnyor bank vasitəsilə manata çevrilir və ya gediş haqqına xərclənir."
+        desc="Sərnişinlər səfərdən sonra rəy və sorğu cavabı üçün Yolçu Coin qazanır. Yolçu Coin real pul deyil: partnyor bank vasitəsilə manata çevrilir və ya gediş haqqına xərclənir."
       />
       <div className="mb-4 grid grid-cols-4 gap-4 max-[1200px]:grid-cols-2 max-[820px]:grid-cols-1">
         <Kpi label="Bu gün qazanılan" value={s ? fmtNum(s.earnedToday) : dash} sub={s ? `Yolçu Coin, ${fmtNum(s.earnedTodayUsers)} istifadəçi` : summary.isError ? errText(summary.error) : 'Yolçu Coin'} subTone={summary.isError ? 'bad' : undefined} />

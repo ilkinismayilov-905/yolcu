@@ -14,7 +14,7 @@ import {
   type ReportStats,
   type ReportStatusFilter,
 } from '@yolcu/shared/api';
-import { Button, CoinIcon, Kpi, PageHeader, Pager, Panel, Plate, Seg, Status, Table, TD, TR_CLICK } from '@/components/ui';
+import { Button, Kpi, PageHeader, Pager, Panel, Plate, Seg, Status, Table, TD, TR_CLICK } from '@/components/ui';
 import { Drawer, Modal } from '@/components/Overlay';
 import { useToast } from '@/components/Toast';
 import { API_MODE, api } from '@/lib/api';
@@ -227,8 +227,6 @@ function ReportDrawer({ item, onClose }: { item: ReportListItem | null; onClose:
   const closed = isClosed(r.status);
   const at = (type: string) => d?.events.find((e) => e.type === type)?.createdAt;
   const busy = act.isPending;
-  // coinsGiven is the total; RESOLVED includes the +15 verification award.
-  const verified = d?.status === 'RESOLVED' && d.coinsGiven >= 15;
 
   return (
     <>
@@ -252,7 +250,7 @@ function ReportDrawer({ item, onClose }: { item: ReportListItem | null; onClose:
               </Button>
             )}
             {(r.status === 'FORWARDED' || r.status === 'ANSWERED') && (
-              <Button variant="p" disabled={busy} onClick={() => act.mutate({ method: 'POST', path: 'resolve', body: { answerText: ANSWER }, msg: 'Həll edildi. Sərnişinə bildiriş və +15 Yolçu Coin göndərildi' })}>
+              <Button variant="p" disabled={busy} onClick={() => act.mutate({ method: 'POST', path: 'resolve', body: { answerText: ANSWER }, msg: 'Həll edildi. Sərnişinə bildiriş göndərildi' })}>
                 Həll edildi
               </Button>
             )}
@@ -279,11 +277,6 @@ function ReportDrawer({ item, onClose }: { item: ReportListItem | null; onClose:
               <dt>Operator</dt><dd>{d.operator ?? '—'}</dd>
               <dt>Yer</dt><dd>{d.place ? `${d.place} yaxınlığında` : '—'}</dd>
               <dt>Mənbə</dt><dd>Mobil tətbiq, GPS və bilet ilə təsdiqlənib</dd>
-              <dt>Sərnişinə verilən</dt>
-              <dd>
-                <CoinIcon />{' '}
-                {verified ? `${d.coinsGiven - 15} coin, təsdiq üçün +15` : `${d.coinsGiven} coin`}
-              </dd>
             </dl>
             <div>
               <div className="mb-2 text-[13px] text-ink-3">Tarixçə</div>

@@ -49,7 +49,7 @@ export const NAV: { group: string; items: NavItem[] }[] = [
     items: [
       { href: '/reports', label: 'Şikayətlər', icon: 'chat', badge: 'reports', desc: 'Mobil tətbiqdən birbaşa gələn bütün şikayətlər. Sətrə klikləyin: detallara baxın, operatora göndərin və ya statusu dəyişin.' },
       { href: '/surveys', label: 'Sorğular', icon: 'poll', desc: 'Bütün istifadəçilərə və ya seçilmiş qrupa bildiriş kimi sorğu göndərin. Cavab verənlər Yolçu Coin qazanır.' },
-      { href: '/coins', label: 'Yolçu Coin', icon: 'coin', desc: 'Sərnişinlər rəy, sorğu və şikayət üçün Yolçu Coin qazanır. Yolçu Coin real pul deyil: partnyor bank vasitəsilə manata çevrilir və ya gediş haqqına xərclənir.' },
+      { href: '/coins', label: 'Yolçu Coin', icon: 'coin', desc: 'Sərnişinlər səfərdən sonra rəy və sorğu cavabı üçün Yolçu Coin qazanır. Yolçu Coin real pul deyil: partnyor bank vasitəsilə manata çevrilir və ya gediş haqqına xərclənir.' },
     ],
   },
   {

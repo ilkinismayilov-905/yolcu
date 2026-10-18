@@ -150,7 +150,7 @@ export interface ReportEvent {
 export interface ReportDetail extends ReportListItem {
   text: string;
   hasPhoto: boolean;
-  /** Total coins the passenger got for this report: submit (+5) and RESOLVED (+15). */
+  /** Legacy: reports no longer earn coins, so this is 0 for new reports. */
   coinsGiven: number;
   answerText: string | null;
   events: ReportEvent[];
@@ -518,7 +518,7 @@ export interface CoinSummary {
   rate: number;
 }
 
-/** One row of GET /admin/coins/rules (mockup #p-coins "Coin qaydaları"): `amount` e.g. "+5", "+5–20", "−60". */
+/** One row of GET /admin/coins/rules (mockup #p-coins "Coin qaydaları"): `amount` e.g. "+5", "+5–20", "−300". */
 export interface CoinRule {
   code: string;
   action: string;

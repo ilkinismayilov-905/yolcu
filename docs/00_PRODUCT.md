@@ -58,8 +58,8 @@ Ekologiya bölməsi layihədən **çıxarılıb**.
 
 ## Yolçu Coin modeli
 
-- Yolçu Coin real pul deyil (API-də sahə adları `coin…` qalır). Sərnişin rəy (+5), sorğu (+5–20), şikayət (+5) və təsdiqlənmiş şikayət (+15) üçün qazanır.
-- İstifadə: gediş haqqı (60 coin = 0,60 ₼) və ya partnyor bank vasitəsilə manata çevirmə (100 coin = 1 ₼, minimum 100).
+- Yolçu Coin real pul deyil (API-də sahə adları `coin…` qalır). Sərnişin yalnız səfər rəyi (+5) və sorğu cavabı (+5–20) üçün qazanır. Şikayət göndərmək və şikayətin təsdiqlənməsi coin vermir (şikayət mükafat üçün yox, problem üçün göndərilməlidir).
+- İstifadə: gediş haqqı (300 Yolçu Coin = 0,60 ₼) və ya partnyor bank vasitəsilə manata çevirmə (500 Yolçu Coin = 1 ₼, minimum 500, 100-ə bölünən).
 - Demo-da bank inteqrasiyası simulyasiyadır: sorğu yaranır, 60 saniyə sonra "tamamlandı" olur.
 
 ## Əsas demo axını (pitch-in onurğası)

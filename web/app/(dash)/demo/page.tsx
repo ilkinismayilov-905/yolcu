@@ -18,7 +18,7 @@ const SCENARIOS: [DemoScenario, string, string, [string, string]][] = [
   ['crowd-28may', '28 May-da sıxlıq', '28 May hub-ında gözləyən insan sayı 46-dan 70-ə qalxır.', ['/hubs', 'Hub kameraları']],
   ['ganja-arrival', 'Gəncə reysi gəlir', 'Biletim.az: Gəncə reysi 5 dəqiqəyə gəlir, 45 bilet satılıb. Lentdə Biletim.az xəbərdarlığı çıxır.', ['/terminal', 'Avtovağzal']],
   ['stadium', 'Stadionda oyun', 'Tədbir xəbərdarlığı yaranır, sərnişinlərə bildiriş göndərilir.', ['/map', 'Canlı xəritə']],
-  ['coin-conversion', 'Yolçu Coin çevirmə sorğusu', 'Sintetik sərnişin 200 Yolçu Coin-i manata çevirmək istəyir. Sorğu "Gözləyir" statusu ilə görünür, 60 saniyə sonra "Tamamlandı" olur.', ['/coins', 'Yolçu Coin proqramı']],
+  ['coin-conversion', 'Yolçu Coin çevirmə sorğusu', 'Sintetik sərnişin 1000 Yolçu Coin-i (2,00 ₼) manata çevirmək istəyir. Sorğu "Gözləyir" statusu ilə görünür, 60 saniyə sonra "Tamamlandı" olur.', ['/coins', 'Yolçu Coin proqramı']],
   ['rain', 'Yağış', 'Hava xəbərdarlığı: yağışa görə avtobus tələbatı artacaq.', ['/map', 'Canlı xəritə']],
 ];
 

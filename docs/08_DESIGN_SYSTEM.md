@@ -91,7 +91,7 @@ Böyük hərflə etiket (ALL CAPS) yoxdur. Başlıqlar cümlə formasında.
 
 - Sadə, aktiv, cümlə forması: "Şikayət göndər", "Sorğunu göndər", "Banka çevir".
 - Eyni hərəkət eyni adla: düymə "Operatora göndər" → toast "Operatora göndərildi".
-- Xəta: nə oldu + necə düzəlir. "Yolçu Coin kifayət etmir: 40 var, 60 lazımdır. Başqa ödəniş üsulu seçin."
+- Xəta: nə oldu + necə düzəlir. "Yolçu Coin kifayət etmir: 40 var, 300 lazımdır. Başqa ödəniş üsulu seçin."
 - Boş vəziyyət: niyə boşdur + nə etmək olar. "Bu filtrə uyğun şikayət yoxdur. Filtrləri dəyişin."
 - Rəqəmlər: minliklər boşluqla (12 480), onluq vergüllə (4,2), "dəq", "₼", "coin".
 - Simulyasiya datası olan ekranda "Demo data" nişanı.

@@ -369,12 +369,12 @@ Girdi: `from {lat,lon}`, `to` (demo yer adı və ya koordinat), `filter`, `acces
 |---|---|---|
 | Rəy göndərildi | +5 | `trip:{id}` |
 | Sorğu cavablandı | +survey.coin_reward | `survey:{id}` |
-| Şikayət göndərildi | +5 | `report:{code}` (10 dəqiqədə 3-dən çoxsa 0) |
-| Şikayət RESOLVED oldu | +15 | `report-ok:{code}` |
-| Gediş coin ilə | −60 | `trip:{id}` |
-| Banka çevirmə | −coins | `conv:{id}` |
+| Gediş coin ilə | −300 (= 0,60 ₼ × kurs) | `trip:{id}` |
+| Banka çevirmə | −coins (min 500 = 1 ₼, 100-ə bölünən) | `conv:{id}` |
 
-`@Transactional`: `users.coin_balance` yenilənir + `coin_tx` yazılır. `spend` şərtli `update ... where coin_balance >= n` ilə: balans < 0 ola bilməz → `409 COINS_INSUFFICIENT` (`Yolçu Coin kifayət etmir: {var} var, {lazım} lazımdır`). Məbləğ sabitləri (`REVIEW`, `REPORT`, `REPORT_VERIFIED`, `FARE`, `SURVEY_REWARDS`) və qaydalar cədvəli (`CoinService.rules()` → `/admin/coins/rules`, `/me/wallet.rules`) bir yerdədir. `SEED`/`DEMO` sətirləri tarixçədə və "bu gün qazanılan"da sayılmır. Bank çevirməsi: `coin_conversions.bank_due_at` (V4, divar saatı) — `BankSimJob` hər saniyə vaxtı keçən `PENDING`-i `COMPLETED` edir; `null` = simulyasiyaya düşmür (seed). Unique pozulsa — səssiz keç (artıq verilib). Hər dəyişiklikdən sonra `coin.updated` SSE.
+Kurs: **500 Yolçu Coin = 1 ₼** (`yolcu.coin-rate`). Şikayətlər coin qazandırmır (nə göndərmə, nə RESOLVED); köhnə `REPORT`/`REPORT_VERIFIED` ledger sətirləri tarixçədə qalır. Qazanma yalnız: səfər rəyi +5, sorğu +5/10/20. Gediş: `FARE_AZN` (0,60 ₼) × kurs, hardcode deyil. `V5__coin_rate_500.sql` seed çevirmələrinin `azn`-ini və ledger etiketini yeni kursla yenidən hesablayır (idempotent).
+
+`@Transactional`: `users.coin_balance` yenilənir + `coin_tx` yazılır. `spend` şərtli `update ... where coin_balance >= n` ilə: balans < 0 ola bilməz → `409 COINS_INSUFFICIENT` (`Yolçu Coin kifayət etmir: {var} var, {lazım} lazımdır`). Məbləğ sabitləri (`REVIEW`, `SURVEY_REWARDS`, `FARE_AZN` → `fare()`) və qaydalar cədvəli (`CoinService.rules()` → `/admin/coins/rules`, `/me/wallet.rules`) bir yerdədir. `SEED`/`DEMO` sətirləri tarixçədə və "bu gün qazanılan"da sayılmır. Bank çevirməsi: `coin_conversions.bank_due_at` (V4, divar saatı) — `BankSimJob` hər saniyə vaxtı keçən `PENDING`-i `COMPLETED` edir; `null` = simulyasiyaya düşmür (seed). Unique pozulsa — səssiz keç (artıq verilib). Hər dəyişiklikdən sonra `coin.updated` SSE.
 
 ## 10. Konfiqurasiya (`application.yml`)
 
@@ -384,7 +384,7 @@ yolcu:
   cors-origins: http://localhost:3000,http://192.168.1.10:3000
   data-dir: ../data/processed
   mocks-dir: ../mocks
-  coin-rate: 100                 # 100 coin = 1 AZN
+  coin-rate: 500                 # 500 coin = 1 AZN
   demo:
     auto-advance-reports: false  # true: dashboard-da adam yoxdursa şikayət öz-özünə irəliləyir
     bank-delay-seconds: 60

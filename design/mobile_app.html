@@ -371,7 +371,7 @@ textarea{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12
       <div style="text-align:left" id="methods">
         <button class="method on" data-m="bk"><span class="mi" style="background:var(--primary)">BK</span><div style="flex:1"><b>BakıKart •• 4821</b><div class="small faint">Balans 3,20 ₼</div></div></button>
         <button class="method" data-m="card"><span class="mi" style="background:#33415A">KART</span><div style="flex:1"><b>Bank kartı •• 0193</b><div class="small faint">Avtomatik ödəniş</div></div></button>
-        <button class="method" data-m="coin"><span class="mi" style="background:var(--coin)">COIN</span><div style="flex:1"><b>Yolçu Coin ilə, 60 coin</b><div class="small faint" id="payCoinBal"></div></div></button>
+        <button class="method" data-m="coin"><span class="mi" style="background:var(--coin)">COIN</span><div style="flex:1"><b>Yolçu Coin ilə, 300 coin</b><div class="small faint" id="payCoinBal"></div></div></button>
       </div>
       <div class="err" id="payErr"></div>
       <button class="btn p" id="payBtn">Ödənişi təsdiqlə</button>
@@ -458,7 +458,7 @@ textarea{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12
         <div class="btn2"><button class="btn p sm" data-go="v-convert" style="width:100%">Banka çevir</button><button class="btn sm" id="payWithCoin" style="width:100%">Gedişə xərclə</button></div>
       </div>
       <div class="sec">Yolçu Coin necə qazanılır</div>
-      <div class="card small" style="display:grid;gap:6px"><div class="row between"><span>Səfərdən sonra rəy</span><b>+5</b></div><div class="row between"><span>Sorğuya cavab</span><b>+5–20</b></div><div class="row between"><span>Şikayət göndərmək</span><b>+5</b></div><div class="row between"><span>Şikayət təsdiqləndi</span><b>+15</b></div></div>
+      <div class="card small" style="display:grid;gap:6px"><div class="row between"><span>Səfərdən sonra rəy</span><b>+5</b></div><div class="row between"><span>Sorğuya cavab</span><b>+5–20</b></div></div>
       <div class="sec">Biletim.az biletləriniz</div>
       <div class="bil"><div class="ic">BİL</div><div><b>Bakı → Gəncə</b><div class="small faint">18 oktyabr, 18:30, yer 14</div></div><button class="btn sm" data-dest="Avtovağzal" data-go="v-trip">Avtovağzala yol</button></div>
       <div class="sec">Nişanlar</div>
@@ -473,7 +473,7 @@ textarea{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12
     <div class="scroll">
       <button class="back" data-go="v-wallet">‹ Cüzdan</button>
       <div class="h1">Yolçu Coin-i banka çevir</div>
-      <p class="sub">Yolçu Coin partnyor bank vasitəsilə manata çevrilir və kartınıza köçürülür. Məzənnə: 100 coin = 1 ₼. Minimum 100 coin.</p>
+      <p class="sub">Yolçu Coin partnyor bank vasitəsilə manata çevrilir və kartınıza köçürülür. Məzənnə: 500 Yolçu Coin = 1 ₼. Minimum 500 Yolçu Coin.</p>
       <div class="amts" id="amts"><button data-amt="100">100</button><button data-amt="200" class="on">200</button><button data-amt="all">Hamısı</button></div>
       <div class="card row between"><span class="muted">Kartınıza köçürüləcək</span><b style="font-size:22px" id="cvAzn">2,00 ₼</b></div>
       <div class="sec">Kart</div>
@@ -532,7 +532,7 @@ textarea{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const ns='http://www.w3.org/2000/svg';
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-const azn=c=>(c/100).toFixed(2).replace('.',',');
+const azn=c=>(c/500).toFixed(2).replace('.',',');
 
 /* ============ STATE ============ */
 const S={coins:245,history:[['Sorğu: interval rahatlığı','16 okt',10],['Təsdiqlənmiş şikayət #A-2031','15 okt',15],['Səfər rəyi, 88','15 okt',5],['Gediş haqqı, Yolçu Coin ilə','14 okt',-60]],
@@ -684,8 +684,8 @@ $('#arrived').onclick=()=>{if(OPTS[S.opt].stop==='N'){S.paidWith='BakıKart';rou
 let payM='bk';
 $('#methods').onclick=e=>{const m=e.target.closest('[data-m]');if(!m)return;payM=m.dataset.m;$$('[data-m]').forEach(x=>x.classList.toggle('on',x===m));$('#payErr').textContent='';};
 $('#payBtn').onclick=()=>{
-  if(payM==='coin'){if(S.coins<60){$('#payErr').textContent=`Yolçu Coin kifayət etmir: ${S.coins} var, 60 lazımdır. Başqa ödəniş üsulu seçin.`;return;}addCoins(-60,'Gediş haqqı, Yolçu Coin ilə');}
-  S.paidWith={bk:'BakıKart •• 4821',card:'Bank kartı •• 0193',coin:'60 coin'}[payM];S.reviewed=false;
+  if(payM==='coin'){if(S.coins<300){$('#payErr').textContent=`Yolçu Coin kifayət etmir: ${S.coins} var, 300 lazımdır. Başqa ödəniş üsulu seçin.`;return;}addCoins(-300,'Gediş haqqı, Yolçu Coin ilə');}
+  S.paidWith={bk:'BakıKart •• 4821',card:'Bank kartı •• 0193',coin:'300 coin'}[payM];S.reviewed=false;
   toast('0,60 ₼ ödənildi. Xoş səfər');setTimeout(()=>route('v-ride'),700);};
 $('#payWithCoin').onclick=()=>{payM='coin';$$('[data-m]').forEach(x=>x.classList.toggle('on',x.dataset.m==='coin'));route('v-pay');};
 
@@ -706,13 +706,13 @@ $('#sendReview').onclick=()=>{if(S.reviewed)return;S.reviewed=true;addCoins(5,`S
 let repN=2042;
 $('#photoBtn').onclick=e=>{e.currentTarget.classList.toggle('on');e.currentTarget.textContent=e.currentTarget.classList.contains('on')?'✓ 1 foto əlavə edildi':'Foto və ya video əlavə et';};
 function renderReportForm(){const o=OPTS[S.opt];const pl=o.plate==='M'?'65':o.plate;$('#repPlate').textContent=pl;$('#repPlate').className='plate '+(o.cls==='d'||o.plate==='M'?'d':'e');}
-$('#sendReport').onclick=()=>{const cat=$('#repCats .cat.on').textContent;const id='A-'+(repN++);const r={id,cat,route:$('#repPlate').textContent,stage:1,when:'İndi'};S.reports.unshift(r);addCoins(5,'Şikayət göndərildi');route('status:'+id);
+$('#sendReport').onclick=()=>{const cat=$('#repCats .cat.on').textContent;const id='A-'+(repN++);const r={id,cat,route:$('#repPlate').textContent,stage:1,when:'İndi'};S.reports.unshift(r);route('status:'+id);
   setTimeout(()=>{r.stage=2;refreshStatus(id);},4000);
   setTimeout(()=>{r.stage=3;refreshStatus(id);addNotif({id:'r'+id,t:'Şikayətiniz operatora göndərildi',s:`#${id}: BakuBus MMC 24 saat ərzində cavab verməlidir.`,to:'status:'+id,ic:'ŞİK',c:'var(--primary)'});push('Şikayətiniz operatora göndərildi',`#${id}, BakuBus MMC`,'status:'+id);},9000);};
 const STAGES=['Göndərildi','AYNA qəbul etdi','Operatora göndərildi','Operator cavab verdi'];
 function statusHTML(id){const r=S.reports.find(x=>x.id===id);if(!r)return '';return `<button class="back" data-go="v-home">‹ Xəritə</button><span class="st ${r.stage>=4?'ok':'info'}">${r.stage>=4?'Cavab verilib':'İcradadır'}</span><div class="h1" style="margin-top:6px">Şikayət #${r.id}</div><p class="sub">${r.route} nömrəli avtobus. ${r.cat}.</p>
   <ul class="tl">${STAGES.map((s,i)=>`<li class="${r.stage>i?'done':''}"><i>${r.stage>i?'✓':i+1}</i><div><b>${s}</b><div class="small faint">${i===0?r.when:i===1&&r.stage>1?'GPS və bilet məlumatı ilə təsdiqləndi':i===2&&r.stage>2?'BakuBus MMC, cavab müddəti 24 saat':i===3&&r.stage>3?'Sürücü ilə izahat işi aparıldı':'Gözlənilir'}</div></div></li>`).join('')}</ul>
-  ${r.stage>=4?'<div class="card small">Təsdiqlənmiş şikayət üçün <b>15 coin</b> hesabınıza köçürüldü.</div>':'<div class="card small muted">Hər addımda bildiriş alacaqsınız.</div>'}`;}
+  ${r.stage>=4?'<div class="card small">Şikayətiniz təsdiqləndi. Təşəkkür edirik.</div>':'<div class="card small muted">Hər addımda bildiriş alacaqsınız.</div>'}`;}
 let curStatus=null;function refreshStatus(id){if(curStatus===id&&$('#v-status').classList.contains('on'))$('#statusBody').innerHTML=statusHTML(id);renderProfile();}
 
 /* ============ NOTIFS ============ */
@@ -734,7 +734,7 @@ function renderWallet(){$('#wBal').textContent=S.coins;$('#wAzn').textContent=`�
 let amt=200;
 $('#amts').onclick=e=>{const b=e.target.closest('[data-amt]');if(!b)return;amt=b.dataset.amt==='all'?'all':+b.dataset.amt;$$('[data-amt]').forEach(x=>x.classList.toggle('on',x===b));updAmt();};
 function updAmt(){const a=amt==='all'?Math.floor(S.coins/100)*100:amt;$('#cvAzn').textContent=azn(a)+' ₼';$('#cvErr').textContent='';}
-$('#cvBtn').onclick=()=>{const a=amt==='all'?Math.floor(S.coins/100)*100:amt;if(a<100||a>S.coins){$('#cvErr').textContent=`Kifayət qədər Yolçu Coin yoxdur. Balans: ${S.coins} coin, minimum 100.`;return;}
+$('#cvBtn').onclick=()=>{const a=amt==='all'?Math.floor(S.coins/100)*100:amt;if(a<500||a>S.coins){$('#cvErr').textContent=`Kifayət qədər Yolçu Coin yoxdur. Balans: ${S.coins} coin, minimum 500.`;return;}
   addCoins(-a,`Banka köçürmə, ${azn(a)} ₼ (icra olunur)`);toast(`${a} Yolçu Coin çevrildi. ${azn(a)} ₼ kartınıza köçürülür`);route('v-wallet');
   setTimeout(()=>{const h=S.history.find(x=>x[0].includes('icra olunur'));if(h)h[0]=h[0].replace('icra olunur','tamamlandı');renderWallet();addNotif({id:'cv'+Date.now(),t:'Köçürmə tamamlandı',s:`${azn(a)} ₼ partnyor bank kartınıza köçürüldü.`,to:'v-wallet',ic:'₼',c:'var(--coin)'});push('Köçürmə tamamlandı',`${azn(a)} ₼ kartınıza köçürüldü`,'v-wallet');},7000);};
 

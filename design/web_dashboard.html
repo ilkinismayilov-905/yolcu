@@ -605,9 +605,7 @@ input[type=range]{width:100%;accent-color:var(--primary)}
       <table><thead><tr><th>Hərəkət</th><th>Coin</th><th>Limit</th></tr></thead><tbody>
         <tr><td>Səfərdən sonra rəy</td><td><span class="coin">Y</span> <b>5</b></td><td class="muted wrap">Hər səfər üçün 1 dəfə</td></tr>
         <tr><td>Sorğuya cavab</td><td><span class="coin">Y</span> <b>5–20</b></td><td class="muted">Sorğu başına 1 dəfə</td></tr>
-        <tr><td>Şikayət göndərmək</td><td><span class="coin">Y</span> <b>5</b></td><td class="muted">10 dəqiqədə ən çox 3</td></tr>
-        <tr><td>Şikayət təsdiqləndi</td><td><span class="coin">Y</span> <b>15</b></td><td class="muted">Operator və ya AYNA təsdiqi ilə</td></tr>
-        <tr><td>Gediş haqqını Yolçu Coin ilə ödəmək</td><td><b class="bad-t">−60</b></td><td class="muted">0,60 ₼ gediş</td></tr>
+        <tr><td>Gediş haqqını Yolçu Coin ilə ödəmək</td><td><b class="bad-t">−300</b></td><td class="muted">0,60 ₼ gediş</td></tr>
       </tbody></table>
     </div>
     <div class="panel">
@@ -865,7 +863,7 @@ function openReport(id){const r=REPORTS.find(x=>x.id===id);const s=stOf(r.st);co
   <div class="drawer-b">
     <div class="note" style="color:var(--ink)">“${r.text}”</div>
     <div class="photo">Sərnişinin əlavə etdiyi foto</div>
-    <dl class="kv"><dt>Marşrut</dt><dd><span class="plate ${['88','33','H1','M1'].includes(r.route)?'e':'d'}">${r.route}</span></dd><dt>Bort nömrəsi</dt><dd>${r.bort}</dd><dt>Operator</dt><dd>${r.op}</dd><dt>Yer</dt><dd>${r.hub} yaxınlığında</dd><dt>Mənbə</dt><dd>Mobil tətbiq, GPS və bilet ilə təsdiqlənib</dd><dt>Sərnişinə verilən</dt><dd><span class="coin">Y</span> ${r.coin} coin${done?', təsdiq üçün +15':''}</dd></dl>
+    <dl class="kv"><dt>Marşrut</dt><dd><span class="plate ${['88','33','H1','M1'].includes(r.route)?'e':'d'}">${r.route}</span></dd><dt>Bort nömrəsi</dt><dd>${r.bort}</dd><dt>Operator</dt><dd>${r.op}</dd><dt>Yer</dt><dd>${r.hub} yaxınlığında</dd><dt>Mənbə</dt><dd>Mobil tətbiq, GPS və bilet ilə təsdiqlənib</dd><dt>Sərnişinə verilən</dt><dd><span class="coin">Y</span> ${r.coin} coin</dd></dl>
     <div><div class="small faint" style="margin-bottom:8px">Tarixçə</div><ul class="timeline"><li><b>Göndərildi</b> <span class="faint">${r.time}</span></li><li class="${r.st==='new'?'p':''}"><b>AYNA baxır</b></li><li class="${['fwd','answered','done'].includes(r.st)?'':'p'}"><b>Operatora göndərildi</b> <span class="faint">${r.op}</span></li><li class="${done?'':'p'}"><b>Operator cavab verdi</b>${done?' <span class="faint">Sürücü ilə izahat işi aparıldı</span>':''}</li></ul></div>
   </div>
   <div class="drawer-f"><button class="btn" id="dShare">Paylaş</button>${r.st==='new'?'<button class="btn" id="dReview">Baxılır et</button>':''}${['new','review'].includes(r.st)?'<button class="btn p" id="dFwd">Operatora göndər</button>':''}${['fwd','answered'].includes(r.st)?'<button class="btn p" id="dDone">Həll edildi</button>':''}</div>`;
@@ -874,7 +872,7 @@ function openReport(id){const r=REPORTS.find(x=>x.id===id);const s=stOf(r.st);co
   const upd=(st,msg)=>{r.st=st;r.late=false;renderReports();openReport(id);toast(msg);};
   $('#dReview')&&($('#dReview').onclick=()=>upd('review','Status dəyişdi: baxılır'));
   $('#dFwd')&&($('#dFwd').onclick=()=>upd('fwd',`#${r.id} ${r.op}-yə göndərildi. Cavab müddəti 24 saat`));
-  $('#dDone')&&($('#dDone').onclick=()=>upd('done','Həll edildi. Sərnişinə bildiriş və +15 Yolçu Coin göndərildi'));
+  $('#dDone')&&($('#dDone').onclick=()=>upd('done','Həll edildi. Sərnişinə bildiriş göndərildi'));
   $('#dShare').onclick=()=>{$('#shS').textContent=`#${r.id}, ${r.op}`;$('#shareModal').classList.add('on');};
 }
 function closeDrawer(){$('#drawer').classList.remove('on');if(!$('#shareModal').classList.contains('on'))$('#scrim').classList.remove('on');}

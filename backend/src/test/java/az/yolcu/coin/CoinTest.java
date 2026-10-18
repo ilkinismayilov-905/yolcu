@@ -77,9 +77,9 @@ class CoinTest {
 
     @Test
     void spendBelowZeroIsRejected() throws Exception {
-        convert(300).andExpect(status().isConflict())
+        convert(500).andExpect(status().isConflict())
                 .andExpect(jsonPath("$.error.code").value("COINS_INSUFFICIENT"))
-                .andExpect(jsonPath("$.error.message").value("Yolçu Coin kifayət etmir: 245 var, 300 lazımdır"));
+                .andExpect(jsonPath("$.error.message").value("Yolçu Coin kifayət etmir: 245 var, 500 lazımdır"));
         assertThat(balance(nigar)).isEqualTo(245);
         assertThat(jdbc.queryForObject("select count(*) from coin_conversions where user_id = ?", Long.class, nigar)).isZero();
         assertThatThrownBy(() -> coins.spend(nigar, 246, "FARE", "t-x", "x"))
@@ -98,22 +98,26 @@ class CoinTest {
 
     @Test
     void conversionValidationAndBalance() throws Exception {
-        convert(99).andExpect(status().isBadRequest()).andExpect(jsonPath("$.error.code").value("VALIDATION"));
-        convert(150).andExpect(status().isBadRequest()).andExpect(jsonPath("$.error.code").value("VALIDATION"));
-        convert(100).andExpect(status().isCreated())
-                .andExpect(jsonPath("$.coins").value(100))
+        coins.award(nigar, 1000, "DEMO", "t-top", "Demo"); // 1245
+        for (int bad : new int[]{400, 499, 550}) {
+            convert(bad).andExpect(status().isBadRequest()).andExpect(jsonPath("$.error.code").value("VALIDATION"))
+                    .andExpect(jsonPath("$.error.message").value("coins: minimum 500 və 100-ə bölünən olmalıdır"));
+        }
+        convert(500).andExpect(status().isCreated())
+                .andExpect(jsonPath("$.coins").value(500))
                 .andExpect(jsonPath("$.azn").value("1.00"))
                 .andExpect(jsonPath("$.status").value("PENDING"))
-                .andExpect(jsonPath("$.coinBalance").value(145));
-        convert(100).andExpect(status().isCreated()).andExpect(jsonPath("$.coinBalance").value(45));
-        assertThat(balance(nigar)).isEqualTo(45);
-        assertThat(jdbc.queryForObject("select sum(amount) from coin_tx where user_id = ?", Integer.class, nigar)).isEqualTo(45);
+                .andExpect(jsonPath("$.coinBalance").value(745));
+        convert(600).andExpect(status().isCreated()).andExpect(jsonPath("$.azn").value("1.20")).andExpect(jsonPath("$.coinBalance").value(145));
+        assertThat(balance(nigar)).isEqualTo(145);
+        assertThat(jdbc.queryForObject("select sum(amount) from coin_tx where user_id = ?", Integer.class, nigar)).isEqualTo(145);
         assertThat(stream("conversion.updated")).hasSize(4); // DISPATCHER + ADMIN per conversion
     }
 
     @Test
     void bankJobCompletesAfterDelay() throws Exception {
-        convert(200).andExpect(status().isCreated()).andExpect(jsonPath("$.coinBalance").value(45));
+        coins.award(nigar, 255, "DEMO", "t-top", "Demo"); // 500
+        convert(500).andExpect(status().isCreated()).andExpect(jsonPath("$.coinBalance").value(0));
         long id = jdbc.queryForObject("select max(id) from coin_conversions where user_id = ?", Long.class, nigar);
         events.clear();
         assertThat(conversions.completeDue(OffsetDateTime.now())).isZero();
@@ -123,7 +127,7 @@ class CoinTest {
         var n = (NotificationDto) stream("notification.created").get(0).data();
         assertThat(n.type()).isEqualTo("COIN");
         assertThat(n.target()).isEqualTo("wallet");
-        assertThat(n.body()).isEqualTo("200 Yolçu Coin → 2,00 ₼ kartınıza köçürüldü (•• 0193)");
+        assertThat(n.body()).isEqualTo("500 Yolçu Coin → 1,00 ₼ kartınıza köçürüldü (•• 0193)");
         assertThat(stream("alert.created")).extracting(e -> ((AlertDto) e.data()).category()).contains("COIN");
         var row = (ConversionRow) stream("conversion.updated").stream().filter(e -> e.role() == Role.DISPATCHER).findFirst().orElseThrow().data();
         assertThat(row.id()).isEqualTo(id);
@@ -139,18 +143,19 @@ class CoinTest {
         jdbc.update("insert into coin_tx (user_id, amount, reason, ref_id, label, created_at) values (?, 100, 'SEED', 't-seed', 'Başlanğıc balansı', ?)",
                 nigar, coins.today().plusMinutes(1));
         coins.award(nigar, 5, "REVIEW", "t-2", "Səfər rəyi, 88");
-        convert(100).andExpect(status().isCreated());
+        coins.award(nigar, 400, "DEMO", "t-top", "Demo"); // DEMO is hidden too
+        convert(500).andExpect(status().isCreated());
         mvc.perform(get("/api/v1/me/wallet").header("Authorization", passenger()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.balance").value(150))
-                .andExpect(jsonPath("$.aznEquivalent").value("1.50"))
-                .andExpect(jsonPath("$.rate").value(100))
+                .andExpect(jsonPath("$.aznEquivalent").value("0.30"))
+                .andExpect(jsonPath("$.rate").value(500))
                 .andExpect(jsonPath("$.earnedToday").value(5))
                 .andExpect(jsonPath("$.history[0].label").value("Banka çevirmə: 1,00 ₼"))
-                .andExpect(jsonPath("$.history[0].amount").value(-100))
+                .andExpect(jsonPath("$.history[0].amount").value(-500))
                 .andExpect(jsonPath("$.history[0].status").value("PENDING"))
                 .andExpect(jsonPath("$.history[?(@.label == 'Başlanğıc balansı')]").isEmpty())
-                .andExpect(jsonPath("$.rules.length()").value(4))
+                .andExpect(jsonPath("$.rules.length()").value(2))
                 .andExpect(jsonPath("$.rules[1].amount").value("+5–20"));
     }
 
@@ -161,24 +166,24 @@ class CoinTest {
                 .andExpect(jsonPath("$.earnedToday").value(greaterThanOrEqualTo(48210)))
                 .andExpect(jsonPath("$.inCirculation").value(greaterThanOrEqualTo(3_100_000)))
                 .andExpect(jsonPath("$.convertedThisMonthAzn").isString())
-                .andExpect(jsonPath("$.rate").value(100));
+                .andExpect(jsonPath("$.rate").value(500));
         mvc.perform(get("/api/v1/admin/coins/conversions?page=0&size=10").header("Authorization", dispatcher()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.total").value(5))
                 .andExpect(jsonPath("$.items[0].coins").value(500))
                 .andExpect(jsonPath("$.items[0].status").value("COMPLETED"))
-                .andExpect(jsonPath("$.items[0].azn").value("5.00"))
+                .andExpect(jsonPath("$.items[0].azn").value("1.00"))
                 .andExpect(jsonPath("$.items[0].userName").value(org.hamcrest.Matchers.matchesPattern("\\S+ \\S\\.")))
                 .andExpect(jsonPath("$.items[0].phoneMask").value(org.hamcrest.Matchers.matchesPattern("\\+994 \\d\\d ••• \\d\\d")))
                 .andExpect(jsonPath("$.items[1].status").value("PENDING"))
                 .andExpect(jsonPath("$.items[?(@.status == 'COMPLETED')].id", org.hamcrest.Matchers.hasSize(3)));
         mvc.perform(get("/api/v1/admin/coins/rules").header("Authorization", dispatcher()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(5))
+                .andExpect(jsonPath("$.length()").value(3))
                 .andExpect(jsonPath("$[0].action").value("Səfərdən sonra rəy"))
-                .andExpect(jsonPath("$[2].limit").value("10 dəqiqədə ən çox 3"))
-                .andExpect(jsonPath("$[4].amount").value("−60"))
-                .andExpect(jsonPath("$[4].limit").value("0,60 ₼ gediş"));
+                .andExpect(jsonPath("$[1].amount").value("+5–20"))
+                .andExpect(jsonPath("$[2].amount").value("−300"))
+                .andExpect(jsonPath("$[2].limit").value("0,60 ₼ gediş"));
         mvc.perform(get("/api/v1/admin/coins/summary").header("Authorization", passenger())).andExpect(status().isForbidden());
         mvc.perform(get("/api/v1/admin/coins/conversions").header("Authorization", passenger())).andExpect(status().isForbidden());
     }
@@ -186,7 +191,8 @@ class CoinTest {
     @Test
     void demoTriggerAndReset() throws Exception {
         mvc.perform(post("/api/v1/demo/trigger/coin-conversion").header("Authorization", dispatcher()))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.ok").value(true));
+                .andExpect(status().isOk()).andExpect(jsonPath("$.ok").value(true))
+                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString("1000 Yolçu Coin → 2,00 ₼")));
         long rauf = conversions.demoUserId();
         assertThat(jdbc.queryForObject("select status from coin_conversions where user_id = ? order by id desc limit 1", String.class, rauf))
                 .isEqualTo("PENDING");

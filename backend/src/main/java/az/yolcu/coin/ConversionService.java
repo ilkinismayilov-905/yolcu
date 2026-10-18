@@ -30,14 +30,15 @@ import org.springframework.transaction.annotation.Transactional;
 /** BE-5.3 / BE-5.5: coin → AZN conversions (request REAL, bank answer simulated by BankSimJob). */
 @Service
 public class ConversionService {
-    public static final int MIN_COINS = 100;
+    /** Minimum = 1 ₼ at the 500 rate; amounts must be a multiple of STEP. */
+    public static final int MIN_COINS = 500, STEP = 100;
     public static final String DEFAULT_CARD = "•• 0193";
     /**
      * Demo passenger for POST /demo/trigger/coin-conversion (created on first use). users.synthetic stays false on purpose:
      * synthetic users are the survey simulator's answer pool, this one must not be consumed there.
      */
     public static final String DEMO_PHONE = "+994 51 200 00 92", DEMO_NAME = "Rauf Həsənli", DEMO_CARD = "•• 1205";
-    public static final int DEMO_COINS = 200;
+    public static final int DEMO_COINS = 1000;
     private static final Logger log = LoggerFactory.getLogger(ConversionService.class);
     private static final String SELECT = "select c.id, c.coins, c.azn, c.card_mask, c.status, c.created_at, c.completed_at, "
             + "u.full_name, u.phone from coin_conversions c join users u on u.id = c.user_id ";
@@ -66,8 +67,8 @@ public class ConversionService {
     @Transactional
     public ConversionCreated create(long userId, ConversionRequest req) {
         Integer n = req == null ? null : req.coins();
-        if (n == null || n < MIN_COINS || n % MIN_COINS != 0) {
-            throw ApiException.validation("coins: minimum " + MIN_COINS + " və " + MIN_COINS + "-ə bölünən olmalıdır");
+        if (n == null || n < MIN_COINS || n % STEP != 0) {
+            throw ApiException.validation("coins: minimum " + MIN_COINS + " və " + STEP + "-ə bölünən olmalıdır");
         }
         var card = req.cardMask() == null || req.cardMask().isBlank() ? DEFAULT_CARD : req.cardMask().trim();
         if (card.length() > 30) throw ApiException.validation("cardMask: ən çox 30 simvol");
@@ -124,7 +125,7 @@ public class ConversionService {
         return new PageResponse<>(items, page, size, total);
     }
 
-    /** Demo: the demo-trigger passenger gets 200 coins (reason DEMO, hidden from wallet history) and converts them. */
+    /** Demo: the demo-trigger passenger gets DEMO_COINS (1000) (reason DEMO, hidden from wallet history) and converts them. */
     @Transactional
     public ConversionCreated demoConversion() {
         long userId = demoUserId();

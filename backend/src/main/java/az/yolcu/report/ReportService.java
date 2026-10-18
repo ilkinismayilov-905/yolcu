@@ -48,7 +48,6 @@ public class ReportService {
     public static final int RATE_LIMIT = 3;
     public static final Duration RATE_WINDOW = Duration.ofMinutes(10);
     static final Duration LATE_AFTER = Duration.ofHours(24);
-    static final int COINS_CREATE = CoinService.REPORT, COINS_RESOLVED = CoinService.REPORT_VERIFIED;
     private static final String PASSENGER_ACTOR = "Sərnişin";
     private static final DateTimeFormatter CSV_TIME = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private static final Sort NEWEST = Sort.by(Sort.Order.desc("createdAt"), Sort.Order.desc("id"));
@@ -93,13 +92,13 @@ public class ReportService {
         var r = reports.save(new Report(code, userId, req.route().trim(), bort, operatorFor(bort, req.route().trim()),
                 req.category(), req.text(), Boolean.TRUE.equals(req.hasPhoto()), place, req.lat(), req.lon(), now));
         reportEvents.save(new ReportEvent(r.getId(), "CREATED", null, PASSENGER_ACTOR, now));
-        int awarded = coins.award(userId, COINS_CREATE, "REPORT", "report:" + code, "Şikayət #" + code);
 
         var item = item(r, now);
         events.publishEvent(StreamEvent.toRole(Role.DISPATCHER, "report.created", item));
         events.publishEvent(StreamEvent.toRole(Role.ADMIN, "report.created", item));
         events.publishEvent(new ReportCreatedEvent(item));
-        return new ReportCreated(detail(r, null), awarded);
+        // reports earn no coins (product decision); coinsAwarded stays in the API, always 0
+        return new ReportCreated(detail(r, null), 0);
     }
 
     @Transactional(readOnly = true)
@@ -224,10 +223,7 @@ public class ReportService {
                 if (userNote != null) r.setAnswerText(userNote);
                 reportEvents.save(new ReportEvent(r.getId(), "STATUS", statusNote(next, userNote), actor, now));
                 title = "Şikayətiniz həll edildi";
-                body = "#" + code + ": təşəkkür edirik! +" + COINS_RESOLVED + " Yolçu Coin hesabınıza əlavə olundu";
-                if (r.getUserId() != null) {
-                    coins.award(r.getUserId(), COINS_RESOLVED, "REPORT_VERIFIED", "report-ok:" + code, "Təsdiqlənmiş şikayət #" + code);
-                }
+                body = "#" + code + ": təşəkkür edirik! Rəyiniz xidməti yaxşılaşdırmağa kömək edir";
             }
             default -> throw new IllegalStateException();
         }

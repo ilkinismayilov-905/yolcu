@@ -13,7 +13,7 @@ Baza URL: `/api/v1`. Bütün cavablar JSON, sahə adları `camelCase`, vaxt ISO-
 { "items": [], "page": 0, "size": 20, "total": 46 }
 
 // Xəta (HTTP 4xx/5xx)
-{ "error": { "code": "COINS_INSUFFICIENT", "message": "Yolçu Coin kifayət etmir: 40 var, 60 lazımdır" } }
+{ "error": { "code": "COINS_INSUFFICIENT", "message": "Yolçu Coin kifayət etmir: 40 var, 300 lazımdır" } }
 ```
 
 | Xəta kodu | HTTP | Nə vaxt |
@@ -114,7 +114,7 @@ Məsafəyə görə sıralanır. `radius` default 600 m; `lat`/`lon` yoxdursa 400
 
 **POST** `/trips` — `{ "route": "88", "bort": "10-BB-482", "fromStop": "elmler", "toPlace": "nerimanov", "paidWith": "COIN" }`
 → `{ "trip": { "id": 12, "route": "88", "bort": "10-BB-482", "operator": "BakuBus MMC", "paidWith": "COIN", "startedAt": "..." }, "coinBalance": 185 }`
-`paidWith`: `BAKIKART | CARD | COIN`. `COIN` → 60 coin çıxılır, azdırsa `COINS_INSUFFICIENT`.
+`paidWith`: `BAKIKART | CARD | COIN`. `COIN` → 300 coin çıxılır (0,60 ₼ × kurs 500), azdırsa `COINS_INSUFFICIENT`.
 
 **POST** `/trips/{id}/end` → `{ "trip": {...}, "reviewNotificationId": 88 }` (həmçinin `notification.created` SSE)
 
@@ -159,7 +159,7 @@ Məsafəyə görə sıralanır. `radius` default 600 m; `lat`/`lon` yoxdursa 400
 ```json
 { "route": "88", "bort": "10-BB-482", "category": "Dayanacaqda saxlamadı", "text": "...", "hasPhoto": true, "lat": 40.3755, "lon": 49.8156 }
 ```
-→ `ReportDetail` + `coinsAwarded`. Dashboard-a `report.created` SSE.
+→ `ReportDetail` + `coinsAwarded` (həmişə `0`: şikayət coin qazandırmır, sahə uyğunluq üçün qalır). Dashboard-a `report.created` SSE.
 
 **GET** `/me/reports?page=0&size=20` → `{ items: ReportListItem[], page, size, total }` · **GET** `/me/reports/{code}` → `ReportDetail`
 
@@ -168,7 +168,7 @@ Məsafəyə görə sıralanır. `radius` default 600 m; `lat`/`lon` yoxdursa 400
 { "code": "A-2042", "createdAt": "...", "route": "88", "bort": "10-BB-482", "operator": "BakuBus MMC",
   "category": "Dayanacaqda saxlamadı", "textPreview": "Elmlər dayanacağında...", "status": "NEW", "late": false, "place": "Elmlər" }
 // ReportDetail = ReportListItem + 
-{ "text": "...", "hasPhoto": true, "coinsGiven": 5, "answerText": null,
+{ "text": "...", "hasPhoto": true, "coinsGiven": 0, "answerText": null,
   "events": [{ "type": "CREATED", "note": null, "actor": "Sərnişin", "createdAt": "..." }] }
 ```
 
@@ -189,21 +189,21 @@ Hər sual cavablanmalıdır, dəyər `options`-dan biri olmalıdır, naməlum su
 **GET** `/me/wallet`
 
 ```json
-{ "balance": 245, "aznEquivalent": "2.45", "rate": 100, "earnedToday": 5,
-  "history": [{ "label": "Banka çevirmə: 2,00 ₼", "amount": -200, "createdAt": "...", "status": "PENDING" },
+{ "balance": 245, "aznEquivalent": "0.49", "rate": 500, "earnedToday": 5,
+  "history": [{ "label": "Banka çevirmə: 1,00 ₼", "amount": -500, "createdAt": "...", "status": "PENDING" },
               { "label": "Sorğu: interval rahatlığı", "amount": 10, "createdAt": "...", "status": null }],
-  "rules": [{ "label": "Səfərdən sonra rəy", "amount": "+5" }] }
+  "rules": [{ "label": "Səfərdən sonra rəy", "amount": "+5" }, { "label": "Sorğuya cavab", "amount": "+5–20" }] }
 ```
 - `history`: ledger (`coin_tx`), ən yenisi əvvəl, son 50 sətir. `SEED` ("Başlanğıc balansı") və `DEMO` sətirləri **göstərilmir**, ona görə tarixçənin cəmi balansa bərabər olmaya bilər.
 - `status`: yalnız bank çevirməsi sətirlərində `PENDING | COMPLETED` (mobil: "icra olunur" / "tamamlandı"), qalanlarında `null`.
 - `earnedToday`: bu gün (demo saatının günü, Bakı) qazanılan müsbət sətirlərin cəmi, `SEED`/`DEMO` daxil deyil.
 - `rules`: yalnız qazanma qaydaları (`+` ilə), `/admin/coins/rules`-dan törəyir (eyni mənbə: `CoinService.rules()`).
 
-**POST** `/me/wallet/conversions` — `{ "coins": 200, "cardMask": "•• 0193" }` → `201 { "id": 7, "coins": 200, "azn": "2.00", "status": "PENDING", "coinBalance": 45 }`
-- `coins`: min 100 və 100-ə bölünən, əks halda `400 VALIDATION` (`coins: minimum 100 və 100-ə bölünən olmalıdır`). Balans azdırsa `409 COINS_INSUFFICIENT` (`Yolçu Coin kifayət etmir: 245 var, 300 lazımdır`), heç nə yazılmır.
+**POST** `/me/wallet/conversions` — `{ "coins": 1000, "cardMask": "•• 0193" }` → `201 { "id": 7, "coins": 1000, "azn": "2.00", "status": "PENDING", "coinBalance": 245 }`
+- `coins`: min 500 (= 1 ₼) və 100-ə bölünən (400, 499, 550 → səhv), əks halda `400 VALIDATION` (`coins: minimum 500 və 100-ə bölünən olmalıdır`). Balans azdırsa `409 COINS_INSUFFICIENT` (`Yolçu Coin kifayət etmir: 245 var, 500 lazımdır`), heç nə yazılmır.
 - `cardMask` istəyə bağlıdır (default `•• 0193`, ≤ 30 simvol). Format `•• NNNN`; "Partnyor bank" sözünü UI əlavə edir.
-- `azn = coins / yolcu.coin-rate`, 2 rəqəm, string. Ledger: `reason=CONVERSION`, `ref=conv:{id}`, label `Banka çevirmə: 2,00 ₼`, + `coin.updated` (sahibə) və `conversion.updated` (DISPATCHER, ADMIN).
-- Bank (SIM, `BankSimJob`): `yolcu.demo.bank-delay-seconds` (60) san sonra `COMPLETED` → sahibə bildiriş (`type: COIN`, `title: Bank çevirməsi tamamlandı`, `body: 200 Yolçu Coin → 2,00 ₼ kartınıza köçürüldü (•• 0193)`, `target: wallet`) + `COIN` alert (`Bank çevirməsi tamamlandı: 2,00 ₼` / `Nigar Ə., 200 Yolçu Coin, Partnyor bank •• 0193`, `p-coins`) + `conversion.updated`. Gecikmə real (divar) saatı ilə sayılır, server restart-ından sağ çıxır.
+- `azn = coins / yolcu.coin-rate` (500), 2 rəqəm, string (500 → `1.00`, 1000 → `2.00`). Ledger: `reason=CONVERSION`, `ref=conv:{id}`, label `Banka çevirmə: 2,00 ₼`, + `coin.updated` (sahibə) və `conversion.updated` (DISPATCHER, ADMIN).
+- Bank (SIM, `BankSimJob`): `yolcu.demo.bank-delay-seconds` (60) san sonra `COMPLETED` → sahibə bildiriş (`type: COIN`, `title: Bank çevirməsi tamamlandı`, `body: 1000 Yolçu Coin → 2,00 ₼ kartınıza köçürüldü (•• 0193)`, `target: wallet`) + `COIN` alert (`Bank çevirməsi tamamlandı: 2,00 ₼` / `Nigar Ə., 1000 Yolçu Coin, Partnyor bank •• 0193`, `p-coins`) + `conversion.updated`. Gecikmə real (divar) saatı ilə sayılır, server restart-ından sağ çıxır.
 
 ## 8. Canlı data (SIM)
 
@@ -289,7 +289,7 @@ Başlıqlar: `Content-Type: text/csv;charset=UTF-8` · `Content-Disposition: att
 **GET** `/admin/reports/{code}` → `ReportDetail` (+ `"passenger": "Gizli"`)
 **PATCH** `/admin/reports/{code}/status` — `{ "status": "REVIEW", "note": "" }` → `ReportDetail`
 **POST** `/admin/reports/{code}/forward` → `ReportDetail` (status `FORWARDED`, sərnişinə bildiriş)
-**POST** `/admin/reports/{code}/resolve` — `{ "answerText": "Sürücü ilə izahat işi aparıldı" }` → `ReportDetail` (+15 coin sərnişinə)
+**POST** `/admin/reports/{code}/resolve` — `{ "answerText": "Sürücü ilə izahat işi aparıldı" }` → `ReportDetail` (coin verilmir; bildiriş: `#A-2042: təşəkkür edirik! Rəyiniz xidməti yaxşılaşdırmağa kömək edir`)
 **POST** `/admin/reports/{code}/share` — `{ "targets": ["OPERATOR","YPX"], "hidePersonal": true }` → `{ "ok": true }` · `targets`: `OPERATOR`, `YPX` (Dövlət Yol Polisi), `CITY` (Bakı Şəhər İcra Hakimiyyəti)
 
 Status keçidləri: `NEW → REVIEW → FORWARDED → ANSWERED/RESOLVED`. `NEW`-dən birbaşa `FORWARDED` də olar. Səhv keçid → `VALIDATION`.
@@ -308,16 +308,17 @@ Publish → auditoriyadakı hər sərnişinə `notification` (`type: SURVEY`, `t
 Hər yeni cavab (real və ya simulyasiya), publish və close → `survey.updated` SSE (DISPATCHER, ADMIN), data = `SurveyListItem`.
 
 ### Yolçu Coin proqramı
-**GET** `/admin/coins/summary` → `{ "earnedToday": 48210, "earnedTodayUsers": 9120, "inCirculation": 3100000, "convertedThisMonthAzn": "12400.00", "rate": 100 }`
+**GET** `/admin/coins/summary` → `{ "earnedToday": 48210, "earnedTodayUsers": 9120, "inCirculation": 3100000, "convertedThisMonthAzn": "12400.00", "rate": 500 }`
 Mənbə: pilot üzrə baza rəqəmlər (dizayndakı `48 210 / 9 120 / 3,1 mln / 12 400 ₼`, `CoinService`-də sabit) + DB: `earnedToday`/`earnedTodayUsers` — bu gün müsbət `coin_tx` cəmi / fərqli istifadəçi (`SEED`, `DEMO` daxil deyil); `inCirculation` — sərnişinlərin `coin_balance` cəmi; `convertedThisMonthAzn` — bu ay `COMPLETED` olan çevirmələrin `azn` cəmi (string, 2 rəqəm). Web `3100000` → "3,1 mln" formatlayır.
 
 **GET** `/admin/coins/conversions?page=0&size=10` → `Page<ConversionRow>`, ən yenisi əvvəl (id üzrə), `size` 1–100 (default 10):
-`{ "id": 7, "userName": "Elvin M.", "phoneMask": "+994 55 ••• 08", "coins": 1200, "azn": "12.00", "cardMask": "•• 4410", "status": "PENDING", "createdAt": "...", "completedAt": null }`
+`{ "id": 7, "userName": "Elvin M.", "phoneMask": "+994 55 ••• 08", "coins": 1200, "azn": "2.40", "cardMask": "•• 4410", "status": "PENDING", "createdAt": "...", "completedAt": null }`
 `userName` = ad + soyadın ilk hərfi; `phoneMask` = ilk 7 simvol + ` ••• ` + son 2 rəqəm; `status`: `PENDING | COMPLETED`. Web status mətni: `PENDING` → "Gözləyir", `COMPLETED` → "Tamamlandı"; kart sütunu `Partnyor bank {cardMask}`.
 Seed: cədvəl boşdursa (mövcud DB-də də) 5 sətir — 3 `COMPLETED` + 2 `PENDING` (dizayndakı CONV məbləğləri: 500, 1200, 300, 800, 2000), seed sərnişinləri adından. Seed `PENDING` sətirləri bank simulyasiyasına **düşmür** (demo boyu "Gözləyir" qalır).
 
 **GET** `/admin/coins/rules` → `CoinRule[]` (səhifələnmir, `CoinService` sabitlərindən):
-`[{ "code": "REVIEW", "action": "Səfərdən sonra rəy", "amount": "+5", "limit": "Hər səfər üçün 1 dəfə" }, { "code": "SURVEY", "action": "Sorğuya cavab", "amount": "+5–20", "limit": "Sorğu başına 1 dəfə" }, { "code": "REPORT", "action": "Şikayət göndərmək", "amount": "+5", "limit": "10 dəqiqədə ən çox 3" }, { "code": "REPORT_VERIFIED", "action": "Şikayət təsdiqləndi", "amount": "+15", "limit": "Operator və ya AYNA təsdiqi ilə" }, { "code": "FARE", "action": "Gediş haqqını Yolçu Coin ilə ödəmək", "amount": "−60", "limit": "0,60 ₼ gediş" }]`
+`[{ "code": "REVIEW", "action": "Səfərdən sonra rəy", "amount": "+5", "limit": "Hər səfər üçün 1 dəfə" }, { "code": "SURVEY", "action": "Sorğuya cavab", "amount": "+5–20", "limit": "Sorğu başına 1 dəfə" }, { "code": "FARE", "action": "Gediş haqqını Yolçu Coin ilə ödəmək", "amount": "−300", "limit": "0,60 ₼ gediş" }]`
+Kurs 500 Yolçu Coin = 1 ₼. Şikayət qaydaları (`REPORT`, `REPORT_VERIFIED`) yoxdur: şikayət coin qazandırmır. `FARE` = 0,60 ₼ × kurs.
 `amount` göstəriş üçün string-dir (işarə ilə, `−` U+2212).
 
 ### Operatorlar və avtopark
@@ -374,13 +375,13 @@ Spring profili yoxdur: `yolcu.demo.enabled` (default `true`). `false` olanda `/d
 | `rain` | WEATHER xəbərdarlığı |
 | `new-report` | Demo sərnişin adından şikayət yaradır |
 | `overload-88` | 88 doluluğunu 95%-ə qaldırır |
-| `coin-conversion` | Demo sərnişin Rauf Həsənli (`+994 51 ••• 92`) üçün 200 coinlik bank çevirməsi, `PENDING` → 60 san sonra `COMPLETED` |
+| `coin-conversion` | Demo sərnişin Rauf Həsənli (`+994 51 ••• 92`) üçün 1000 coinlik (2,00 ₼) bank çevirməsi, `PENDING` → 60 san sonra `COMPLETED` |
 | `artificial-jam` | Fətəli Xan Xoyski pr. seqmentini 1 san sonra SLOW, 2,5 san sonra JAM edir, JAM müddətini 35 dəq yazır → hub təklifi qaydası işləyir |
 
 Ssenari detalları (BE-9.5):
 - `artificial-jam`: cavab dərhal; `babek` seqmenti (id tarixi səbəbdən belədir; real küçə — Fətəli Xan Xoyski prospekti, OSM ilə yoxlanılıb, bax `04_DATA` §7) 1 san sonra `SLOW` (`traffic.updated` + `EVENT` alert `Fətəli Xan Xoyski pr.: hərəkət ləngiyir`), 2,5 san sonra `JAM`, JAM müddəti 35 dəq (`traffic.updated` + `OCC` alert `Fətəli Xan Xoyski pr.: tıxac, 35 dəqiqədir davam edir`), 3 san sonra hub təklifi qaydası → `proposal.created` + `AI` alert. Seqment reset-ə qədər `JAM` qalır. Hər trigger yeni təklif yaradır (təkrar oynatmaq üçün dublikat yoxlaması atlanır). Reset gözləyən addımları ləğv edir.
-- `coin-conversion`: Rauf Həsənli (yoxdursa yaradılır, `users.synthetic = false`, sorğu simulyatorunun hovuzuna düşməsin deyə) əvvəlcə +200 alır (`reason=DEMO`, `ref=demo-conv:{n}`, ledger uyğun qalsın), sonra adi `POST /me/wallet/conversions` axını: −200 `CONVERSION`, `PENDING`, `conversion.updated`; 60 san sonra `BankSimJob` → `COMPLETED` + bildiriş + `COIN` alert + `conversion.updated`. Hər trigger yeni sorğu yaradır.
-- `new-report`: demo sərnişin (Nigar) adından `88`, `10-BB-482`, `Kobud davranış`, 28 May yaxınlığında şikayət → `report.created` + `REPORT` alert, sərnişinə +5 coin. Adi limit qüvvədədir: 10 dəqiqədə 4-cü → `429 RATE_LIMIT` (reset limiti sıfırlayır).
+- `coin-conversion`: Rauf Həsənli (yoxdursa yaradılır, `users.synthetic = false`, sorğu simulyatorunun hovuzuna düşməsin deyə) əvvəlcə +1000 alır (`reason=DEMO`, `ref=demo-conv:{n}`, ledger uyğun qalsın), sonra adi `POST /me/wallet/conversions` axını: −1000 `CONVERSION`, `PENDING`, `conversion.updated`; 60 san sonra `BankSimJob` → `COMPLETED` + bildiriş + `COIN` alert + `conversion.updated`. Hər trigger yeni sorğu yaradır.
+- `new-report`: demo sərnişin (Nigar) adından `88`, `10-BB-482`, `Kobud davranış`, 28 May yaxınlığında şikayət → `report.created` + `REPORT` alert (coin verilmir). Adi limit qüvvədədir: 10 dəqiqədə 4-cü → `429 RATE_LIMIT` (reset limiti sıfırlayır).
 - `overload-88`: 88-in simulyasiya doluluğu ~95% (random walk onun ətrafında qalır, reset-ə və ya interval dəyişənə qədər) + `OCC` alert `88: avtobuslar 95% doludur` / `Tövsiyə: interval 12 → 8 dəq`.
 - `bunching`: 88-də 10-BB-511 10-BB-482-dən 2 dəq arxaya qoyulur (hər dəfə, əvvəlki "gözləyin" mesajından asılı olmayaraq) → `/admin/occupancy/bunching`-də 88, `gapMin 2`, + hər trigger-də bir `OCC` alert `88: iki avtobus topa yığılıb`.
 - `crowd-28may`: 28 May hub sayı ×70/46 (≈ +52%, reset-ə qədər) + `HUB` alert `28 May: N nəfər gözləyir` / `15 dəqiqəyə M-ə çata bilər` (`p-hubs`).
