@@ -5,6 +5,7 @@ yolcu:
   mocks-dir: ../mocks
   coin-rate: 100                 # 100 coin = 1 AZN
   demo:
+    enabled: true                # false: /demo/trigger/* and /demo/reset → 404 NOT_FOUND (simulate-answers is not gated)
     clock-start: "08:12"         # demo saatı bu saatdan başlayır, real vaxtla irəliləyir
     auto-advance-reports: false  # true: dashboard-da adam yoxdursa şikayət öz-özünə irəliləyir
     bank-delay-seconds: 60

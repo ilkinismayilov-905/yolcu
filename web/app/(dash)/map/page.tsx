@@ -1,14 +1,18 @@
 'use client';
 
-import { useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import type { Alert } from '@yolcu/shared/api';
+import type { Alert, DemoResponse } from '@yolcu/shared/api';
+import { HubProposalDrawer } from '@/components/HubProposalDrawer';
+import { useToast } from '@/components/Toast';
 import { Button, DemoBadge, Kpi, PageHeader, Panel, Toggle, fmtNum } from '@/components/ui';
 import type { LayerKey } from '@/components/LiveMap';
 import { FEED_CATEGORIES } from '@/lib/feed';
-import { useFeed, useHubs, useKpis, useLiveStream } from '@/lib/live';
+import { api } from '@/lib/api';
+import { useFeed, useHubs, useKpis, useLiveStream, useProposals } from '@/lib/live';
+import { useStream } from '@/lib/stream';
 import { usePrefs } from '@/lib/prefs';
 import { navItem } from '@/lib/nav';
 import { clockTime } from '@/lib/reports';
@@ -39,14 +43,30 @@ export default function Page() {
   const router = useRouter();
   const [layers, setLayers] = useState(() => Object.fromEntries(LAYERS.map(([k, , on]) => [k, on])) as Record<LayerKey, boolean>);
   const fresh = useLiveStream();
+  const proposals = useProposals();
+  const [propId, setPropId] = useState<number>();
+  const [propOpen, setPropOpen] = useState(false);
+  const jam = useJamDemo((id) => (setPropId(id), setPropOpen(true)));
 
   return (
     <>
-      <PageHeader title="Canlı xəritə" desc={navItem('/map').desc} />
+      <PageHeader
+        title="Canlı xəritə"
+        desc={navItem('/map').desc}
+        actions={
+          <Button disabled={jam.running} onClick={jam.start} title="Demo ssenarisi: Babək prospektində süni tıxac yaradır, sistem yeni hub yeri təklif edir">
+            {jam.running ? 'Tıxac yaradılır…' : jam.done ? 'Ssenarini təkrarla' : 'Süni tıxac yarat (demo)'}
+          </Button>
+        }
+      />
       <Kpis />
       <div className="grid grid-cols-[minmax(0,1fr)_360px] gap-4 max-[1200px]:grid-cols-1">
         <div className="relative h-[calc(100vh-290px)] min-h-[500px] overflow-hidden rounded-[14px] border border-line bg-surface-2">
-          <LiveMap layers={layers} onBusClick={(route) => router.push(`/occupancy?route=${encodeURIComponent(route)}`)} />
+          <LiveMap
+            layers={layers}
+            onBusClick={(route) => router.push(`/occupancy?route=${encodeURIComponent(route)}`)}
+            onProposalClick={(p) => (setPropId(p.id), setPropOpen(true))}
+          />
           <div className="absolute top-3 left-3 flex max-w-[calc(100%-64px)] flex-wrap gap-1.5">
             {LAYERS.map(([k, label]) => (
               <Toggle key={k} on={layers[k]} onChange={(v) => setLayers((s) => ({ ...s, [k]: v }))} className="shadow-card">
@@ -63,8 +83,41 @@ export default function Page() {
           <Feed fresh={fresh} />
         </Panel>
       </div>
+      <HubProposalDrawer p={proposals.data?.find((p) => p.id === propId)} open={propOpen} onClose={() => setPropOpen(false)} />
     </>
   );
+}
+
+const JAM_TIMEOUT_MS = 12_000; // backend promises the proposal ~4 s after the trigger
+
+/** Mockup #jamBtn: POST artificial-jam; the street turns red via traffic.updated, proposal.created opens the drawer. */
+function useJamDemo(onProposal: (id: number) => void) {
+  const toast = useToast();
+  const [running, setRunning] = useState(false);
+  const [done, setDone] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  useEffect(() => () => clearTimeout(timer.current), []);
+  const finish = () => (clearTimeout(timer.current), setRunning(false), setDone(true));
+  useStream({
+    'proposal.created': (p) => {
+      finish();
+      onProposal(p.id);
+    },
+  });
+  const start = () => {
+    setRunning(true);
+    toast('Demo: Babək prospektində süni tıxac yaradılır');
+    api.post<DemoResponse>('/demo/trigger/artificial-jam').then(
+      () => {
+        timer.current = setTimeout(finish, JAM_TIMEOUT_MS);
+      },
+      (e: unknown) => {
+        setRunning(false);
+        toast(errText(e));
+      },
+    );
+  };
+  return { running, done, start };
 }
 
 function Kpis() {

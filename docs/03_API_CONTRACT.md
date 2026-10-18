@@ -292,16 +292,31 @@ Hər yeni cavab (real və ya simulyasiya), publish və close → `survey.updated
 **GET** `/admin/analytics/alighting?limit=5` → `[{ "stop": "Nərimanov metro", "perDay": 18420, "peak": "08:35", "note": "..." }]`
 Hub matrisi, proqnoz, ödənişli yol və data məhsulları FAKE-dir: `mocks/analytics_static.json`.
 
+Qeydlər (BE-9.1): mənbə `trips` cədvəlidir (real + 5 000 sintetik seed səfəri), dövr — demo saatına görə son 30 gün, saatlar Bakı vaxtı (UTC+4).
+- **Rəqəmlər xam saydır**, yuxarıdakı nümunələr (1 240 000, 8200, 18 420) şəhər miqyasında illüstrasiyadır. Seed ilə: `trackedTrips30d` ≈ 4 800, `consentUsers` ≈ 21, OD xanaları ~40–280, `perDay` ~20–40. UI rəqəmi olduğu kimi göstərsin.
+- `kpis`: `trackedTrips30d` — son 30 gündə başlayan səfər sayı; `consentUsers` — həmin səfərləri olan `tracking_consent = true` istifadəçi sayı; `avgTripMin` — `ended_at − started_at` ortası (dəq, tam); `longestTransferWaitMin` — `route_config`-də ən uzun interval (keçiddə ən pis gözləmə; interval tətbiq olunanda dəyişir); `suggestionAcceptance` — hələlik sabit `41` (təklif qəbulu saxlanmır).
+- `od`: `from`/`to` `HH:mm` (00:00–23:59), default `07:00`–`10:00`, `from < to`, əks halda `VALIDATION`. `[from, to)` aralığında başlayan səfərlər. `zones` həmişə bu 6-dır (sıra sabit); `matrix[i][j]` = `zones[i]`-də minib (`from_stop`) `zones[j]`-yə gedən (`to_place`) səfər sayı. Zonalardan kənar səfərlər sayılmır.
+- `alighting`: `limit` 1–50 (default 5), əks halda `VALIDATION`. `alight_stop` üzrə ən çoxdan aza. `perDay` = 30 günlük say / 30 (tam); `peak` = ən çox düşülən 5 dəqiqəlik slot (`ended_at`, `"08:35"`); `note` = `"<əsas mənşə> → <dayanacaq> axını, <ən çox 2 marşrut 'və' ilə>"`.
+
 ### Hub təklifləri
 **GET** `/admin/hub-proposals?status=NEW` → `[{ "id": 3, "name": "Babək pr. – Gənclik metrosu", "lat": 40.3990, "lon": 49.8560, "jamMinutes": 35, "routesCount": 3, "metroM": 300, "waiting": 58, "paxPerHour": 2400, "confidence": 82, "items": ["Avtobus cibi, 2 avtobusluq"], "impact": { "transferMin": -6, "toMetroPerDay": 900, "waitingPct": -40, "costAzn": "180–240 min" }, "status": "NEW" }]`
-**POST** `/admin/hub-proposals/{id}/accept` · **POST** `/admin/hub-proposals/{id}/reject`
+**POST** `/admin/hub-proposals/{id}/accept` · **POST** `/admin/hub-proposals/{id}/reject` → yenilənmiş `HubProposal`
+
+Qeydlər (BE-9.2):
+- `HubProposal` əlavə sahələr: `reason` (drawer-dəki izah mətni, `metroM` ilə) və `createdAt`. Siyahı **massivdir** (səhifələmə yoxdur), ən yenisi əvvəl. `status` filtri: `NEW | ACCEPTED | REJECTED` və ya boş (hamısı); başqa dəyər → `VALIDATION`.
+- Keçidlər: yalnız `NEW → ACCEPTED` və `NEW → REJECTED`; başqa keçid → `VALIDATION`, naməlum `id` → `NOT_FOUND`. Keçid SSE/alert yaratmır.
+- Yaradılanda: `proposal.created` (DISPATCHER, ADMIN) data = `HubProposal`; lentə `AI` alert: `title` `Yeni hub təklifi: <name>`, `body` `Tıxac 35 dəq, 19 marşrut, metroya 236 m, gözləyən 204 nəfər. Etibarlılıq 95%`, `target` `p-map`.
+- Qayda (`02_ARCHITECTURE` §6.2, hər 30 san): `JAM` ≥ 20 dəq olan seqmentdən ≤ 300 m-dəki hər seed dayanacağı üçün yer = seqmentin real küçə xəttində dayanacağa ən yaxın nöqtə. `routesCount` — həmin nöqtədən ≤ 50 m keçən real marşrut trayektoriyaları (`routes.geojson`) ≥ 3; `metroM` — ən yaxın real metro çıxışı (`metro_exits`) ≤ 400; `waiting` — ən yaxın hub kamerasının sayı (hub sim) ≥ 40; ən yaxın hub kamerası **> 300 m** (§6.2-də 500 m yazılıb, amma bütün hub-lar metro stansiyasıdır və metroya ≤ 400 m şərti ilə 500 m heç vaxt ödənmir); 300 m-də əvvəlki təklif (istənilən status) yoxdur — eyni yer bir dəfə təklif olunur. `confidence` §6.2 formulası, ən çoxu `95`. `paxPerHour` = stansiyanın `metro_ridership.avgDaily2026` × 6 % (pik saat payı), 100-ə yuvarlaq. `name` = `<seqment adı> – <metro stansiyası> metrosu`. `items`: `Avtobus cibi, 2 avtobusluq, <küçə> sağ tərəf`; 50 m-də velo parkinq yoxdursa `Velo parkinq, 20 yer və skuter zonası`; `Metroya qədər işıqlı piyada keçidi`; `Hub kamerası və canlı gəliş ekranı`. `impact`: `transferMin` = −round(metroM / 50), `toMetroPerDay` = paxPerHour × 3/8 (100-ə), `waitingPct` −40, `costAzn` `180–240 min` (sadə qayda, model deyil).
+- Demo nəticəsi (artificial-jam): `Babək pr. – Gənclik metrosu`, `lat 40.40115, lon 49.85522`, `metroM 236` (Gənclik, Çıxış 5), `routesCount 19`, `paxPerHour 2400`, `confidence 95`.
 
 ### Axtarış
 **GET** `/admin/search?q=10-BB-482` → `{ "type": "BUS", "ref": "10-BB-482" }` və ya `{ "type": "REPORT", "ref": "A-2042" }` və ya `{ "type": "NONE" }`
 
-## 10. Demo idarəsi (ADMIN, yalnız `demo` profilində)
+## 10. Demo idarəsi (DISPATCHER, ADMIN; `yolcu.demo.enabled`)
 
-**POST** `/demo/trigger/{scenario}` → `{ "ok": true }`
+**POST** `/demo/trigger/{scenario}` → `{ "ok": true, "scenario": "artificial-jam", "message": "..." }`
+
+Spring profili yoxdur: `yolcu.demo.enabled` (default `true`). `false` olanda `/demo/trigger/*` və `/demo/reset` → `404 NOT_FOUND`. PASSENGER → `403 FORBIDDEN`. Naməlum ssenari → `404 NOT_FOUND`. `message` — Azərbaycanca qısa nəticə (toast üçün).
 
 | scenario | Nə edir |
 |---|---|
@@ -314,10 +329,21 @@ Hub matrisi, proqnoz, ödənişli yol və data məhsulları FAKE-dir: `mocks/ana
 | `overload-88` | 88 doluluğunu 95%-ə qaldırır |
 | `artificial-jam` | Babək pr. seqmentini 1 san sonra SLOW, 2,5 san sonra JAM edir, JAM müddətini 35 dəq yazır → hub təklifi qaydası işləyir |
 
+Ssenari detalları (BE-9.5):
+- `artificial-jam`: cavab dərhal; `babek` seqmenti 1 san sonra `SLOW` (`traffic.updated` + `EVENT` alert `Babək pr.: hərəkət ləngiyir`), 2,5 san sonra `JAM`, JAM müddəti 35 dəq (`traffic.updated` + `OCC` alert `Babək pr.: tıxac, 35 dəqiqədir davam edir`), 3 san sonra hub təklifi qaydası → `proposal.created` + `AI` alert. Seqment reset-ə qədər `JAM` qalır. Hər trigger yeni təklif yaradır (təkrar oynatmaq üçün dublikat yoxlaması atlanır). Reset gözləyən addımları ləğv edir.
+- `new-report`: demo sərnişin (Nigar) adından `88`, `10-BB-482`, `Kobud davranış`, 28 May yaxınlığında şikayət → `report.created` + `REPORT` alert, sərnişinə +5 coin. Adi limit qüvvədədir: 10 dəqiqədə 4-cü → `429 RATE_LIMIT` (reset limiti sıfırlayır).
+- `overload-88`: 88-in simulyasiya doluluğu ~95% (random walk onun ətrafında qalır, reset-ə və ya interval dəyişənə qədər) + `OCC` alert `88: avtobuslar 95% doludur` / `Tövsiyə: interval 12 → 8 dəq`.
+- `bunching`: 88-də 10-BB-511 10-BB-482-dən 2 dəq arxaya qoyulur (hər dəfə, əvvəlki "gözləyin" mesajından asılı olmayaraq) → `/admin/occupancy/bunching`-də 88, `gapMin 2`, + hər trigger-də bir `OCC` alert `88: iki avtobus topa yığılıb`.
+- `crowd-28may`: 28 May hub sayı ×70/46 (≈ +52%, reset-ə qədər) + `HUB` alert `28 May: N nəfər gözləyir` / `15 dəqiqəyə M-ə çata bilər` (`p-hubs`).
+- `stadium`: `EVENT` alert + bütün real (sintetik olmayan) sərnişinlərə bildiriş (`type: INFO`, `target: event:stadium` — mobil naməlum target-i sadəcə açmır).
+- `rain`: `WEATHER` alert. `ganja-arrival`: hələlik yalnız `BILETIM` alert `Gəncə reysi HH:mm-də gəlir, 45 bilet satılıb` (indi + 5 dəq), `p-express`.
+
 **POST** `/demo/surveys/{id}/simulate-answers?count=50` (DISPATCHER və ya ADMIN; `count` 1–500, default 50; yalnız `ACTIVE` sorğu, əks halda `VALIDATION`) → `{ "created": 50, "survey": SurveyListItem }`
 Bu sorğunu hələ cavablamamış sintetik sərnişinlər (`users.synthetic = true`) seçilir, çatmayan qədəri yenisi yaradılır (sonrakı sorğularda təkrar istifadə olunur). Variantlar sualın seed paylanmasına görə çəkili təsadüfi seçilir. Sintetik sərnişinlərə coin verilmir, bildiriş getmir. Batch-dən sonra bir dəfə `survey.updated`.
 
 **POST** `/demo/reset` → simulyatoru və demo datanı başlanğıc vəziyyətə qaytarır (DB-də demo sərnişinin bu günkü şikayət, səfər, coin dəyişiklikləri silinir).
+→ `{ "ok": true, "scenario": "reset", "message": "...", "coinBalance": 245, "deleted": { "report_events": 2, "reports": 2, "reviews": 0, "trips": 0, "coin_tx": 2, "coin_conversions": 0, "notifications": 1, "survey_answers": 0, "alerts": 3, "hub_proposals": 1 } }`
+Bir tranzaksiyada: demo sərnişinin **bu günkü** (demo saatının günü) `reports` + `report_events`, onların `REPORT` alert-ləri, `reviews` (bu gün yazılan və ya bu günkü səfərə), `trips`, `coin_tx`, `coin_conversions`, `notifications`, `survey_answers` silinir, `coin_balance = 245`; bütün `hub_proposals` və onların `AI` alert-ləri silinir; `route_config` interval/avtobus sayı `mocks/route_config.json`-a, `auto_mode = false`. Yaddaşda: tıxac override-ları və JAM müddətləri, hub boost-u, avtobus düzülüşü (88 demo topa yığılması daxil) və doluluq bazası başlanğıc vəziyyətə. Sərnişinə `coin.updated {balance: 245}`. Sxem silinmir, seed yenidən işləmir, digər istifadəçilərin datası və keçmiş günlərin seed sətirləri qalır; trigger-lərin `EVENT/WEATHER/HUB/OCC/BILETIM` alert-ləri lentdə qalır.
 
 ## 11. SSE
 

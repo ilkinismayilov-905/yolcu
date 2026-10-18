@@ -6,9 +6,9 @@ import type { ExpressionSpecification, MapLibreEvent } from 'maplibre-gl';
 import type { FeatureCollection } from 'geojson';
 import { setWorkerUrl } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import type { LiveBus } from '@yolcu/shared/api';
+import type { HubProposal, LiveBus } from '@yolcu/shared/api';
 import { fmtNum } from '@/components/ui';
-import { useAdminHubs, useBuses, useHubs, useLayer, useTraffic } from '@/lib/live';
+import { useAdminHubs, useBuses, useHubs, useLayer, useProposals, useTraffic } from '@/lib/live';
 
 // MapLibre 6 finds its worker next to its own .mjs, which bundling breaks; let the bundler emit the file instead.
 setWorkerUrl(new URL('maplibre-gl/dist/maplibre-gl-worker.mjs', import.meta.url).href);
@@ -48,11 +48,14 @@ function localizeLabels(e: MapLibreEvent) {
 
 const vis = (on: boolean) => ({ visibility: on ? ('visible' as const) : ('none' as const) });
 
-export default function LiveMap({ layers, onBusClick }: { layers: Record<LayerKey, boolean>; onBusClick: (route: string) => void }) {
+export default function LiveMap({ layers, onBusClick, onProposalClick }: {
+  layers: Record<LayerKey, boolean>; onBusClick: (route: string) => void; onProposalClick: (p: HubProposal) => void;
+}) {
   const tk = useTokens();
   const traffic = useTraffic();
   const hubs = useHubs();
   const camHubs = useAdminHubs();
+  const proposals = useProposals();
   const routes = useLayer('routes-lite');
   const metro = useLayer('metro-exits');
   const bikeLanes = useLayer('bike-lanes', layers.bike);
@@ -148,9 +151,27 @@ export default function LiveMap({ layers, onBusClick }: { layers: Record<LayerKe
             </span>
           </Marker>
         ))}
-      {/* AI təklifləri: proposals arrive in WEB-1.7 (proposal.created); layer is empty until then. */}
+      {layers.ai &&
+        proposals.data
+          ?.filter((p) => p.status !== 'REJECTED')
+          .map((p) => <ProposalMarker key={p.id} p={p} onClick={() => onProposalClick(p)} />)}
       {layers.buses && <Buses onClick={onBusClick} />}
     </Map>
+  );
+}
+
+/** Mockup jam scenario marker: dashed circle with "+" and a "Yeni hub təklifi" tag (solid once accepted). */
+function ProposalMarker({ p, onClick }: { p: HubProposal; onClick: () => void }) {
+  const done = p.status === 'ACCEPTED';
+  return (
+    <Marker longitude={p.lon} latitude={p.lat} anchor="left" offset={[-26, 0]}>
+      <button type="button" onClick={onClick} aria-label={`Hub təklifi: ${p.name}`} className="flex cursor-pointer items-center gap-1.5">
+        <span className={`grid size-[52px] place-items-center rounded-full border-[2.5px] border-primary bg-primary-soft text-[22px] font-bold text-primary ${done ? '' : 'border-dashed'}`}>
+          {done ? '✓' : '+'}
+        </span>
+        <span className="rounded-lg bg-primary px-2.5 py-1 text-xs font-bold whitespace-nowrap text-primary-ink shadow-card">{done ? 'Plana əlavə edilib' : 'Yeni hub təklifi'}</span>
+      </button>
+    </Marker>
   );
 }
 

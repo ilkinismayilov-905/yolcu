@@ -51,7 +51,7 @@ Sidebar qrupları (mockup-dakı kimi): **Canlı** (Canlı xəritə, Hub kamerala
 - [x] **WEB-1.4** KPI kartları (`/admin/kpis`, 30 san yenilənmə).
 - [x] **WEB-1.5** Hadisələr lenti (`/admin/feed` + `alert.created`; yeni şikayət backend-də `REPORT` alert-i yaradır), kateqoriya rəngi, kliklə müvafiq səhifəyə keçid, yeni hadisə qısa vurğu.
 - [x] **WEB-1.6** Legend (sabit, aşağı solda).
-- [ ] **WEB-1.7** **"Süni tıxac yarat (demo)"** düyməsi → `POST /demo/trigger/artificial-jam` → Babək pr. rəngi dəyişir → `proposal.created` gələndə xəritədə kəsik xətli "Yeni hub təklifi" markeri + sağda **Hub təklifi drawer-i** (səbəb, 4 göstərici, nə qurulmalı, təsir, "Plana əlavə et" → `accept`, "Analitikaya bax").
+- [x] **WEB-1.7** **"Süni tıxac yarat (demo)"** düyməsi → `POST /demo/trigger/artificial-jam` → Babək pr. rəngi dəyişir → `proposal.created` gələndə xəritədə kəsik xətli "Yeni hub təklifi" markeri + sağda **Hub təklifi drawer-i** (səbəb, 4 göstərici, nə qurulmalı, təsir, "Plana əlavə et" → `accept`, "Analitikaya bax").
 
 **Qəbul:** xəritədə 2 avtobus real vaxtda hərəkət edir; qatlar açılıb-bağlanır; demo düyməsindən 5 saniyə sonra hub təklifi drawer-i açılır.
 
@@ -113,11 +113,11 @@ Sidebar qrupları (mockup-dakı kimi): **Canlı** (Canlı xəritə, Hub kamerala
 
 ## WEB-9 Data analitika — H15–H18 · MUST
 
-- [ ] **WEB-9.1** Tablar: Axın və matris · Proqnoz · Ödənişli yollar · Datanın tətbiqi.
-- [ ] **WEB-9.2** Axın və matris: KPI-lar (REAL), OD matrisi heatmap (REAL `/admin/analytics/od`), hub saat × gün matrisi (FAKE), düşmə nöqtələri cədvəli (REAL).
-- [ ] **WEB-9.3** Proqnoz (FAKE): seqment (Şəbəkə, 88, 4, M1), fakt + proqnoz + etibarlılıq zolağı SVG/Recharts, xəta mətni; sabahkı hub-lar cədvəli; amillər zolaqları.
-- [ ] **WEB-9.4** Ödənişli yollar (FAKE, `toll.ts`): prinsip qeydi, namizəd cədvəli (bal ilə sıralı, sətir seçimi), ssenari paneli (qiymət slayderi 0,5–3 ₼, saat seqmenti, 4 nəticə, izah), pilot tövsiyəsi, "Sərnişinlərdən soruş" → sorğular.
-- [ ] **WEB-9.5** Datanın tətbiqi (FAKE): qərar × mənbə matrisi, data məhsulları cədvəli, məxfilik qaydaları qeydi.
+- [x] **WEB-9.1** Tablar: Axın və matris · Proqnoz · Ödənişli yollar · Datanın tətbiqi.
+- [x] **WEB-9.2** Axın və matris: KPI-lar (REAL), OD matrisi heatmap (REAL `/admin/analytics/od`), hub saat × gün matrisi (FAKE), düşmə nöqtələri cədvəli (REAL).
+- [x] **WEB-9.3** Proqnoz (FAKE): seqment (Şəbəkə, 88, 4, M1), fakt + proqnoz + etibarlılıq zolağı SVG/Recharts, xəta mətni; sabahkı hub-lar cədvəli; amillər zolaqları.
+- [x] **WEB-9.4** Ödənişli yollar (FAKE, `toll.ts`): prinsip qeydi, namizəd cədvəli (bal ilə sıralı, sətir seçimi), ssenari paneli (qiymət slayderi 0,5–3 ₼, saat seqmenti, 4 nəticə, izah), pilot tövsiyəsi, "Sərnişinlərdən soruş" → sorğular.
+- [x] **WEB-9.5** Datanın tətbiqi (FAKE): qərar × mənbə matrisi, data məhsulları cədvəli, məxfilik qaydaları qeydi.
 
 **Qəbul:** 4 tabın hamısı keçid edir; ödənişli yolda qiymət dəyişəndə nəticələr dərhal dəyişir; Heydər Əliyev pr. seçiləndə "tövsiyə edilmir" mətni çıxır.
 
@@ -125,7 +125,7 @@ Sidebar qrupları (mockup-dakı kimi): **Canlı** (Canlı xəritə, Hub kamerala
 
 - [ ] **WEB-10.1** Coin proqramı: KPI-lar, qaydalar cədvəli, çevirmə sorğuları cədvəli (REAL). · MUST
 - [ ] **WEB-10.2** İnteqrasiyalar: 12 kart (`mocks/integrations.json`), Biletim.az birinci, "Bağlantını yoxla" toast. · MUST (FAKE)
-- [ ] **WEB-10.3** `/demo`: hər ssenari üçün iri düymə (`03_API` §10) + "Sıfırla". Yalnız ADMIN. · MUST
+- [x] **WEB-10.3** `/demo`: hər ssenari üçün iri düymə (`03_API` §10) + "Sıfırla". Yalnız ADMIN. · MUST
 
 ## WEB-11 Cilalama — H18–H20 · MUST
 

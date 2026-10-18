@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import type { FeatureCollection } from 'geojson';
-import type { AdminHub, Alert, GeoLayerName, Kpis, LiveBus, LiveHub, TrafficSegment } from '@yolcu/shared/api';
+import type { AdminHub, Alert, GeoLayerName, HubProposal, Kpis, LiveBus, LiveHub, TrafficSegment } from '@yolcu/shared/api';
 import { api } from './api';
 import { useStream } from './stream';
 
@@ -12,6 +12,7 @@ export const liveKeys = {
   adminHubs: ['admin', 'hubs'] as const,
   kpis: ['admin', 'kpis'] as const,
   feed: ['admin', 'feed'] as const,
+  proposals: ['admin', 'hub-proposals'] as const,
   layer: (n: GeoLayerName) => ['geo', 'layer', n] as const,
 };
 
@@ -24,6 +25,9 @@ export const useTraffic = () => useQuery({ queryKey: liveKeys.traffic, queryFn: 
 export const useAdminHubs = () => useQuery({ queryKey: liveKeys.adminHubs, queryFn: () => api.get<AdminHub[]>('/admin/hubs'), staleTime: Infinity });
 export const useKpis = () => useQuery({ queryKey: liveKeys.kpis, queryFn: () => api.get<Kpis>('/admin/kpis'), refetchInterval: 30_000 });
 export const useFeed = () => useQuery({ queryKey: liveKeys.feed, queryFn: () => api.get<Alert[]>(`/admin/feed?limit=${FEED_LIMIT}`) });
+
+/** All hub proposals (NEW + decided); `proposal.created` prepends. */
+export const useProposals = () => useQuery({ queryKey: liveKeys.proposals, queryFn: () => api.get<HubProposal[]>('/admin/hub-proposals') });
 
 /** Static GeoJSON layer, fetched once per session. */
 export const useLayer = (name: GeoLayerName, enabled = true) =>
@@ -47,6 +51,7 @@ export function useLiveStream() {
         }),
       );
     },
+    'proposal.created': (p) => qc.setQueryData<HubProposal[]>(liveKeys.proposals, (old) => [p, ...(old ?? []).filter((x) => x.id !== p.id)]),
     'alert.created': (a) => {
       qc.setQueryData<Alert[]>(liveKeys.feed, (old) => [a, ...(old ?? []).filter((x) => x.id !== a.id)].slice(0, FEED_LIMIT));
       setFresh((s) => new Set(s).add(a.id));

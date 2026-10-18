@@ -176,6 +176,35 @@ public class SimulationService {
         return false;
     }
 
+    /** Demo overload: route base occupancy (and every bus) set to pct; the random walk then stays around it. */
+    public synchronized boolean overload(String route, double pct) {
+        var r = routes.get(route);
+        if (r == null) return false;
+        r.base = clamp(pct, 8, 100);
+        r.buses.forEach(b -> b.occ = r.base);
+        return true;
+    }
+
+    /**
+     * Demo bunching: the second bort of the route (10-BB-511 on 88) is put DEMO_BUNCH_GAP_MIN behind the first one
+     * (10-BB-482) and both stop holding, so the pair is bunched right now regardless of what happened before.
+     */
+    public synchronized boolean bunch(String route) {
+        var r = routes.get(route);
+        if (r == null || r.buses.size() < 2) return false;
+        var front = r.buses.get(0);
+        var back = r.buses.get(1);
+        back.s = r.line.wrap(front.s - DEMO_BUNCH_GAP_MIN * 60 * r.speedKmh / 3.6);
+        front.hold = back.hold = 0;
+        return true;
+    }
+
+    /** Demo reset: forget all routes; the next step rebuilds them from route_config (spacing, base occupancy as at boot). */
+    public synchronized List<BusPosition> reset() {
+        routes.clear();
+        return step();
+    }
+
     private void syncConfig() {
         for (var row : jdbc.queryForList("select route, interval_min, bus_count from route_config order by route")) {
             var route = (String) row.get("route");

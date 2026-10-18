@@ -27,3 +27,6 @@ export function tollScenario(t: TollCandidate, price: number, hours: number): To
   const extraBuses = Math.ceil(shiftToTransit / hours / 90 / 1.6);
   return { reductionPct, shiftToTransit, revenueAzn, extraBuses };
 }
+
+/** Mockup calcToll tNote: weak transit alternative (< 50%) → toll would push the jam elsewhere, "Tövsiyə edilmir". */
+export const tollRecommended = (t: TollCandidate) => t.pt >= 50;

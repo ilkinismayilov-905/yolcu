@@ -17,8 +17,8 @@ public class SyntheticGenerator {
     static final int TRIPS = 5000;
     static final int REVIEWS = 300;
     // zones = OD matrix order in design/web_dashboard.html; value = stop id in mocks/stops_seed.json
-    static final String[] ZONE_NAMES = {"Avtovağzal", "Koroğlu", "28 May", "Nizami", "Gənclik", "Nərimanov"};
-    static final String[] ZONE_STOPS = {"avtovagzal", "koroglu", "may28", "nizami", "genclik", "nerimanov"};
+    public static final String[] ZONE_NAMES = {"Avtovağzal", "Koroğlu", "28 May", "Nizami", "Gənclik", "Nərimanov"};
+    public static final String[] ZONE_STOPS = {"avtovagzal", "koroglu", "may28", "nizami", "genclik", "nerimanov"};
     static final double[][] OD = {
             {0, 8.2, 14.6, 6.1, 5.3, 4.4}, {3.1, 0, 9.8, 4.2, 7.7, 12.9}, {5.2, 6.4, 0, 7.9, 8.8, 6.0},
             {2.4, 3.3, 8.1, 0, 4.6, 3.9}, {2.0, 6.9, 7.4, 3.8, 0, 5.7}, {1.8, 10.4, 6.6, 3.2, 4.9, 0}};

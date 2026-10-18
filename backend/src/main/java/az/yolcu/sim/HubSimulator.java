@@ -35,6 +35,7 @@ public class HubSimulator {
 
     private final List<Hub> hubs = new ArrayList<>();
     private final double[] noise;
+    private final Map<String, Double> boost = new java.util.concurrent.ConcurrentHashMap<>(); // demo: hub id → count factor
     private final Random rnd = new Random(5);
     private final AppClock clock;
     private final ApplicationEventPublisher events;
@@ -82,6 +83,21 @@ public class HubSimulator {
         return hubs.stream().filter(h -> h.id().equals(hubId)).findFirst().map(h -> new double[]{h.lat(), h.lon()});
     }
 
+    /** Demo crowd: the hub's count is multiplied by factor until reset; counts are recomputed now. False if unknown. */
+    public boolean boost(String hubId, double factor) {
+        if (coords(hubId).isEmpty()) return false;
+        boost.put(hubId, factor);
+        compute();
+        return true;
+    }
+
+    /** Demo reset: no boosts, noise back to zero. */
+    public synchronized void reset() {
+        boost.clear();
+        java.util.Arrays.fill(noise, 0);
+        compute();
+    }
+
     public int totalWaiting() { return snapshot.stream().mapToInt(LiveHub::count).sum(); }
 
     private synchronized void compute() {
@@ -91,9 +107,10 @@ public class HubSimulator {
             var h = hubs.get(i);
             // noise: bounded random walk within ±5 % so the count moves smoothly instead of jumping
             noise[i] = Math.max(-0.05, Math.min(0.05, noise[i] + (rnd.nextDouble() - 0.5) * 0.03));
-            double now = curve(h.base(), t);
+            double k = boost.getOrDefault(h.id(), 1.0);
+            double now = curve(h.base(), t) * k;
             int count = (int) Math.round(now * (1 + noise[i]));
-            int trend = (int) Math.round(now - curve(h.base(), t - 10 / 60.0)); // last 10 min, formula without noise
+            int trend = (int) Math.round(now - curve(h.base(), t - 10 / 60.0) * k); // last 10 min, formula without noise
             int forecast = (int) Math.round(count + trend * 1.5);
             out.add(new LiveHub(h.id(), h.name(), h.lat(), h.lon(), count, h.capacity(), trend, forecast));
         }

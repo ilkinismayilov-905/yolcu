@@ -11,7 +11,10 @@ import az.yolcu.stream.StreamEvent;
 import az.yolcu.traffic.dto.TrafficSegment;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,9 +41,14 @@ public class TrafficService {
 
     record Segment(String id, String name, String baseLevel, int baseSpeed, Match match) {}
 
+    /** A segment that is JAM right now: minutes in JAM (demo may set it), real geometry ({lat, lon}). */
+    public record Jam(String id, String name, int minutes, List<double[]> line) {}
+
     private final List<Segment> segments = new ArrayList<>();
     private final AppClock clock;
     private final ApplicationEventPublisher events;
+    private final Map<String, String> forced = new HashMap<>();             // demo override: segment id → level
+    private final Map<String, OffsetDateTime> jamSince = new HashMap<>();   // segment id → JAM since (demo clock)
     private volatile List<TrafficSegment> snapshot = List.of();
 
     public TrafficService(YolcuProperties props, ObjectMapper mapper, GeoStore geo, StopService stops, HubSimulator hubs,
@@ -74,7 +82,7 @@ public class TrafficService {
     }
 
     @Scheduled(fixedRate = 10_000, initialDelay = 10_000)
-    public void tick() {
+    public synchronized void tick() {
         var next = compute();
         boolean changed = next.size() != snapshot.size();
         for (int i = 0; !changed && i < next.size(); i++) changed = !next.get(i).level().equals(snapshot.get(i).level());
@@ -84,6 +92,34 @@ public class TrafficService {
 
     public List<TrafficSegment> segments() { return snapshot; }
 
+    /** Demo: pin a segment to a level (FREE | SLOW | JAM) until reset; traffic.updated if it changes. False if unknown. */
+    public synchronized boolean force(String id, String level) {
+        if (segments.stream().noneMatch(s -> s.id().equals(id)) || !LEVELS.contains(level)) return false;
+        forced.put(id, level);
+        tick();
+        return true;
+    }
+
+    /** Demo: pretend the segment has been JAM for the given minutes (HubProposalRule needs ≥ 20). */
+    public synchronized void setJamMinutes(String id, int minutes) {
+        jamSince.put(id, clock.now().minusMinutes(minutes));
+    }
+
+    /** Segments in JAM now, with how long they have been JAM. */
+    public synchronized List<Jam> jams() {
+        var now = clock.now();
+        return segments.stream().filter(s -> jamSince.containsKey(s.id()))
+                .map(s -> new Jam(s.id(), s.name(), (int) Duration.between(jamSince.get(s.id()), now).toMinutes(), s.match().line()))
+                .toList();
+    }
+
+    /** Demo reset: drop overrides and JAM durations, back to the time-of-day profile. */
+    public synchronized void reset() {
+        forced.clear();
+        jamSince.clear();
+        tick();
+    }
+
     /** segment id → matched trajectory. */
     Map<String, Match> matches() {
         var m = new LinkedHashMap<String, Match>();
@@ -91,11 +127,14 @@ public class TrafficService {
         return m;
     }
 
-    private List<TrafficSegment> compute() {
+    private synchronized List<TrafficSegment> compute() {
         double t = clock.hourOfDay();
+        var now = clock.now();
         boolean peak = (t >= 7 && t < 10) || (t >= 17 && t < 20);
         return segments.stream().map(s -> {
-            var level = peak ? s.baseLevel() : LEVELS.get(Math.max(0, LEVELS.indexOf(s.baseLevel()) - 1));
+            var level = forced.getOrDefault(s.id(), peak ? s.baseLevel() : LEVELS.get(Math.max(0, LEVELS.indexOf(s.baseLevel()) - 1)));
+            if (level.equals("JAM")) jamSince.putIfAbsent(s.id(), now);
+            else jamSince.remove(s.id());
             int speed = level.equals(s.baseLevel()) ? s.baseSpeed() : DEFAULT_SPEED.get(level);
             var line = s.match().line().stream().map(p -> List.of(round5(p[0]), round5(p[1]))).toList();
             return new TrafficSegment(s.id(), s.name(), level, speed, line);

@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import type { ComponentProps, ReactNode } from 'react';
 
 type ButtonVariant = 'default' | 'p' | 'q';
 
@@ -7,7 +7,7 @@ export function Button({
   sm,
   className = '',
   ...props
-}: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: ButtonVariant; sm?: boolean }) {
+}: ComponentProps<'button'> & { variant?: ButtonVariant; sm?: boolean }) {
   const v = {
     default: 'border-line bg-surface hover:bg-surface-2',
     p: 'border-primary bg-primary text-primary-ink hover:brightness-106',
@@ -219,3 +219,13 @@ export function Switch({ on, onChange, children, disabled }: { on: boolean; onCh
 /** 12480 → "12 480", 4.2 → "4,2" (08_DESIGN_SYSTEM §6). */
 export const fmtNum = (n: number, digits = 0) =>
   n.toFixed(digits).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+
+/** Mockup .note: grey info box with a leading icon. */
+export function Note({ icon = 'i', children }: { icon?: ReactNode; children: ReactNode }) {
+  return (
+    <div className="flex items-start gap-3 rounded-xl border border-line bg-surface-2 px-3.5 py-3 text-[13px] text-ink-2 [&_b]:text-ink">
+      <span aria-hidden="true">{icon}</span>
+      <span>{children}</span>
+    </div>
+  );
+}

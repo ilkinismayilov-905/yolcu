@@ -153,8 +153,34 @@ public class OccupancyService {
         return Map.of("ok", true, "text", text);
     }
 
-    /** Tests: forget settling and bunching-alert state. */
-    void resetState() {
+    /**
+     * Demo: bunch two buses of the route (2 min apart) and raise the OCC alert now, every time it is triggered
+     * (the tick-based detector would skip it inside an ongoing episode / cooldown). Null if the route is not simulated.
+     */
+    public synchronized Bunching demoBunching(String route) {
+        if (!sim.bunch(route)) return null;
+        sim.step();
+        var b = bunching().stream().filter(x -> x.route().equals(route)).findFirst().orElse(null);
+        if (b == null) return null;
+        bunched.add(route); // the episode is alerted here, the tick must not repeat it
+        bunchAlertAt.put(route, System.currentTimeMillis());
+        feed.add("OCC", route + ": iki avtobus topa yığılıb",
+                b.front().bort() + " və " + b.back().bort() + " arası " + b.gapMin() + " dəq", "p-occ");
+        return b;
+    }
+
+    /** Demo: route occupancy to pct + OCC alert with the engine's recommendation. Null if the route is not simulated. */
+    public RouteOccupancy demoOverload(String route, int pct) {
+        if (!sim.overload(route, pct)) return null;
+        sim.step();
+        var r = route(route);
+        feed.add("OCC", route + ": avtobuslar " + r.avgOccupancy() + "% doludur",
+                "Tövsiyə: interval " + r.intervalMin() + " → " + r.recommendedMin() + " dəq", "p-occ");
+        return r;
+    }
+
+    /** Demo reset / tests: forget settling and bunching-alert state. */
+    public void resetState() {
         changedAt.clear();
         bunchAlertAt.clear();
         bunched.clear();

@@ -394,6 +394,63 @@ export interface CreateSurveyRequest {
   publish: boolean;
 }
 
+// ---- 9. Data analitika (REAL from trips) and hub proposals ----
+
+/** GET /admin/analytics/kpis */
+export interface AnalyticsKpis {
+  trackedTrips30d: number;
+  consentUsers: number;
+  avgTripMin: number;
+  longestTransferWaitMin: number;
+  suggestionAcceptance: number; // %
+}
+
+/** GET /admin/analytics/od?from=07:00&to=10:00 — matrix[from][to] = trips, same order as zones. */
+export interface OdMatrix {
+  zones: string[];
+  matrix: number[][];
+}
+
+/** GET /admin/analytics/alighting?limit=5 item */
+export interface AlightingPoint {
+  stop: string;
+  perDay: number;
+  peak: string; // "08:35"
+  note: string;
+}
+
+export type HubProposalStatus = 'NEW' | 'ACCEPTED' | 'REJECTED';
+
+/** GET /admin/hub-proposals?status= item; also the `proposal.created` SSE payload. */
+export interface HubProposal {
+  id: number;
+  name: string;
+  lat: number;
+  lon: number;
+  jamMinutes: number;
+  routesCount: number;
+  metroM: number;
+  waiting: number;
+  paxPerHour: number;
+  confidence: number; // %
+  items: string[];
+  impact: { transferMin: number; toMetroPerDay: number; waitingPct: number; costAzn: string };
+  status: HubProposalStatus;
+  reason: string; // drawer explanation text
+  createdAt: string;
+}
+
+// ---- 10. Demo (DISPATCHER, ADMIN) ----
+
+export type DemoScenario = 'artificial-jam' | 'new-report' | 'overload-88' | 'bunching' | 'stadium' | 'rain' | 'crowd-28may' | 'ganja-arrival';
+
+/** POST /demo/trigger/{scenario} and POST /demo/reset (scenario "reset"); `message` = short Azerbaijani result for the toast. Reset also returns coinBalance + deleted counts (unused). */
+export interface DemoResponse {
+  ok: true;
+  scenario: DemoScenario | 'reset';
+  message: string;
+}
+
 // ---- 11. SSE (GET /api/v1/stream?token=...), list in 02_ARCHITECTURE.md §4 ----
 
 export const STREAM_EVENTS = [
@@ -440,7 +497,7 @@ export interface StreamEventMap {
   'notification.created': unknown;
   'coin.updated': CoinUpdatedPayload;
   'route.updated': RouteOccupancy;
-  'proposal.created': unknown;
+  'proposal.created': HubProposal;
   'traffic.updated': TrafficSegment[];
   'survey.updated': SurveyListItem;
   ping: PingPayload;
